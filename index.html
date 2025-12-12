@@ -449,7 +449,11 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-    <script src="app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+<script>
+    // Test apakah Supabase terload
+    console.log('Supabase loaded:', typeof window.supabase !== 'undefined');
+</script>
+<script src="app.js"></script>
 </body>
 </html>
