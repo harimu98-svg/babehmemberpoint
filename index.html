@@ -509,9 +509,6 @@ footer .mt-6.pt-4 {
                         <div>
                             <h3 class="font-bold text-blue-700 mb-3 text-lg"><i class="fas fa-user-check mr-2"></i>Customer Baru (Digital)</h3>
                             <div class="mb-4">
-                                <div id="customer-baru-auto" class="hidden bg-blue-50 p-4 rounded-custom border border-blue-200 mb-3">
-                                    <p class="font-semibold text-blue-800"><i class="fas fa-check-circle mr-2"></i>Customer baru ditemukan otomatis berdasarkan nomor HP lama</p>
-                                </div>
                                 
                                 <div class="relative">
                                     <input type="text" id="search-customer-baru" placeholder="Cari berdasarkan Nama, No WA, atau ID Member..." class="w-full p-3 pl-10 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -1047,42 +1044,47 @@ function updateKonversiUI(outlet, value) {
         
         // 7. AUTO-FIND CUSTOMER BARU BY PHONE
         async function findCustomerBaruByPhone(phone) {
-            showLoading('Mencari customer baru berdasarkan nomor HP...');
+    showLoading('Mencari customer baru berdasarkan nomor HP...');
+    
+    // Convert phone format for search
+    let searchPhone = phone;
+    if (phone.startsWith('+62')) {
+        searchPhone = phone.replace('+62', '62');
+    } else if (phone.startsWith('08')) {
+        searchPhone = '62' + phone.substring(1);
+    } else if (phone.startsWith('628')) {
+        searchPhone = phone;
+    }
+    
+    try {
+        const { data, error } = await supabase
+            .from('membercard')
+            .select('*')
+            .eq('outlet', selectedOutlet)
+            .ilike('nomorWA', `%${searchPhone}%`)
+            .limit(1);
+        
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+            // GANTI: dari show di modal ke TOAST NOTIFICATION
+            showToast('success', 'Customer Baru Ditemukan', 
+                `Data customer baru ditemukan otomatis berdasarkan nomor HP lama`);
             
-            // Convert phone format for search
-            let searchPhone = phone;
-            if (phone.startsWith('+62')) {
-                searchPhone = phone.replace('+62', '62');
-            } else if (phone.startsWith('08')) {
-                searchPhone = '62' + phone.substring(1);
-            } else if (phone.startsWith('628')) {
-                searchPhone = phone;
-            }
-            
-            try {
-                const { data, error } = await supabase
-                    .from('membercard')
-                    .select('*')
-                    .eq('outlet', selectedOutlet)  // FILTER OUTLET
-                    .ilike('nomorWA', `%${searchPhone}%`)
-                    .limit(1);
-                
-                if (error) throw error;
-                
-                if (data && data.length > 0) {
-                    document.getElementById('customer-baru-auto').classList.remove('hidden');
-                    selectCustomerBaru(data[0]);
-                } else {
-                    showToast('info', 'Customer baru tidak ditemukan', 'Silakan cari customer baru secara manual');
-                    document.getElementById('customer-baru-auto').classList.add('hidden');
-                }
-            } catch (error) {
-                console.error('Error finding customer baru by phone:', error);
-                showToast('error', 'Gagal mencari customer baru', error.message);
-            } finally {
-                hideLoading();
-            }
+            selectCustomerBaru(data[0]);
+        } else {
+            // Toast info jika tidak ketemu
+            showToast('info', 'Customer Baru Tidak Ditemukan', 
+                'Silakan cari customer baru secara manual');
         }
+    } catch (error) {
+        console.error('Error finding customer baru by phone:', error);
+        showToast('error', 'Pencarian Gagal', 'Gagal mencari customer baru otomatis');
+    } finally {
+        hideLoading();
+    }
+}
+
         
         // 8. DISPLAY SEARCH RESULTS (Dengan kolom outlet dan status)
         function displaySearchResults(data, totalCount, type) {
