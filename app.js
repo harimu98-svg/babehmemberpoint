@@ -1,54 +1,71 @@
 // ================= CONFIGURATION =================
-const supabaseUrlL = 'https://intzwjmlypmopzauxeqt.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludHp3am1seXBtb3B6YXV4ZXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3MTc5MTIsImV4cCI6MjA3MDI5MzkxMn0.VwwVEDdHtYP5gui4epTcNfLXhPkmfFbRVb5y8mrXJiM';
+const SUPABASE_URL = 'https://intzwjmlypmopzauxeqt.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludHp3am1seXBtb3B6YXV4ZXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3MTc5MTIsImV4cCI6MjA3MDI5MzkxMn0.VwwVEDdHtYP5gui4epTcNfLXhPkmfFbRVb5y8mrXJiM';
 const WAHA_URL = 'https://waha-yetv8qi4e3zk.anakit.sumopod.my.id/api/sendText';
 const WAHA_KEY = 'sfcoGbpdLDkGZhKw2rx8sbb14vf4d8V6';
 
-// Inisialisasi Supabase
-let supabase = null; // Deklarasi kosong dulu
+// ================= GLOBAL STATE =================
+let supabase = null;
+let currentOutlet = '';
+let currentKasir = '';
+let konversiPoint = 0;
+let selectedLama = null;
+let selectedBaru = null;
 
-document.addEventListener('DOMContentLoaded', async function() {
-    console.log('🔄 Checking Supabase...');
+// ================= INITIALIZATION =================
+// Tunggu sampai semua konten dimuat termasuk script Supabase
+window.addEventListener('load', async function() {
+    console.log('🚀 Aplikasi dimulai...');
     
-    // 1. Cek apakah library sudah dimuat
-    if (typeof window.supabase === 'undefined') {
-        console.error('❌ Supabase library not found in window');
-        alert('ERROR: Library database tidak ditemukan. Muat ulang halaman.');
-        return;
-    }
+    // Tunggu sedikit untuk memastikan Supabase sudah dimuat
+    await new Promise(resolve => setTimeout(resolve, 500));
     
-    // 2. Coba buat client
+    // Inisialisasi Supabase
     try {
-        supabase = window.supabase.createClient(
-            'https://intzwjmlypmopzauxeqt.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludHp3am1seXBtb3B6YXV4ZXF0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDcxNzkxMiwiZXhwIjoyMDcwMjkzOTEyfQ.Sx_VwOEHbLjVhc3rL96hlIGNkiZ44a4oD9T8DcBzwGI'
-        );
+        if (typeof supabase === 'undefined' || !window.supabase) {
+            console.error('❌ Supabase library tidak ditemukan!');
+            
+            // Coba lagi setelah 1 detik
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            if (typeof supabase === 'undefined' || !window.supabase) {
+                throw new Error('Supabase library gagal dimuat. Periksa koneksi internet.');
+            }
+        }
         
-        console.log('✅ Supabase client created:', supabase);
+        // Inisialisasi client Supabase
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true
+            }
+        });
         
-        // 3. Test koneksi
+        console.log('✅ Supabase initialized:', supabase);
+        
+        // Test koneksi dengan query sederhana
         const { data, error } = await supabase
             .from('outlet')
             .select('count')
             .limit(1);
             
         if (error) {
-            throw error;
+            console.error('❌ Test query gagal:', error);
+            showError('Gagal terhubung ke database');
+            return;
         }
         
-        console.log('✅ Database connection test passed');
+        console.log('✅ Test koneksi berhasil');
         
-        // 4. Lanjutkan inisialisasi aplikasi
-        initApp();
+        // Setup aplikasi
+        setupApp();
         
     } catch (error) {
-        console.error('❌ Failed to initialize Supabase:', error);
-        alert('Gagal menghubungkan ke database: ' + error.message);
+        console.error('❌ Gagal inisialisasi:', error);
+        showError('Gagal menghubungkan ke database: ' + error.message);
     }
 });
 
-function initApp() {
-    console.log('🚀 Starting application...');
 // ================= SETUP FUNCTIONS =================
 function setupApp() {
     loadOutlets();
@@ -664,4 +681,4 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js');
     });
-
+}
