@@ -977,49 +977,49 @@
         }
         
         async function searchCustomerLama() {
-            const searchTerm = document.getElementById('search-customer-lama').value.trim();
-            searchType = 'customer-lama';
-            currentSearchPage = 1;
-            
-            if (!searchTerm) {
-                showToast('warning', 'Masukkan kata kunci pencarian', 'Silakan masukkan nama atau nomor HP untuk mencari customer lama');
-                return;
-            }
-            
-            showLoading('Mencari customer lama...');
-            
-            try {
-                let query = supabase
-                    .from('membercard_olsera')
-                    .select('*', { count: 'exact' })
-                    .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`)
-                    .is('status_migrasi', null);
-                
-                // Add pagination
-                const from = (currentSearchPage - 1) * 10;
-                const to = from + 9;
-                query = query.range(from, to).order('name');
-                
-                const { data, error, count } = await query;
-                
-                if (error) throw error;
-                
-                if (data.length === 0) {
-                    showToast('info', 'Customer tidak ditemukan', 'Tidak ada customer lama dengan kata kunci tersebut');
-                    return;
-                }
-                
-                searchResults = data;
-                displaySearchResults(data, count, 'customer-lama');
-                
-            } catch (error) {
-                console.error('Error searching customer lama:', error);
-                showToast('error', 'Gagal mencari customer lama', error.message);
-            } finally {
-                hideLoading();
-            }
+    const searchTerm = document.getElementById('search-customer-lama').value.trim();
+    searchType = 'customer-lama';
+    currentSearchPage = 1;
+    
+    if (!searchTerm) {
+        showToast('warning', 'Masukkan kata kunci pencarian', 'Silakan masukkan nama atau nomor HP untuk mencari customer lama');
+        return;
+    }
+    
+    showLoading('Mencari customer lama...');
+    
+    try {
+        // PERBAIKAN: Hapus filter status_migrasi, gunakan ilike untuk case-insensitive
+        let query = supabase
+            .from('membercard_olsera')
+            .select('*', { count: 'exact' })
+            .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`);
+            // HAPUS: .is('status_migrasi', null) atau .or('status_migrasi.is.null,status_migrasi.eq.belum migrasi')
+        
+        // Add pagination
+        const from = (currentSearchPage - 1) * 10;
+        const to = from + 9;
+        query = query.range(from, to).order('name');
+        
+        const { data, error, count } = await query;
+        
+        if (error) throw error;
+        
+        if (data.length === 0) {
+            showToast('info', 'Customer tidak ditemukan', 'Tidak ada customer lama dengan kata kunci tersebut');
+            return;
         }
         
+        searchResults = data;
+        displaySearchResults(data, count, 'customer-lama');
+        
+    } catch (error) {
+        console.error('Error searching customer lama:', error);
+        showToast('error', 'Gagal mencari customer lama', error.message);
+    } finally {
+        hideLoading();
+    }
+}
         async function searchCustomerBaru() {
             const searchTerm = document.getElementById('search-customer-baru').value.trim();
             searchType = 'customer-baru';
@@ -1381,46 +1381,46 @@
         }
         
         async function loadSearchResultsPage() {
-            showLoading('Memuat halaman...');
-            
-            try {
-                let query;
-                const from = (currentSearchPage - 1) * 10;
-                const to = from + 9;
-                
-                if (searchType === 'customer-lama') {
-                    const searchTerm = document.getElementById('search-customer-lama').value.trim();
-                    query = supabase
-                        .from('membercard_olsera')
-                        .select('*', { count: 'exact' })
-                        .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`)
-                        .is('status_migrasi', null)
-                        .range(from, to)
-                        .order('name');
-                } else {
-                    const searchTerm = document.getElementById('search-customer-baru').value.trim();
-                    query = supabase
-                        .from('membercard')
-                        .select('*', { count: 'exact' })
-                        .or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`)
-                        .range(from, to)
-                        .order('nama');
-                }
-                
-                const { data, error, count } = await query;
-                
-                if (error) throw error;
-                
-                searchResults = data;
-                displaySearchResults(data, count, searchType);
-                
-            } catch (error) {
-                console.error('Error loading search results page:', error);
-                showToast('error', 'Gagal memuat halaman', error.message);
-            } finally {
-                hideLoading();
-            }
+    showLoading('Memuat halaman...');
+    
+    try {
+        let query;
+        const from = (currentSearchPage - 1) * 10;
+        const to = from + 9;
+        
+        if (searchType === 'customer-lama') {
+            const searchTerm = document.getElementById('search-customer-lama').value.trim();
+            // PERBAIKAN: Hapus filter status_migrasi
+            query = supabase
+                .from('membercard_olsera')
+                .select('*', { count: 'exact' })
+                .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`)
+                .range(from, to)
+                .order('name');
+        } else {
+            const searchTerm = document.getElementById('search-customer-baru').value.trim();
+            query = supabase
+                .from('membercard')
+                .select('*', { count: 'exact' })
+                .or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`)
+                .range(from, to)
+                .order('nama');
         }
+        
+        const { data, error, count } = await query;
+        
+        if (error) throw error;
+        
+        searchResults = data;
+        displaySearchResults(data, count, searchType);
+        
+    } catch (error) {
+        console.error('Error loading search results page:', error);
+        showToast('error', 'Gagal memuat halaman', error.message);
+    } finally {
+        hideLoading();
+    }
+}
         
         // Customer selection functions
         function selectCustomerLama(customerId) {
