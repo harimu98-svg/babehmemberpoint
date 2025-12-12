@@ -522,6 +522,45 @@
 .tailwind-warning-hide {
     display: none !important;
 }
+        /* Perbesar footer text */
+footer {
+    font-size: 1rem !important; /* Ukuran dasar lebih besar */
+}
+
+footer h3 {
+    font-size: 1.125rem !important; /* text-lg */
+    margin-bottom: 0.75rem !important; /* mb-3 */
+}
+
+footer p {
+    font-size: 1rem !important; /* text-base */
+    line-height: 1.5 !important;
+}
+
+footer .text-sm {
+    font-size: 1rem !important; /* Override text-sm jadi text-base */
+}
+
+footer .text-xs {
+    font-size: 0.875rem !important; /* Override text-xs jadi text-sm */
+}
+
+/* Icon lebih besar */
+footer .fas {
+    font-size: 1rem !important;
+}
+
+/* Spacing lebih longgar */
+footer .gap-3 { gap: 1rem !important; }
+footer .gap-4 { gap: 1.25rem !important; }
+footer .mb-1 { margin-bottom: 0.5rem !important; }
+footer .mb-2 { margin-bottom: 0.75rem !important; }
+footer .mt-0\.5 { margin-top: 0.25rem !important; }
+footer .mt-1 { margin-top: 0.5rem !important; }
+footer .mt-3 { margin-top: 1rem !important; }
+footer .mt-4 { margin-top: 1.25rem !important; }
+footer .pt-2 { padding-top: 0.75rem !important; }
+footer .pt-3 { padding-top: 1rem !important; }
     </style>
     
     <script>
@@ -548,10 +587,10 @@
     <header class="bg-gradient-to-r from-purple-700 to-purple-900 text-white py-3 px-4 rounded-b-xl shadow-lg">
         <div class="container mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <img id="logo" src="logo.jpg" alt="Babeh Barbershop Logo" class="w-12 h-12 object-cover rounded-full border-3 border-white shadow" onerror="this.src='https://via.placeholder.com/48/7b3aed/FFFFFF?text=BB'">
+                <img id="logo" src="logo.jpg" alt="Babeh Barbershop Logo" class="w-14 h-14 object-cover rounded-full border-3 border-white shadow" onerror="this.src='https://via.placeholder.com/48/7b3aed/FFFFFF?text=BB'">
                 <div>
                     <h1 class="text-xl font-bold">Babeh Barbershop</h1>
-                    <p class="text-purple-200 text-sm">Membercard Point</p>
+                    <p class="text-purple-200 text-base">Membercard Point</p>
                 </div>
             </div>
             
