@@ -53,7 +53,7 @@
         
         .modal-content {
             background: white;
-            border-radius: 20px;
+            border-radius: 16px;
             width: 90%;
             max-width: 1200px;
             max-height: 90vh;
@@ -68,7 +68,7 @@
         }
         
         .rounded-custom {
-            border-radius: 12px;
+            border-radius: 10px;
         }
         
         .btn-yellow {
@@ -104,10 +104,11 @@
         }
         
         .pagination-btn {
-            padding: 8px 16px;
-            margin: 0 4px;
-            border-radius: 8px;
+            padding: 6px 12px;
+            margin: 0 3px;
+            border-radius: 6px;
             border: 1px solid #d1d5db;
+            font-size: 0.85rem;
         }
         
         .pagination-btn.active {
@@ -117,10 +118,11 @@
         }
         
         .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
             font-weight: 600;
+            display: inline-block;
         }
         
         .status-active {
@@ -145,17 +147,17 @@
         
         /* Custom scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
         
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
-            border-radius: 10px;
+            border-radius: 8px;
         }
         
         ::-webkit-scrollbar-thumb {
             background: #c4b5fd;
-            border-radius: 10px;
+            border-radius: 8px;
         }
         
         ::-webkit-scrollbar-thumb:hover {
@@ -165,16 +167,17 @@
         /* Toast Notification - Front Layer */
         #toast {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 16px;
+            right: 16px;
             z-index: 9999 !important;
             background: white;
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            border-left: 5px solid #7b3aed;
-            max-width: 400px;
+            border-radius: 10px;
+            padding: 12px 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border-left: 4px solid #7b3aed;
+            max-width: 350px;
             animation: slideIn 0.3s ease-out;
+            display: none;
         }
         
         @keyframes slideIn {
@@ -190,133 +193,326 @@
         
         .toast-success {
             border-left-color: #10b981;
+            background: #f0fdf4;
         }
         
         .toast-error {
             border-left-color: #ef4444;
+            background: #fef2f2;
         }
         
         .toast-warning {
             border-left-color: #f59e0b;
+            background: #fffbeb;
         }
         
         .toast-info {
             border-left-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        /* ULTRA COMPACT FOR ANDROID */
+        @media (max-width: 768px) {
+            /* Header super compact */
+            header {
+                padding: 10px 14px !important;
+                border-radius: 0 0 10px 10px !important;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                min-height: 60px;
+                display: flex;
+                align-items: center;
+            }
+            
+            header .container {
+                flex-direction: row !important;
+                align-items: center;
+                gap: 10px !important;
+            }
+            
+            header img {
+                width: 42px !important;
+                height: 42px !important;
+                border-width: 2px !important;
+            }
+            
+            header h1 {
+                font-size: 1.1rem !important;
+                line-height: 1.2;
+                margin-bottom: 2px !important;
+            }
+            
+            header p {
+                font-size: 0.75rem !important;
+            }
+            
+            .text-center.md\:text-right {
+                text-align: right !important;
+                font-size: 0.75rem !important;
+            }
+            
+            /* Main container */
+            main.container {
+                padding: 10px !important;
+            }
+            
+            /* Section compact */
+            .bg-white.rounded-custom.shadow-lg {
+                margin-bottom: 10px !important;
+                padding: 14px !important;
+                border-radius: 8px !important;
+            }
+            
+            .bg-white h2 {
+                margin-bottom: 10px !important;
+                font-size: 1rem !important;
+            }
+            
+            /* Form fields compact */
+            .grid.grid-cols-1.md\:grid-cols-2.gap-6 {
+                gap: 10px !important;
+            }
+            
+            label {
+                margin-bottom: 5px !important;
+                font-size: 0.85rem !important;
+            }
+            
+            select, input {
+                padding: 8px 10px !important;
+                font-size: 0.9rem !important;
+                height: 40px !important;
+            }
+            
+            .mt-4.text-sm {
+                margin-top: 8px !important;
+                font-size: 0.75rem !important;
+            }
+            
+            /* Action button compact */
+            #btn-migrasi {
+                padding: 12px !important;
+                font-size: 0.95rem !important;
+                border-radius: 8px !important;
+            }
+            
+            #btn-migrasi i {
+                font-size: 22px !important;
+                margin-bottom: 5px !important;
+            }
+            
+            #btn-migrasi span:last-child {
+                font-size: 0.75rem !important;
+                margin-top: 3px !important;
+            }
+            
+            /* INFO SYSTEM - SUPER COMPACT GRID */
+            .grid.grid-cols-2.gap-3 {
+                gap: 8px !important;
+            }
+            
+            .bg-purple-50, .bg-yellow-50, .bg-blue-50, .bg-green-50 {
+                padding: 10px !important;
+                border-radius: 6px !important;
+            }
+            
+            .bg-purple-50 h3, .bg-yellow-50 h3, .bg-blue-50 h3, .bg-green-50 h3 {
+                font-size: 0.8rem !important;
+                margin-bottom: 5px !important;
+                line-height: 1.1;
+            }
+            
+            .bg-purple-50 p, .bg-yellow-50 p, .bg-blue-50 p, .bg-green-50 p {
+                font-size: 0.75rem !important;
+                line-height: 1.25 !important;
+                margin-bottom: 3px !important;
+            }
+            
+            /* Footer compact */
+            footer {
+                padding: 14px !important;
+                margin-top: 12px !important;
+                border-radius: 12px 12px 0 0 !important;
+            }
+            
+            footer .grid {
+                gap: 10px !important;
+            }
+            
+            footer h3 {
+                font-size: 0.9rem !important;
+                margin-bottom: 5px !important;
+            }
+            
+            footer p {
+                font-size: 0.75rem !important;
+                line-height: 1.25 !important;
+                margin-bottom: 2px !important;
+            }
+            
+            footer .mt-6.pt-4 {
+                margin-top: 10px !important;
+                padding-top: 8px !important;
+                font-size: 0.7rem !important;
+                line-height: 1.1;
+            }
+            
+            /* Modal compact */
+            .modal-content {
+                width: 96% !important;
+                max-height: 88vh !important;
+                margin: 8px !important;
+                border-radius: 12px !important;
+            }
+            
+            .modal-content .p-6 {
+                padding: 14px !important;
+            }
+            
+            /* Toast compact */
+            #toast {
+                top: 12px;
+                right: 12px;
+                max-width: 300px;
+                padding: 10px 14px;
+            }
+        }
+        
+        /* Disable Tailwind CDN warning */
+        .tailwind-warning-hide {
+            display: none !important;
         }
     </style>
     
-    <!-- Disable Tailwind CDN warning -->
     <script>
+        // Disable Tailwind Play CDN warning
         tailwind.config = {
             corePlugins: {
                 preflight: false,
             }
         }
+        
+        // Hide CDN warning
+        document.addEventListener('DOMContentLoaded', function() {
+            const style = document.createElement('style');
+            style.textContent = `
+                .tailwind-warning-hide { display: none !important; }
+                [style*="position: fixed"][style*="z-index: 2147483647"] { display: none !important; }
+            `;
+            document.head.appendChild(style);
+        });
     </script>
 </head>
 <body class="bg-purple-doff min-h-screen">
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-purple-700 to-purple-900 text-white p-4 rounded-b-3xl shadow-lg">
-        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
-            <div class="flex items-center space-x-4 mb-4 md:mb-0">
-                <img id="logo" src="logo.jpg" alt="Babeh Barbershop Logo" class="w-16 h-16 object-cover rounded-full border-4 border-white shadow-lg" onerror="this.src='https://via.placeholder.com/64/7b3aed/FFFFFF?text=BB'">
+    <!-- Header Compact -->
+    <header class="bg-gradient-to-r from-purple-700 to-purple-900 text-white py-3 px-4 rounded-b-xl shadow-lg">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img id="logo" src="logo.jpg" alt="Babeh Barbershop Logo" class="w-12 h-12 object-cover rounded-full border-3 border-white shadow" onerror="this.src='https://via.placeholder.com/48/7b3aed/FFFFFF?text=BB'">
                 <div>
-                    <h1 class="text-2xl md:text-3xl font-bold">Babeh Barbershop</h1>
-                    <p class="text-purple-200 text-sm md:text-base">Membercard Point System</p>
+                    <h1 class="text-xl font-bold">Babeh Barbershop</h1>
+                    <p class="text-purple-200 text-sm">Membercard Point</p>
                 </div>
             </div>
             
-            <div class="text-right">
-                <p class="text-sm md:text-base"><i class="fas fa-store mr-2"></i><span id="current-outlet">Pilih Outlet</span></p>
-                <p class="text-sm md:text-base"><i class="fas fa-user-tie mr-2"></i><span id="current-kasir">Pilih Kasir</span></p>
+            <div class="text-right text-sm">
+                <p><i class="fas fa-store text-xs mr-1"></i><span id="current-outlet">Pilih</span></p>
+                <p><i class="fas fa-user-tie text-xs mr-1"></i><span id="current-kasir">Pilih</span></p>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Main Content Compact -->
     <main class="container mx-auto p-4">
         <!-- Outlet & Kasir Selection -->
-        <div class="bg-white rounded-custom shadow-lg p-6 mb-6">
-            <h2 class="text-xl font-bold text-purple-800 mb-4"><i class="fas fa-cogs mr-2"></i>Pengaturan Awal</h2>
+        <div class="bg-white rounded-custom shadow-lg p-4 mb-4">
+            <h2 class="text-lg font-bold text-purple-800 mb-3"><i class="fas fa-cogs mr-2"></i>Pengaturan</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Outlet</label>
-                    <select id="outlet-select" class="w-full p-3 border border-purple-300 rounded-custom focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    <select id="outlet-select" class="w-full p-3 border border-purple-300 rounded-custom focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm">
                         <option value="">-- Pilih Outlet --</option>
                     </select>
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Kasir</label>
-                    <select id="kasir-select" class="w-full p-3 border border-purple-300 rounded-custom focus:ring-2 focus:ring-purple-500 focus:border-purple-500" disabled>
+                    <select id="kasir-select" class="w-full p-3 border border-purple-300 rounded-custom focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm" disabled>
                         <option value="">-- Pilih Kasir --</option>
                     </select>
                 </div>
             </div>
             
-            <div class="mt-4 text-sm text-gray-600">
-                <p><i class="fas fa-info-circle mr-2"></i>Pilih outlet dan kasir terlebih dahulu sebelum menggunakan fitur migrasi</p>
+            <div class="mt-3 text-xs text-gray-600">
+                <p><i class="fas fa-info-circle mr-1"></i>Pilih outlet dan kasir terlebih dahulu</p>
             </div>
         </div>
 
         <!-- Action Button -->
-        <div class="bg-white rounded-custom shadow-lg p-6 mb-6">
-            <h2 class="text-xl font-bold text-purple-800 mb-4"><i class="fas fa-tasks mr-2"></i>Aksi Membercard</h2>
-            
-            <div class="grid grid-cols-1 gap-4">
-                <button id="btn-migrasi" class="btn-green p-4 rounded-custom font-bold text-lg flex flex-col items-center justify-center transition duration-300 transform hover:scale-105" disabled>
-                    <i class="fas fa-exchange-alt text-3xl mb-2"></i>
-                    <span>MIGRASI MEMBERCARD</span>
-                    <span class="text-sm font-normal mt-1">Konversi point lama ke baru</span>
-                </button>
-            </div>
+        <div class="bg-white rounded-custom shadow-lg p-4 mb-4">
+            <button id="btn-migrasi" class="btn-green w-full p-4 rounded-custom font-bold text-lg flex flex-col items-center justify-center transition duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <i class="fas fa-exchange-alt text-2xl mb-2"></i>
+                <span>MIGRASI MEMBERCARD</span>
+                <span class="text-sm font-normal mt-1">Konversi point lama ke baru</span>
+            </button>
         </div>
 
-        <!-- Status Info -->
-        <div class="bg-white rounded-custom shadow-lg p-6 mb-6">
-            <h2 class="text-xl font-bold text-purple-800 mb-4"><i class="fas fa-info-circle mr-2"></i>Informasi Sistem</h2>
+        <!-- Status Info - Compact Layout -->
+        <div class="bg-white rounded-custom shadow-lg p-4 mb-4">
+            <h2 class="text-lg font-bold text-purple-800 mb-3"><i class="fas fa-info-circle mr-2"></i>Informasi Sistem</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-purple-50 p-4 rounded-custom border border-purple-200">
-                    <h3 class="font-bold text-purple-700 mb-2">Outlet & Kasir</h3>
-                    <p class="text-sm">Outlet: <span id="info-outlet" class="font-semibold">Belum dipilih</span></p>
-                    <p class="text-sm">Kasir: <span id="info-kasir" class="font-semibold">Belum dipilih</span></p>
+            <div class="grid grid-cols-2 gap-3">
+                <!-- Outlet & Kasir -->
+                <div class="bg-purple-50 p-3 rounded-custom border border-purple-200">
+                    <h3 class="font-bold text-purple-700 text-sm mb-1">Outlet & Kasir</h3>
+                    <p class="text-xs"><span class="font-semibold">Outlet:</span><br><span id="info-outlet" class="text-purple-800">Belum dipilih</span></p>
+                    <p class="text-xs mt-1"><span class="font-semibold">Kasir:</span><br><span id="info-kasir" class="text-purple-800">Belum dipilih</span></p>
                 </div>
                 
-                <div class="bg-yellow-50 p-4 rounded-custom border border-yellow-200">
-                    <h3 class="font-bold text-yellow-700 mb-2">Membercard Olsera</h3>
-                    <p class="text-sm">Total data: <span id="info-olsera-count" class="font-semibold">-</span></p>
-                    <p class="text-sm">Sudah migrasi: <span id="info-olsera-migrasi" class="font-semibold">-</span></p>
+                <!-- Membercard Olsera -->
+                <div class="bg-yellow-50 p-3 rounded-custom border border-yellow-200">
+                    <h3 class="font-bold text-yellow-700 text-sm mb-1">Membercard Olsera</h3>
+                    <p class="text-xs"><span class="font-semibold">Total:</span> <span id="info-olsera-count" class="font-bold">-</span></p>
+                    <p class="text-xs mt-1"><span class="font-semibold">Sudah Migrasi:</span><br><span id="info-olsera-migrasi" class="font-bold">-</span></p>
                 </div>
                 
-                <div class="bg-blue-50 p-4 rounded-custom border border-blue-200">
-                    <h3 class="font-bold text-blue-700 mb-2">Membercard Digital</h3>
-                    <p class="text-sm">Total data: <span id="info-digital-count" class="font-semibold">-</span></p>
-                    <p class="text-sm">Status aktif: <span id="info-digital-active" class="font-semibold">-</span></p>
+                <!-- Membercard Digital -->
+                <div class="bg-blue-50 p-3 rounded-custom border border-blue-200">
+                    <h3 class="font-bold text-blue-700 text-sm mb-1">Membercard Digital</h3>
+                    <p class="text-xs"><span class="font-semibold">Total:</span> <span id="info-digital-count" class="font-bold">-</span></p>
+                    <p class="text-xs mt-1"><span class="font-semibold">Aktif:</span> <span id="info-digital-active" class="font-bold">-</span></p>
+                </div>
+                
+                <!-- Konversi Point -->
+                <div class="bg-green-50 p-3 rounded-custom border border-green-200">
+                    <h3 class="font-bold text-green-700 text-sm mb-1">Konversi Point</h3>
+                    <p class="text-xs"><span class="font-semibold">Nilai:</span> <span id="info-konversi" class="font-bold">1</span></p>
+                    <p class="text-xs mt-1"><span class="font-semibold">Outlet:</span><br><span class="text-green-800" id="info-outlet-name">-</span></p>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-r from-purple-800 to-purple-900 text-white p-6 rounded-t-3xl shadow-lg mt-8">
+    <!-- Footer Compact -->
+    <footer class="bg-gradient-to-r from-purple-800 to-purple-900 text-white py-4 px-6 rounded-t-xl shadow-lg mt-6">
         <div class="container mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <h3 class="text-lg font-bold mb-3"><i class="fas fa-map-marker-alt mr-2"></i>Head Office</h3>
-                    <p class="text-purple-200">Jl. Abdul Ghani, Rempoa, Ciputat</p>
+                    <h3 class="text-base font-bold mb-2"><i class="fas fa-map-marker-alt mr-2"></i>Head Office</h3>
+                    <p class="text-purple-200 text-sm">Jl. Abdul Ghani, Rempoa, Ciputat</p>
                 </div>
                 
                 <div>
-                    <h3 class="text-lg font-bold mb-3"><i class="fas fa-phone-alt mr-2"></i>Contact</h3>
-                    <p class="text-purple-200">WA: 0822-1001-7083</p>
-                    <p class="text-sm text-purple-300 mt-2">Babeh Barbershop Membercard Point System v1.0</p>
+                    <h3 class="text-base font-bold mb-2"><i class="fas fa-phone-alt mr-2"></i>Contact</h3>
+                    <p class="text-purple-200 text-sm">WA: 0822-1001-7083</p>
+                    <p class="text-xs text-purple-300 mt-1">Babeh Barbershop v1.0</p>
                 </div>
             </div>
             
-            <div class="mt-6 pt-4 border-t border-purple-700 text-center text-sm text-purple-300">
-                <p><i class="fas fa-shield-alt mr-2"></i>Sistem PWA - Dapat diinstall di perangkat Android</p>
+            <div class="mt-4 pt-3 border-t border-purple-700 text-center text-xs text-purple-300">
+                <p><i class="fas fa-shield-alt mr-1"></i>PWA - Installable di Android</p>
             </div>
         </div>
     </footer>
@@ -373,10 +569,6 @@
                         <div>
                             <h3 class="font-bold text-blue-700 mb-3 text-lg"><i class="fas fa-user-check mr-2"></i>Customer Baru (Digital)</h3>
                             <div class="mb-4">
-                                <div id="customer-baru-auto" class="hidden bg-blue-50 p-4 rounded-custom border border-blue-200 mb-3">
-                                    <p class="font-semibold text-blue-800"><i class="fas fa-check-circle mr-2"></i>Customer baru ditemukan otomatis berdasarkan nomor HP lama</p>
-                                </div>
-                                
                                 <div class="relative">
                                     <input type="text" id="search-customer-baru" placeholder="Cari berdasarkan Nama, No WA, atau ID Member..." class="w-full p-3 pl-10 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
@@ -484,7 +676,7 @@
                 </div>
             </div>
         </div>
-    </modal>
+    </div>
 
     <!-- Search Results Modal -->
     <div id="modal-search-results" class="modal-overlay hidden">
@@ -557,14 +749,14 @@
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         
         // =================== VARIABEL GLOBAL ===================
-        let selectedOutlet = '';
-        let selectedKasir = '';
-        let konversiPointValue = 1;
-        let currentSearchPage = 1;
-        let searchType = '';
-        let searchResults = [];
-        let selectedCustomerLama = null;
-        let selectedCustomerBaru = null;
+        window.selectedOutlet = '';
+        window.selectedKasir = '';
+        window.konversiPointValue = 1;
+        window.currentSearchPage = 1;
+        window.searchType = '';
+        window.searchResults = [];
+        window.selectedCustomerLama = null;
+        window.selectedCustomerBaru = null;
         
         // =================== DOM ELEMENTS ===================
         const outletSelect = document.getElementById('outlet-select');
@@ -593,15 +785,15 @@
         function setupEventListeners() {
             // Outlet selection
             outletSelect.addEventListener('change', async function() {
-                selectedOutlet = this.value;
+                window.selectedOutlet = this.value;
                 currentOutletSpan.textContent = this.options[this.selectedIndex].text;
                 infoOutletSpan.textContent = this.options[this.selectedIndex].text;
                 
-                if (selectedOutlet) {
-                    await loadKasir(selectedOutlet);
+                if (window.selectedOutlet) {
+                    await loadKasir(window.selectedOutlet);
                     await loadSystemInfo();
                     btnMigrasi.disabled = false;
-                    getKonversiPoint(selectedOutlet);
+                    await getKonversiPoint(window.selectedOutlet);
                 } else {
                     kasirSelect.disabled = true;
                     kasirSelect.innerHTML = '<option value="">-- Pilih Kasir --</option>';
@@ -611,7 +803,7 @@
             
             // Kasir selection
             kasirSelect.addEventListener('change', function() {
-                selectedKasir = this.value;
+                window.selectedKasir = this.value;
                 currentKasirSpan.textContent = this.options[this.selectedIndex].text;
                 infoKasirSpan.textContent = this.options[this.selectedIndex].text;
                 
@@ -727,33 +919,33 @@
         
         // 3. LOAD SYSTEM INFO (Auto-load setelah outlet dipilih)
         async function loadSystemInfo() {
-            if (!selectedOutlet) return;
+            if (!window.selectedOutlet) return;
             
             try {
-                // Hitung membercard_olsera berdasarkan outlet
+                // Hitung membercard_olsera berdasarkan outlet (ilike untuk handle spasi)
                 const { count: olseraCount } = await supabase
                     .from('membercard_olsera')
                     .select('*', { count: 'exact', head: true })
-                    .eq('outlet', selectedOutlet);
+                    .ilike('outlet', `%${window.selectedOutlet.trim()}%`);
                 
                 // Hitung status migrasi
                 const { count: migratedCount } = await supabase
                     .from('membercard_olsera')
                     .select('*', { count: 'exact', head: true })
-                    .eq('outlet', selectedOutlet)
+                    .ilike('outlet', `%${window.selectedOutlet.trim()}%`)
                     .eq('status_migrasi', 'Sudah Migrasi');
                 
                 // Hitung membercard digital berdasarkan outlet
                 const { count: digitalCount } = await supabase
                     .from('membercard')
                     .select('*', { count: 'exact', head: true })
-                    .eq('outlet', selectedOutlet);
+                    .ilike('outlet', `%${window.selectedOutlet.trim()}%`);
                 
                 // Hitung status aktif
                 const { count: activeCount } = await supabase
                     .from('membercard')
                     .select('*', { count: 'exact', head: true })
-                    .eq('outlet', selectedOutlet)
+                    .ilike('outlet', `%${window.selectedOutlet.trim()}%`)
                     .eq('status', 'active');
                 
                 // Update UI
@@ -770,35 +962,55 @@
         // 4. GET KONVERSI POINT
         async function getKonversiPoint(outlet) {
             try {
+                console.log(`Mencari konversi point untuk outlet: ${outlet}`);
+                
                 const { data, error } = await supabase
                     .from('outlet')
                     .select('konversi_point')
-                    .eq('outlet', outlet)
+                    .eq('outlet', outlet.trim())
                     .single();
                 
-                if (error) throw error;
-                
-                if (data && data.konversi_point) {
-                    konversiPointValue = parseFloat(data.konversi_point) || 1;
+                if (error) {
+                    console.warn(`Konversi point untuk ${outlet} tidak ditemukan:`, error.message);
+                    window.konversiPointValue = 1;
+                } else {
+                    window.konversiPointValue = parseFloat(data.konversi_point) || 1;
+                    console.log(`Konversi ${outlet}: ${window.konversiPointValue}`);
                 }
+                
+                // Update UI
+                updateKonversiUI(outlet, window.konversiPointValue);
+                
             } catch (error) {
-                console.error('Error loading konversi point:', error);
-                konversiPointValue = 1;
+                window.konversiPointValue = 1;
+                console.error('Error get konversi:', error);
+                updateKonversiUI(outlet, 1);
             }
+        }
+        
+        // 4a. Fungsi untuk update UI konversi
+        function updateKonversiUI(outlet, value) {
+            const konversiElement = document.getElementById('info-konversi');
+            const outletElement = document.getElementById('info-outlet-name');
+            
+            if (konversiElement) konversiElement.textContent = value;
+            if (outletElement) outletElement.textContent = outlet;
+            
+            console.log(`UI Updated - Outlet: ${outlet}, Konversi: ${value}`);
         }
         
         // 5. SEARCH CUSTOMER LAMA (Dengan filter outlet)
         async function searchCustomerLama() {
             const searchTerm = document.getElementById('search-customer-lama').value.trim();
-            searchType = 'customer-lama';
-            currentSearchPage = 1;
+            window.searchType = 'customer-lama';
+            window.currentSearchPage = 1;
             
             if (!searchTerm) {
-                showToast('warning', 'Masukkan kata kunci pencarian', 'Silakan masukkan nama, nomor HP, atau ID Member');
+                showToast('info', 'Pencarian Customer Lama', 'Silakan masukkan nama, nomor HP, atau ID Member');
                 return;
             }
             
-            if (!selectedOutlet) {
+            if (!window.selectedOutlet) {
                 showToast('warning', 'Pilih outlet terlebih dahulu', 'Silakan pilih outlet sebelum mencari customer');
                 return;
             }
@@ -806,14 +1018,14 @@
             showLoading('Mencari customer lama...');
             
             try {
-                // FILTER: hanya data dengan outlet yang dipilih, search by name, phone, atau code
+                // FILTER: hanya data dengan outlet yang dipilih (ilike untuk handle spasi)
                 let query = supabase
                     .from('membercard_olsera')
                     .select('*', { count: 'exact' })
-                    .eq('outlet', selectedOutlet)  // FILTER OUTLET
+                    .ilike('outlet', `%${window.selectedOutlet.trim()}%`)
                     .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%,code.ilike.%${searchTerm}%`);
                 
-                const from = (currentSearchPage - 1) * 10;
+                const from = (window.currentSearchPage - 1) * 10;
                 const to = from + 9;
                 query = query.range(from, to).order('name');
                 
@@ -822,11 +1034,11 @@
                 if (error) throw error;
                 
                 if (data.length === 0) {
-                    showToast('info', 'Customer tidak ditemukan', 'Tidak ada customer lama dengan kata kunci tersebut di outlet ini');
+                    showToast('info', 'Pencarian Customer Lama', 'Tidak ada customer lama dengan kata kunci tersebut di outlet ini');
                     return;
                 }
                 
-                searchResults = data;
+                window.searchResults = data;
                 displaySearchResults(data, count, 'customer-lama');
                 
             } catch (error) {
@@ -840,21 +1052,21 @@
         // 6. SEARCH CUSTOMER BARU (Dengan filter outlet)
         async function searchCustomerBaru() {
             const searchTerm = document.getElementById('search-customer-baru').value.trim();
-            searchType = 'customer-baru';
-            currentSearchPage = 1;
+            window.searchType = 'customer-baru';
+            window.currentSearchPage = 1;
             
             // Jika ada customer lama terpilih, coba auto-find
-            if (selectedCustomerLama && !searchTerm) {
-                await findCustomerBaruByPhone(selectedCustomerLama.phone);
+            if (window.selectedCustomerLama && !searchTerm) {
+                await findCustomerBaruByPhone(window.selectedCustomerLama.phone);
                 return;
             }
             
             if (!searchTerm) {
-                showToast('warning', 'Masukkan kata kunci pencarian', 'Silakan masukkan nama, nomor WA, atau ID Member');
+                showToast('info', 'Pencarian Customer Baru', 'Silakan masukkan nama, nomor WA, atau ID Member');
                 return;
             }
             
-            if (!selectedOutlet) {
+            if (!window.selectedOutlet) {
                 showToast('warning', 'Pilih outlet terlebih dahulu', 'Silakan pilih outlet sebelum mencari customer');
                 return;
             }
@@ -862,14 +1074,14 @@
             showLoading('Mencari customer baru...');
             
             try {
-                // FILTER: hanya data dengan outlet yang dipilih, search by nama, nomorWA, atau id_member
+                // FILTER: hanya data dengan outlet yang dipilih (ilike untuk handle spasi)
                 let query = supabase
                     .from('membercard')
                     .select('*', { count: 'exact' })
-                    .eq('outlet', selectedOutlet)  // FILTER OUTLET
+                    .ilike('outlet', `%${window.selectedOutlet.trim()}%`)
                     .or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%,id_member.ilike.%${searchTerm}%`);
                 
-                const from = (currentSearchPage - 1) * 10;
+                const from = (window.currentSearchPage - 1) * 10;
                 const to = from + 9;
                 query = query.range(from, to).order('nama');
                 
@@ -878,11 +1090,11 @@
                 if (error) throw error;
                 
                 if (data.length === 0) {
-                    showToast('info', 'Customer tidak ditemukan', 'Tidak ada customer baru dengan kata kunci tersebut di outlet ini');
+                    showToast('info', 'Pencarian Customer Baru', 'Tidak ada customer baru dengan kata kunci tersebut di outlet ini');
                     return;
                 }
                 
-                searchResults = data;
+                window.searchResults = data;
                 displaySearchResults(data, count, 'customer-baru');
                 
             } catch (error) {
@@ -911,22 +1123,29 @@
                 const { data, error } = await supabase
                     .from('membercard')
                     .select('*')
-                    .eq('outlet', selectedOutlet)  // FILTER OUTLET
+                    .ilike('outlet', `%${window.selectedOutlet.trim()}%`)
                     .ilike('nomorWA', `%${searchPhone}%`)
                     .limit(1);
                 
                 if (error) throw error;
                 
                 if (data && data.length > 0) {
-                    document.getElementById('customer-baru-auto').classList.remove('hidden');
+                    console.log('🚨 AUTO-FIND: Data ditemukan, memanggil selectCustomerBaru...');
+                    console.log('Customer data:', data[0]);
+                    
+                    showToast('success', 'Customer Baru Ditemukan', 
+                        'Data customer baru ditemukan otomatis berdasarkan nomor HP lama');
+                    
+                    // PANGGIL FUNGSI
                     selectCustomerBaru(data[0]);
+                    
                 } else {
-                    showToast('info', 'Customer baru tidak ditemukan', 'Silakan cari customer baru secara manual');
-                    document.getElementById('customer-baru-auto').classList.add('hidden');
+                    showToast('info', 'Customer Baru Tidak Ditemukan', 
+                        'Silakan cari customer baru secara manual');
                 }
             } catch (error) {
                 console.error('Error finding customer baru by phone:', error);
-                showToast('error', 'Gagal mencari customer baru', error.message);
+                showToast('error', 'Pencarian Gagal', 'Gagal mencari customer baru otomatis');
             } finally {
                 hideLoading();
             }
@@ -1048,7 +1267,7 @@
             }
             
             // Generate pagination
-            generatePagination('search-results-pagination', currentSearchPage, totalCount, 10, 'search');
+            generatePagination('search-results-pagination', window.currentSearchPage, totalCount, 10, 'search');
             
             // Show modal
             modal.classList.remove('hidden');
@@ -1056,11 +1275,16 @@
         
         // 9. SELECT CUSTOMER LAMA
         window.selectCustomerLama = function(customerId) {
-            const customer = searchResults.find(item => item.id === customerId);
+            console.log('selectCustomerLama called with ID:', customerId);
             
-            if (!customer) return;
+            const customer = window.searchResults.find(item => item.id === customerId);
             
-            selectedCustomerLama = customer;
+            if (!customer) {
+                console.error('Customer not found in searchResults');
+                return;
+            }
+            
+            window.selectedCustomerLama = customer;
             
             // Update UI
             document.getElementById('selected-customer-lama-nama').textContent = customer.name || '-';
@@ -1087,18 +1311,25 @@
             }
             
             // Jika customer baru sudah dipilih, show comparison
-            if (selectedCustomerBaru) {
+            if (window.selectedCustomerBaru) {
                 showComparison();
             }
+            
+            console.log('Customer lama selected:', customer.name);
         };
         
         // 10. SELECT CUSTOMER BARU
         window.selectCustomerBaru = function(customerId) {
-            const customer = searchResults.find(item => item.id === customerId);
+            console.log('selectCustomerBaru called with ID:', customerId);
             
-            if (!customer) return;
+            const customer = window.searchResults.find(item => item.id === customerId);
             
-            selectedCustomerBaru = customer;
+            if (!customer) {
+                console.error('Customer not found in searchResults');
+                return;
+            }
+            
+            window.selectedCustomerBaru = customer;
             
             // Update UI
             document.getElementById('selected-customer-baru-nama').textContent = customer.nama || '-';
@@ -1119,37 +1350,44 @@
             closeModalSearchResults();
             
             // Jika customer lama sudah dipilih, show comparison
-            if (selectedCustomerLama) {
+            if (window.selectedCustomerLama) {
                 showComparison();
             }
+            
+            console.log('Customer baru selected:', customer.nama);
         };
         
         // 11. SHOW COMPARISON (Dengan validasi)
         function showComparison() {
-            if (!selectedCustomerLama || !selectedCustomerBaru) return;
+            if (!window.selectedCustomerLama || !window.selectedCustomerBaru) {
+                console.log('Cannot show comparison: missing customer data');
+                return;
+            }
+            
+            console.log('Showing comparison...');
             
             // Calculate new points
-            const loyaltyPoints = parseFloat(selectedCustomerLama.loyalty_points) || 0;
-            const newPoints = Math.ceil(loyaltyPoints / konversiPointValue);
+            const loyaltyPoints = parseFloat(window.selectedCustomerLama.loyalty_points) || 0;
+            const newPoints = Math.ceil(loyaltyPoints / window.konversiPointValue);
             
             // Update comparison table
-            document.getElementById('compare-outlet-lama').textContent = selectedCustomerLama.outlet || '-';
-            document.getElementById('compare-outlet-baru').textContent = selectedCustomerBaru.outlet || '-';
-            document.getElementById('compare-nama-lama').textContent = selectedCustomerLama.name || '-';
-            document.getElementById('compare-nama-baru').textContent = selectedCustomerBaru.nama || '-';
-            document.getElementById('compare-phone-lama').textContent = selectedCustomerLama.phone || '-';
-            document.getElementById('compare-phone-baru').textContent = selectedCustomerBaru.nomorWA || '-';
-            document.getElementById('compare-alamat-lama').textContent = selectedCustomerLama.address || '-';
-            document.getElementById('compare-alamat-baru').textContent = selectedCustomerBaru.alamat || '-';
-            document.getElementById('compare-id-lama').textContent = selectedCustomerLama.code || '-';
-            document.getElementById('compare-id-baru').textContent = selectedCustomerBaru.id_member || '-';
+            document.getElementById('compare-outlet-lama').textContent = window.selectedCustomerLama.outlet || '-';
+            document.getElementById('compare-outlet-baru').textContent = window.selectedCustomerBaru.outlet || '-';
+            document.getElementById('compare-nama-lama').textContent = window.selectedCustomerLama.name || '-';
+            document.getElementById('compare-nama-baru').textContent = window.selectedCustomerBaru.nama || '-';
+            document.getElementById('compare-phone-lama').textContent = window.selectedCustomerLama.phone || '-';
+            document.getElementById('compare-phone-baru').textContent = window.selectedCustomerBaru.nomorWA || '-';
+            document.getElementById('compare-alamat-lama').textContent = window.selectedCustomerLama.address || '-';
+            document.getElementById('compare-alamat-baru').textContent = window.selectedCustomerBaru.alamat || '-';
+            document.getElementById('compare-id-lama').textContent = window.selectedCustomerLama.code || '-';
+            document.getElementById('compare-id-baru').textContent = window.selectedCustomerBaru.id_member || '-';
             document.getElementById('compare-point-lama').textContent = loyaltyPoints;
-            document.getElementById('compare-konversi').textContent = konversiPointValue;
+            document.getElementById('compare-konversi').textContent = window.konversiPointValue;
             document.getElementById('compare-point-baru').textContent = newPoints;
             
             // VALIDASI 1: Cek status migrasi
             const alreadyMigratedWarning = document.getElementById('already-migrated-warning');
-            if (selectedCustomerLama.status_migrasi === 'Sudah Migrasi') {
+            if (window.selectedCustomerLama.status_migrasi === 'Sudah Migrasi') {
                 alreadyMigratedWarning.classList.remove('hidden');
                 document.getElementById('submit-migrasi').disabled = true;
                 document.getElementById('submit-migrasi').style.opacity = '0.5';
@@ -1165,16 +1403,16 @@
             const phoneMismatchWarning = document.getElementById('phone-mismatch-warning');
             
             // Format phone untuk comparison
-            let phoneLama = selectedCustomerLama.phone || '';
-            let phoneBaru = selectedCustomerBaru.nomorWA || '';
+            let phoneLama = window.selectedCustomerLama.phone || '';
+            let phoneBaru = window.selectedCustomerBaru.nomorWA || '';
             
             // Normalize phone numbers
             phoneLama = phoneLama.replace('+62', '62').replace(/^0/, '62');
             phoneBaru = phoneBaru.replace('+62', '62').replace(/^0/, '62');
             
             if (phoneLama !== phoneBaru) {
-                document.getElementById('warning-phone-lama').textContent = selectedCustomerLama.phone || '-';
-                document.getElementById('warning-phone-baru').textContent = selectedCustomerBaru.nomorWA || '-';
+                document.getElementById('warning-phone-lama').textContent = window.selectedCustomerLama.phone || '-';
+                document.getElementById('warning-phone-baru').textContent = window.selectedCustomerBaru.nomorWA || '-';
                 phoneMismatchWarning.classList.remove('hidden');
             } else {
                 phoneMismatchWarning.classList.add('hidden');
@@ -1191,24 +1429,26 @@
             
             // Show comparison section
             document.getElementById('comparison-section').classList.remove('hidden');
+            
+            console.log('Comparison shown successfully');
         }
         
         // 12. SUBMIT MIGRASI (Dengan validasi)
         async function submitMigrasi() {
-            if (!selectedCustomerLama || !selectedCustomerBaru) {
+            if (!window.selectedCustomerLama || !window.selectedCustomerBaru) {
                 showToast('warning', 'Data belum lengkap', 'Pilih customer lama dan customer baru terlebih dahulu');
                 return;
             }
             
             // VALIDASI 1: Status sudah migrasi
-            if (selectedCustomerLama.status_migrasi === 'Sudah Migrasi') {
+            if (window.selectedCustomerLama.status_migrasi === 'Sudah Migrasi') {
                 showToast('error', 'Tidak dapat migrasi', 'Customer lama sudah melakukan migrasi sebelumnya');
                 return;
             }
             
             // VALIDASI 2: Konfirmasi jika nomor WA berbeda
-            let phoneLama = selectedCustomerLama.phone || '';
-            let phoneBaru = selectedCustomerBaru.nomorWA || '';
+            let phoneLama = window.selectedCustomerLama.phone || '';
+            let phoneBaru = window.selectedCustomerBaru.nomorWA || '';
             
             // Normalize phone numbers
             phoneLama = phoneLama.replace('+62', '62').replace(/^0/, '62');
@@ -1216,8 +1456,8 @@
             
             if (phoneLama !== phoneBaru) {
                 const confirmMessage = `Nomor WA berbeda:\n\n` +
-                    `Lama: ${selectedCustomerLama.phone}\n` +
-                    `Baru: ${selectedCustomerBaru.nomorWA}\n\n` +
+                    `Lama: ${window.selectedCustomerLama.phone}\n` +
+                    `Baru: ${window.selectedCustomerBaru.nomorWA}\n\n` +
                     `Apakah Anda yakin akan melanjutkan migrasi?`;
                 
                 if (!confirm(confirmMessage)) {
@@ -1226,17 +1466,17 @@
             }
             
             // Calculate new points
-            const loyaltyPoints = parseFloat(selectedCustomerLama.loyalty_points) || 0;
-            const newPoints = Math.ceil(loyaltyPoints / konversiPointValue);
-            const currentPoints = parseInt(selectedCustomerBaru.point) || 0;
+            const loyaltyPoints = parseFloat(window.selectedCustomerLama.loyalty_points) || 0;
+            const newPoints = Math.ceil(loyaltyPoints / window.konversiPointValue);
+            const currentPoints = parseInt(window.selectedCustomerBaru.point) || 0;
             const updatedPoints = currentPoints + newPoints;
             
             // Final confirmation
             if (!confirm(`Konfirmasi Migrasi:\n\n` +
-                `Customer Lama: ${selectedCustomerLama.name}\n` +
-                `Customer Baru: ${selectedCustomerBaru.nama}\n` +
+                `Customer Lama: ${window.selectedCustomerLama.name}\n` +
+                `Customer Baru: ${window.selectedCustomerBaru.nama}\n` +
                 `Point Lama: ${loyaltyPoints}\n` +
-                `Konversi: ${konversiPointValue}\n` +
+                `Konversi: ${window.konversiPointValue}\n` +
                 `Point Baru: ${newPoints}\n` +
                 `Total Point: ${updatedPoints}\n\n` +
                 `Lanjutkan migrasi?`)) {
@@ -1254,18 +1494,18 @@
                         point_sebelum: currentPoints,
                         point_saat_ini: updatedPoints
                     })
-                    .eq('id', selectedCustomerBaru.id);
+                    .eq('id', window.selectedCustomerBaru.id);
                 
                 if (error1) throw error1;
                 
                 // 2. Update membercard_olsera dengan migration data
                 const migrationData = {
-                    outlet: selectedOutlet,
-                    id_member: selectedCustomerBaru.id_member,
-                    nama: selectedCustomerBaru.nama,
-                    nomor_wa: selectedCustomerBaru.nomorWA,
-                    kasir: selectedKasir,
-                    konversi_point: konversiPointValue,
+                    outlet: window.selectedOutlet,
+                    id_member: window.selectedCustomerBaru.id_member,
+                    nama: window.selectedCustomerBaru.nama,
+                    nomor_wa: window.selectedCustomerBaru.nomorWA,
+                    kasir: window.selectedKasir,
+                    konversi_point: window.konversiPointValue,
                     status_migrasi: 'Sudah Migrasi',
                     tanggal_migrasi: new Date().toISOString(),
                     point_migrasi: newPoints
@@ -1274,16 +1514,16 @@
                 const { error: error2 } = await supabase
                     .from('membercard_olsera')
                     .update(migrationData)
-                    .eq('id', selectedCustomerLama.id);
+                    .eq('id', window.selectedCustomerLama.id);
                 
                 if (error2) throw error2;
                 
                 // 3. Send WhatsApp notification
-                await sendWhatsAppNotification(selectedCustomerBaru.nomorWA, selectedCustomerBaru.nama, newPoints, updatedPoints);
+                await sendWhatsAppNotification(window.selectedCustomerBaru.nomorWA, window.selectedCustomerBaru.nama, newPoints, updatedPoints);
                 
                 // 4. Show success message
                 showToast('success', 'Migrasi berhasil', 
-                    `Point baru: ${newPoints} (Total: ${updatedPoints}) telah ditambahkan ke membercard ${selectedCustomerBaru.nama}`);
+                    `Point baru: ${newPoints} (Total: ${updatedPoints}) telah ditambahkan ke membercard ${window.selectedCustomerBaru.nama}`);
                 
                 // 5. Reset form dan update system info
                 resetMigrasiForm();
@@ -1377,7 +1617,7 @@
             prevButton.onclick = function() {
                 if (currentPage > 1) {
                     if (type === 'search') {
-                        currentSearchPage--;
+                        window.currentSearchPage--;
                         loadSearchResultsPage();
                     }
                 }
@@ -1398,7 +1638,7 @@
                 pageButton.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
                 pageButton.onclick = function() {
                     if (type === 'search') {
-                        currentSearchPage = i;
+                        window.currentSearchPage = i;
                         loadSearchResultsPage();
                     }
                 };
@@ -1413,7 +1653,7 @@
             nextButton.onclick = function() {
                 if (currentPage < totalPages) {
                     if (type === 'search') {
-                        currentSearchPage++;
+                        window.currentSearchPage++;
                         loadSearchResultsPage();
                     }
                 }
@@ -1433,15 +1673,15 @@
             
             try {
                 let query;
-                const from = (currentSearchPage - 1) * 10;
+                const from = (window.currentSearchPage - 1) * 10;
                 const to = from + 9;
                 
-                if (searchType === 'customer-lama') {
+                if (window.searchType === 'customer-lama') {
                     const searchTerm = document.getElementById('search-customer-lama').value.trim();
                     query = supabase
                         .from('membercard_olsera')
                         .select('*', { count: 'exact' })
-                        .eq('outlet', selectedOutlet)
+                        .ilike('outlet', `%${window.selectedOutlet.trim()}%`)
                         .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%,code.ilike.%${searchTerm}%`)
                         .range(from, to)
                         .order('name');
@@ -1450,7 +1690,7 @@
                     query = supabase
                         .from('membercard')
                         .select('*', { count: 'exact' })
-                        .eq('outlet', selectedOutlet)
+                        .ilike('outlet', `%${window.selectedOutlet.trim()}%`)
                         .or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%,id_member.ilike.%${searchTerm}%`)
                         .range(from, to)
                         .order('nama');
@@ -1460,8 +1700,8 @@
                 
                 if (error) throw error;
                 
-                searchResults = data;
-                displaySearchResults(data, count, searchType);
+                window.searchResults = data;
+                displaySearchResults(data, count, window.searchType);
                 
             } catch (error) {
                 console.error('Error loading search results page:', error);
@@ -1473,12 +1713,11 @@
         
         // RESET MIGRASI FORM
         function resetMigrasiForm() {
-            selectedCustomerLama = null;
-            selectedCustomerBaru = null;
+            window.selectedCustomerLama = null;
+            window.selectedCustomerBaru = null;
             
             document.getElementById('customer-lama-result').classList.add('hidden');
             document.getElementById('customer-baru-result').classList.add('hidden');
-            document.getElementById('customer-baru-auto').classList.add('hidden');
             document.getElementById('comparison-section').classList.add('hidden');
             document.getElementById('migrasi-warning').classList.add('hidden');
             document.getElementById('already-migrated-warning').classList.add('hidden');
@@ -1494,7 +1733,7 @@
         
         // MODAL FUNCTIONS
         function openModalMigrasi() {
-            if (!selectedOutlet || !selectedKasir) {
+            if (!window.selectedOutlet || !window.selectedKasir) {
                 showToast('warning', 'Pilih outlet dan kasir terlebih dahulu', 'Silakan pilih outlet dan kasir sebelum melakukan migrasi');
                 return;
             }
@@ -1514,17 +1753,19 @@
             modalSearchResults.classList.add('hidden');
         }
         
-        // TOAST NOTIFICATION (Front Layer)
+        // TOAST NOTIFICATION
         function showToast(type, title, message) {
             toastTitle.textContent = title;
             toastMessage.textContent = message;
             
-            // Set style based on type
+            // Reset classes
             toast.className = '';
             toast.classList.add('toast-' + type);
             
             // Set icon
             const icon = toastIcon.querySelector('i');
+            icon.className = 'fas fa-info-circle text-xl';
+            
             if (type === 'success') {
                 icon.className = 'fas fa-check-circle text-xl text-green-500';
             } else if (type === 'error') {
@@ -1536,11 +1777,11 @@
             }
             
             // Show toast
-            toast.classList.remove('hidden');
+            toast.style.display = 'block';
             
             // Auto hide after 5 seconds
             setTimeout(() => {
-                toast.classList.add('hidden');
+                toast.style.display = 'none';
             }, 5000);
         }
         
