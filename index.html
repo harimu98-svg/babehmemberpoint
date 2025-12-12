@@ -416,6 +416,46 @@ footer .mt-6.pt-4 {
         .tailwind-warning-hide {
             display: none !important;
         }
+        /* HILANGKAN ICON SEARCH PADA INPUT FIELD */
+.relative .fa-search {
+    display: none !important;
+}
+
+/* HAPUS PADDING KIRI YANG ADA UNTUK ICON */
+#search-customer-lama,
+#search-customer-baru {
+    padding-left: 12px !important;
+    background-image: none !important;
+}
+
+/* Hilangkan posisi absolute dari parent */
+.relative {
+    position: static !important;
+}
+        /* SAMAKAN PANJANG INPUT DAN TOMBOL */
+#search-customer-lama,
+#search-customer-baru,
+#search-btn-customer-lama,
+#search-btn-customer-baru {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: block !important;
+}
+
+/* Atur tinggi yang konsisten */
+#search-customer-lama,
+#search-customer-baru {
+    height: 44px !important;
+    min-height: 44px !important;
+}
+
+#search-btn-customer-lama,
+#search-btn-customer-baru {
+    height: 44px !important;
+    min-height: 44px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
     </style>
     
     <script>
