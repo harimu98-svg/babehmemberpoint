@@ -1285,18 +1285,29 @@ async function findCustomerBaruByPhone(phone) {
         }
         
         // 9. SELECT CUSTOMER LAMA
-        window.selectCustomerLama = function(customerId) {
-            console.log('selectCustomerLama called with ID:', customerId);
-            
-            const customer = window.searchResults.find(item => item.id === customerId);
-            
-            if (!customer) {
-                console.error('Customer not found in searchResults');
-                return;
-            }
-            
-            window.selectedCustomerLama = customer;
-            
+       window.selectCustomerLama = function(customerData) {
+    console.log('=== selectCustomerLama START ===');
+    console.log('Parameter received:', customerData);
+    
+    let customer;
+    
+    if (typeof customerData === 'object' && customerData !== null) {
+        customer = customerData;
+    } else if (typeof customerData === 'number') {
+        customer = window.searchResults.find(item => item.id === customerData);
+    } else {
+        console.error('ERROR: Invalid parameter type');
+        return;
+    }
+    
+    if (!customer) {
+        console.error('ERROR: Customer not found');
+        return;
+    }
+    
+    window.selectedCustomerLama = customer;
+    
+       
             // Update UI
             document.getElementById('selected-customer-lama-nama').textContent = customer.name || '-';
             document.getElementById('selected-customer-lama-phone').textContent = customer.phone || '-';
@@ -1330,43 +1341,84 @@ async function findCustomerBaruByPhone(phone) {
         };
         
         // 10. SELECT CUSTOMER BARU
-        window.selectCustomerBaru = function(customerId) {
-            console.log('selectCustomerBaru called with ID:', customerId);
-            
-            const customer = window.searchResults.find(item => item.id === customerId);
-            
-            if (!customer) {
-                console.error('Customer not found in searchResults');
-                return;
-            }
-            
-            window.selectedCustomerBaru = customer;
-            
-            // Update UI
-            document.getElementById('selected-customer-baru-nama').textContent = customer.nama || '-';
-            document.getElementById('selected-customer-baru-wa').textContent = customer.nomorWA || '-';
-            document.getElementById('selected-customer-baru-id').textContent = customer.id_member || '-';
-            document.getElementById('selected-customer-baru-outlet').textContent = customer.outlet || '-';
-            document.getElementById('selected-customer-baru-point').textContent = customer.point || 0;
-            
-            // Update status dengan badge
-            const statusElement = document.getElementById('selected-customer-baru-status');
-            statusElement.textContent = customer.status || 'unknown';
-            statusElement.className = 'status-badge ' + 
-                (customer.status === 'active' ? 'status-active' : 'status-inactive');
-            
-            document.getElementById('customer-baru-result').classList.remove('hidden');
-            
-            // Close search modal
-            closeModalSearchResults();
-            
-            // Jika customer lama sudah dipilih, show comparison
-            if (window.selectedCustomerLama) {
-                showComparison();
-            }
-            
-            console.log('Customer baru selected:', customer.nama);
-        };
+        window.selectCustomerBaru = function(customerData) {
+    console.log('=== selectCustomerBaru START ===');
+    console.log('Parameter received:', customerData);
+    console.log('Type of parameter:', typeof customerData);
+    
+    let customer;
+    
+    // HANDLE BOTH CASES: object langsung ATAU ID number
+    if (typeof customerData === 'object' && customerData !== null) {
+        // Case 1: Sudah dapat object langsung dari auto-find
+        customer = customerData;
+        console.log('Using direct customer object');
+    } else if (typeof customerData === 'number') {
+        // Case 2: ID dari search results modal
+        customer = window.searchResults.find(item => item.id === customerData);
+        console.log('Looking up customer by ID:', customerData);
+    } else {
+        console.error('ERROR: Invalid parameter type:', typeof customerData);
+        return;
+    }
+    
+    if (!customer) {
+        console.error('ERROR: Customer not found');
+        console.log('searchResults:', window.searchResults);
+        return;
+    }
+    
+    console.log('Customer found:', customer.nama);
+    
+    window.selectedCustomerBaru = customer;
+    
+    // UPDATE UI
+    updateCustomerBaruUI(customer);
+    
+    // Jika customer lama sudah dipilih, show comparison
+    if (window.selectedCustomerLama) {
+        console.log('Customer lama exists, showing comparison...');
+        showComparison();
+    }
+    
+    console.log('=== selectCustomerBaru END ===');
+};
+
+// Fungsi terpisah untuk update UI
+function updateCustomerBaruUI(customer) {
+    const elements = {
+        nama: document.getElementById('selected-customer-baru-nama'),
+        wa: document.getElementById('selected-customer-baru-wa'),
+        id: document.getElementById('selected-customer-baru-id'),
+        outlet: document.getElementById('selected-customer-baru-outlet'),
+        point: document.getElementById('selected-customer-baru-point'),
+        status: document.getElementById('selected-customer-baru-status'),
+        resultDiv: document.getElementById('customer-baru-result')
+    };
+    
+    console.log('Updating UI for customer:', customer.nama);
+    
+    // Update elements jika ada
+    if (elements.nama) elements.nama.textContent = customer.nama || '-';
+    if (elements.wa) elements.wa.textContent = customer.nomorWA || '-';
+    if (elements.id) elements.id.textContent = customer.id_member || '-';
+    if (elements.outlet) elements.outlet.textContent = customer.outlet || '-';
+    if (elements.point) elements.point.textContent = customer.point || 0;
+    
+    if (elements.status) {
+        elements.status.textContent = customer.status || 'unknown';
+        elements.status.className = 'status-badge ' + 
+            (customer.status === 'active' ? 'status-active' : 'status-inactive');
+    }
+    
+    // SHOW THE DIV
+    if (elements.resultDiv) {
+        elements.resultDiv.classList.remove('hidden');
+        console.log('✅ customer-baru-result UNHIDDEN');
+    } else {
+        console.error('❌ ERROR: customer-baru-result element not found!');
+    }
+}
         
         // 11. SHOW COMPARISON (Dengan validasi)
         function showComparison() {
