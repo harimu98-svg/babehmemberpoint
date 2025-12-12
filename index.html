@@ -203,6 +203,136 @@
         .toast-info {
             border-left-color: #3b82f6;
         }
+        /* Tambahkan ini di bagian akhir <style> */
+@media (max-width: 768px) {
+    /* Mobile-specific adjustments */
+    header {
+        padding: 12px 16px !important;
+        border-radius: 0 0 20px 20px !important;
+    }
+    
+    header .container {
+        flex-direction: column !important;
+        text-align: center;
+        gap: 12px !important;
+    }
+    
+    header img {
+        width: 48px !important;
+        height: 48px !important;
+        border-width: 2px !important;
+    }
+    
+    header h1 {
+        font-size: 1.5rem !important;
+        margin-bottom: 4px !important;
+    }
+    
+    header p {
+        font-size: 0.875rem !important;
+    }
+    
+    /* Main content spacing */
+    main.container {
+        padding: 12px !important;
+    }
+    
+    /* Section spacing */
+    .bg-white.rounded-custom.shadow-lg {
+        margin-bottom: 16px !important;
+        padding: 16px !important;
+    }
+    
+    .bg-white h2 {
+        margin-bottom: 12px !important;
+        font-size: 1.125rem !important;
+    }
+    
+    /* Form fields */
+    select, input {
+        padding: 10px 12px !important;
+        font-size: 14px !important;
+    }
+    
+    label {
+        margin-bottom: 6px !important;
+        font-size: 13px !important;
+    }
+    
+    /* Info System Grid - lebih compact */
+    .grid.grid-cols-1.md\:grid-cols-3.gap-4 {
+        gap: 10px !important;
+    }
+    
+    .bg-purple-50, .bg-yellow-50, .bg-blue-50 {
+        padding: 12px !important;
+    }
+    
+    .bg-purple-50 h3, .bg-yellow-50 h3, .bg-blue-50 h3 {
+        font-size: 14px !important;
+        margin-bottom: 6px !important;
+    }
+    
+    .bg-purple-50 p, .bg-yellow-50 p, .bg-blue-50 p {
+        font-size: 12px !important;
+        line-height: 1.3 !important;
+        margin-bottom: 4px !important;
+    }
+    
+    /* Action button */
+    .btn-green {
+        padding: 14px !important;
+        font-size: 1rem !important;
+    }
+    
+    .btn-green i {
+        font-size: 24px !important;
+        margin-bottom: 6px !important;
+    }
+    
+    .btn-green span:last-child {
+        font-size: 11px !important;
+        margin-top: 2px !important;
+    }
+    
+    /* Footer */
+    footer {
+        padding: 20px 16px !important;
+        margin-top: 20px !important;
+        border-radius: 20px 20px 0 0 !important;
+    }
+    
+    footer .grid {
+        gap: 16px !important;
+    }
+    
+    footer h3 {
+        font-size: 1rem !important;
+        margin-bottom: 8px !important;
+    }
+    
+    footer p {
+        font-size: 0.875rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    footer .mt-6.pt-4 {
+        margin-top: 16px !important;
+        padding-top: 12px !important;
+        font-size: 11px !important;
+    }
+    
+    /* Modal adjustments */
+    .modal-content {
+        width: 95% !important;
+        max-height: 85vh !important;
+        margin: 10px !important;
+    }
+    
+    .modal-content .p-6 {
+        padding: 16px !important;
+    }
+}
     </style>
     
     <!-- Disable Tailwind CDN warning -->
@@ -215,23 +345,23 @@
     </script>
 </head>
 <body class="bg-purple-doff min-h-screen">
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-purple-700 to-purple-900 text-white p-4 rounded-b-3xl shadow-lg">
-        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
-            <div class="flex items-center space-x-4 mb-4 md:mb-0">
-                <img id="logo" src="logo.jpg" alt="Babeh Barbershop Logo" class="w-16 h-16 object-cover rounded-full border-4 border-white shadow-lg" onerror="this.src='https://via.placeholder.com/64/7b3aed/FFFFFF?text=BB'">
-                <div>
-                    <h1 class="text-2xl md:text-3xl font-bold">Babeh Barbershop</h1>
-                    <p class="text-purple-200 text-sm md:text-base">Membercard Point System</p>
-                </div>
-            </div>
-            
-            <div class="text-right">
-                <p class="text-sm md:text-base"><i class="fas fa-store mr-2"></i><span id="current-outlet">Pilih Outlet</span></p>
-                <p class="text-sm md:text-base"><i class="fas fa-user-tie mr-2"></i><span id="current-kasir">Pilih Kasir</span></p>
+    <!-- Header yang lebih compact -->
+<header class="bg-gradient-to-r from-purple-700 to-purple-900 text-white py-3 px-4 rounded-b-2xl shadow-lg">
+    <div class="container mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+        <div class="flex items-center space-x-3">
+            <img id="logo" src="logo.jpg" alt="Babeh Barbershop Logo" class="w-12 h-12 object-cover rounded-full border-3 border-white shadow">
+            <div>
+                <h1 class="text-xl md:text-2xl font-bold">Babeh Barbershop</h1>
+                <p class="text-purple-200 text-xs md:text-sm">Membercard Point System</p>
             </div>
         </div>
-    </header>
+        
+        <div class="text-center md:text-right text-xs md:text-sm">
+            <p><i class="fas fa-store mr-1"></i><span id="current-outlet">Pilih Outlet</span></p>
+            <p><i class="fas fa-user-tie mr-1"></i><span id="current-kasir">Pilih Kasir</span></p>
+        </div>
+    </div>
+</header>
 
     <!-- Main Content -->
     <main class="container mx-auto p-4">
@@ -273,53 +403,54 @@
             </div>
         </div>
 
-        <!-- Status Info -->
-        <div class="bg-white rounded-custom shadow-lg p-6 mb-6">
-            <h2 class="text-xl font-bold text-purple-800 mb-4"><i class="fas fa-info-circle mr-2"></i>Informasi Sistem</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-purple-50 p-4 rounded-custom border border-purple-200">
-                    <h3 class="font-bold text-purple-700 mb-2">Outlet & Kasir</h3>
-                    <p class="text-sm">Outlet: <span id="info-outlet" class="font-semibold">Belum dipilih</span></p>
-                    <p class="text-sm">Kasir: <span id="info-kasir" class="font-semibold">Belum dipilih</span></p>
-                </div>
-                
-                <div class="bg-yellow-50 p-4 rounded-custom border border-yellow-200">
-                    <h3 class="font-bold text-yellow-700 mb-2">Membercard Olsera</h3>
-                    <p class="text-sm">Total data: <span id="info-olsera-count" class="font-semibold">-</span></p>
-                    <p class="text-sm">Sudah migrasi: <span id="info-olsera-migrasi" class="font-semibold">-</span></p>
-                </div>
-                
-                <div class="bg-blue-50 p-4 rounded-custom border border-blue-200">
-                    <h3 class="font-bold text-blue-700 mb-2">Membercard Digital</h3>
-                    <p class="text-sm">Total data: <span id="info-digital-count" class="font-semibold">-</span></p>
-                    <p class="text-sm">Status aktif: <span id="info-digital-active" class="font-semibold">-</span></p>
-                </div>
-            </div>
+        <!-- Status Info - Compact Layout -->
+<div class="bg-white rounded-custom shadow-lg p-4 mb-4">
+    <h2 class="text-lg font-bold text-purple-800 mb-3"><i class="fas fa-info-circle mr-2"></i>Informasi Sistem</h2>
+    
+    <div class="grid grid-cols-2 gap-3">
+        <!-- Outlet & Kasir -->
+        <div class="bg-purple-50 p-3 rounded-custom border border-purple-200">
+            <h3 class="font-bold text-purple-700 text-sm mb-1">Outlet & Kasir</h3>
+            <p class="text-xs"><span class="font-semibold">Outlet:</span><br><span id="info-outlet" class="text-purple-800">Belum dipilih</span></p>
+            <p class="text-xs mt-1"><span class="font-semibold">Kasir:</span><br><span id="info-kasir" class="text-purple-800">Belum dipilih</span></p>
+        </div>
+        
+        <!-- Membercard Olsera -->
+        <div class="bg-yellow-50 p-3 rounded-custom border border-yellow-200">
+            <h3 class="font-bold text-yellow-700 text-sm mb-1">Membercard Olsera</h3>
+            <p class="text-xs"><span class="font-semibold">Total:</span> <span id="info-olsera-count" class="font-bold">-</span></p>
+            <p class="text-xs mt-1"><span class="font-semibold">Sudah Migrasi:</span><br><span id="info-olsera-migrasi" class="font-bold">-</span></p>
+        </div>
+        
+        <!-- Membercard Digital -->
+        <div class="bg-blue-50 p-3 rounded-custom border border-blue-200">
+            <h3 class="font-bold text-blue-700 text-sm mb-1">Membercard Digital</h3>
+            <p class="text-xs"><span class="font-semibold">Total:</span> <span id="info-digital-count" class="font-bold">-</span></p>
+            <p class="text-xs mt-1"><span class="font-semibold">Aktif:</span> <span id="info-digital-active" class="font-bold">-</span></p>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-r from-purple-800 to-purple-900 text-white p-6 rounded-t-3xl shadow-lg mt-8">
-        <div class="container mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h3 class="text-lg font-bold mb-3"><i class="fas fa-map-marker-alt mr-2"></i>Head Office</h3>
-                    <p class="text-purple-200">Jl. Abdul Ghani, Rempoa, Ciputat</p>
-                </div>
-                
-                <div>
-                    <h3 class="text-lg font-bold mb-3"><i class="fas fa-phone-alt mr-2"></i>Contact</h3>
-                    <p class="text-purple-200">WA: 0822-1001-7083</p>
-                    <p class="text-sm text-purple-300 mt-2">Babeh Barbershop Membercard Point System v1.0</p>
-                </div>
+  <!-- Footer yang lebih compact -->
+<footer class="bg-gradient-to-r from-purple-800 to-purple-900 text-white py-4 px-6 rounded-t-2xl shadow-lg mt-6">
+    <div class="container mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <h3 class="text-base font-bold mb-2"><i class="fas fa-map-marker-alt mr-2"></i>Head Office</h3>
+                <p class="text-purple-200 text-sm">Jl. Abdul Ghani, Rempoa, Ciputat</p>
             </div>
             
-            <div class="mt-6 pt-4 border-t border-purple-700 text-center text-sm text-purple-300">
-                <p><i class="fas fa-shield-alt mr-2"></i>Sistem PWA - Dapat diinstall di perangkat Android</p>
+            <div>
+                <h3 class="text-base font-bold mb-2"><i class="fas fa-phone-alt mr-2"></i>Contact</h3>
+                <p class="text-purple-200 text-sm">WA: 0822-1001-7083</p>
+                <p class="text-xs text-purple-300 mt-1">Babeh Barbershop v1.0</p>
             </div>
         </div>
-    </footer>
+        
+        <div class="mt-4 pt-3 border-t border-purple-700 text-center text-xs text-purple-300">
+            <p><i class="fas fa-shield-alt mr-1"></i>PWA - Installable di Android</p>
+        </div>
+    </div>
+</footer>
 
     <!-- Modal Migrasi -->
     <div id="modal-migrasi" class="modal-overlay hidden">
