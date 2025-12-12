@@ -369,7 +369,39 @@
             .modal-content .p-6 {
                 padding: 14px !important;
             }
-            
+            /* Tambahkan di CSS bagian modal compact */
+.modal-migrasi-header {
+    padding: 12px 16px !important;
+    margin-bottom: 10px !important;
+}
+
+.modal-migrasi-header h2 {
+    font-size: 1.2rem !important;
+    margin-bottom: 8px !important;
+}
+
+.modal-outlet-kasir-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+    padding: 10px !important;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.modal-outlet-kasir-info p {
+    margin-bottom: 3px !important;
+    line-height: 1.2 !important;
+}
+
+.modal-outlet-kasir-info .font-semibold {
+    font-size: 0.8rem !important;
+}
+
+.modal-outlet-kasir-info .text-lg {
+    font-size: 0.95rem !important;
+}
             /* Toast compact */
             #toast {
                 top: 12px;
@@ -519,26 +551,31 @@
 
     <!-- Modal Migrasi -->
     <div id="modal-migrasi" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-green-800"><i class="fas fa-exchange-alt mr-3"></i>Migrasi Membercard</h2>
-                    <button id="close-migrasi" class="text-gray-500 hover:text-gray-700 text-2xl">
+    <div class="modal-content">
+        <div class="p-4"> <!-- Ubah dari p-6 ke p-4 -->
+            <!-- Header Compact -->
+            <div class="modal-migrasi-header">
+                <div class="flex justify-between items-center mb-2"> <!-- Kurangi mb-6 ke mb-2 -->
+                    <h2 class="text-xl font-bold text-green-800"> <!-- Kurangi dari text-2xl -->
+                        <i class="fas fa-exchange-alt mr-2"></i>Migrasi Membercard
+                    </h2>
+                    <button id="close-migrasi" class="text-gray-500 hover:text-gray-700 text-xl">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 
-                <div class="bg-gray-50 p-4 rounded-custom mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <p class="font-semibold text-gray-700">Outlet:</p>
-                            <p id="migrasi-outlet" class="text-lg font-bold text-purple-700">-</p>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-700">Kasir:</p>
-                            <p id="migrasi-kasir" class="text-lg font-bold text-purple-700">-</p>
-                        </div>
+                <!-- Outlet & Kasir Info - Compact -->
+                <div class="modal-outlet-kasir-info">
+                    <div>
+                        <p class="font-semibold text-gray-700 text-xs">Outlet:</p>
+                        <p id="migrasi-outlet" class="text-base font-bold text-purple-700">-</p>
                     </div>
+                    <div>
+                        <p class="font-semibold text-gray-700 text-xs">Kasir:</p>
+                        <p id="migrasi-kasir" class="text-base font-bold text-purple-700">-</p>
+                    </div>
+                </div>
+            </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Customer Lama -->
@@ -1388,7 +1425,10 @@
     
     // UPDATE UI
     updateCustomerBaruUI(customer);
-    
+          
+    // **PERBAIKAN 1: AUTO CLOSE MODAL SETELAH PILIH**
+    closeModalSearchResults(); // Tambahkan ini
+          
     // Jika customer lama sudah dipilih, show comparison
     if (window.selectedCustomerLama) {
         console.log('Customer lama exists, showing comparison...');
