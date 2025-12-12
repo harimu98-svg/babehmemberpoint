@@ -8,13 +8,10 @@
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS via CDN (Alternative) -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     
-    <!-- Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-    <!-- Custom CSS -->
+    <!-- Custom Tailwind Config -->
     <style>
         :root {
             --ungu-doff: #9370DB;
@@ -98,7 +95,24 @@
                 padding: 15px;
             }
         }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #9370DB;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
+    
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body class="min-h-screen">
     <!-- Header -->
@@ -412,7 +426,7 @@
     <!-- Loading Overlay -->
     <div id="loading" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
         <div class="bg-white p-8 rounded-2xl flex flex-col items-center">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
+            <div class="loading-spinner mb-4"></div>
             <p class="text-gray-700">Memproses...</p>
         </div>
     </div>
@@ -433,8 +447,10 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
-   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    
+    <!-- Aplikasi JavaScript -->
     <script src="app.js"></script>
 </body>
 </html>
