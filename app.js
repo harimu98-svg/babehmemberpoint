@@ -1,5 +1,6 @@
 // ================= CONFIGURATION =================
 const SUPABASE_URL = 'https://intzwjmlypmopzauxeqt.supabase.co';
+// GUNAKAN ANONYMOUS KEY BUKAN SERVICE ROLE KEY
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludHp3am1seXBtb3B6YXV4ZXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3MTc5MTIsImV4cCI6MjA3MDI5MzkxMn0.VwwVEDdHtYP5gui4epTcNfLXhPkmfFbRVb5y8mrXJiM';
 const WAHA_URL = 'https://waha-yetv8qi4e3zk.anakit.sumopod.my.id/api/sendText';
 const WAHA_KEY = 'sfcoGbpdLDkGZhKw2rx8sbb14vf4d8V6';
@@ -13,53 +14,33 @@ let selectedLama = null;
 let selectedBaru = null;
 
 // ================= INITIALIZATION =================
-// Tunggu sampai semua konten dimuat termasuk script Supabase
-window.addEventListener('load', async function() {
+document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Aplikasi dimulai...');
     
-    // Tunggu sedikit untuk memastikan Supabase sudah dimuat
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Cek apakah Supabase sudah dimuat
+    if (typeof supabase === 'undefined' || !window.supabase) {
+        console.error('❌ Supabase library tidak ditemukan!');
+        showError('Supabase tidak dimuat. Muat ulang halaman.');
+        
+        // Coba load ulang Supabase
+        loadSupabaseLibrary();
+        return;
+    }
     
-    // Inisialisasi Supabase
     try {
-        if (typeof supabase === 'undefined' || !window.supabase) {
-            console.error('❌ Supabase library tidak ditemukan!');
-            
-            // Coba lagi setelah 1 detik
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            if (typeof supabase === 'undefined' || !window.supabase) {
-                throw new Error('Supabase library gagal dimuat. Periksa koneksi internet.');
-            }
-        }
-        
-        // Inisialisasi client Supabase
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+        // Inisialisasi Supabase - CARA YANG BENAR
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         console.log('✅ Supabase initialized:', supabase);
-        
-        // Test koneksi dengan query sederhana
-        const { data, error } = await supabase
-            .from('outlet')
-            .select('count')
-            .limit(1);
-            
-        if (error) {
-            console.error('❌ Test query gagal:', error);
-            showError('Gagal terhubung ke database');
-            return;
-        }
-        
-        console.log('✅ Test koneksi berhasil');
         
         // Setup aplikasi
         setupApp();
-        
     } catch (error) {
         console.error('❌ Gagal inisialisasi:', error);
-        showError('Gagal menghubungkan ke database: ' + error.message);
+        showError('Gagal menghubungkan ke database');
     }
 });
 
+        
 // ================= SETUP FUNCTIONS =================
 function setupApp() {
     loadOutlets();
