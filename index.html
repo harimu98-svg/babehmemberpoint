@@ -690,14 +690,14 @@
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         
         // =================== VARIABEL GLOBAL ===================
-        let selectedOutlet = '';
-        let selectedKasir = '';
-        let konversiPointValue = 1;
-        let currentSearchPage = 1;
-        let searchType = '';
-        let searchResults = [];
-        let selectedCustomerLama = null;
-        let selectedCustomerBaru = null;
+window.selectedOutlet = '';
+window.selectedKasir = '';
+window.konversiPointValue = 1;  // ← INI YANG PENTING
+window.currentSearchPage = 1;
+window.searchType = '';
+window.searchResults = [];
+window.selectedCustomerLama = null;
+window.selectedCustomerBaru = null;
         
         // =================== DOM ELEMENTS ===================
         const outletSelect = document.getElementById('outlet-select');
@@ -726,22 +726,21 @@
         function setupEventListeners() {
             // Outlet selection
             outletSelect.addEventListener('change', async function() {
-                selectedOutlet = this.value;
-                currentOutletSpan.textContent = this.options[this.selectedIndex].text;
-                infoOutletSpan.textContent = this.options[this.selectedIndex].text;
-                
-                if (selectedOutlet) {
-                    await loadKasir(selectedOutlet);
-                    await loadSystemInfo();
-                    btnMigrasi.disabled = false;
-                    getKonversiPoint(selectedOutlet);
-                } else {
-                    kasirSelect.disabled = true;
-                    kasirSelect.innerHTML = '<option value="">-- Pilih Kasir --</option>';
-                    btnMigrasi.disabled = true;
-                }
-            });
-            
+    window.selectedOutlet = this.value;  // ← UPDATE WINDOW VARIABLE
+    currentOutletSpan.textContent = this.options[this.selectedIndex].text;
+    infoOutletSpan.textContent = this.options[this.selectedIndex].text;
+    
+    if (window.selectedOutlet) {
+        await loadKasir(window.selectedOutlet);
+        await loadSystemInfo();
+        btnMigrasi.disabled = false;
+        await getKonversiPoint(window.selectedOutlet);  // ← PASTIKAN ADA await
+    } else {
+        kasirSelect.disabled = true;
+        kasirSelect.innerHTML = '<option value="">-- Pilih Kasir --</option>';
+        btnMigrasi.disabled = true;
+    }
+});
             // Kasir selection
             kasirSelect.addEventListener('change', function() {
                 selectedKasir = this.value;
@@ -902,24 +901,41 @@
         
         // 4. GET KONVERSI POINT
         async function getKonversiPoint(outlet) {
-            try {
-                const { data, error } = await supabase
-                    .from('outlet')
-                    .select('konversi_point')
-                    .eq('outlet', outlet)
-                    .single();
-                
-                if (error) throw error;
-                
-                if (data && data.konversi_point) {
-                    konversiPointValue = parseFloat(data.konversi_point) || 1;
-                }
-            } catch (error) {
-                console.error('Error loading konversi point:', error);
-                konversiPointValue = 1;
-            }
+    try {
+        const { data, error } = await supabase
+            .from('outlet')
+            .select('konversi_point')
+            .eq('outlet', outlet.trim())
+            .single();
+        
+        if (error || !data) {
+            window.konversiPointValue = 1;  // ← UPDATE WINDOW VARIABLE
+            console.warn(`Konversi untuk ${outlet} tidak ditemukan, default=1`);
+        } else {
+            window.konversiPointValue = parseFloat(data.konversi_point) || 1;  // ← UPDATE WINDOW
+            console.log(`Konversi ${outlet}: ${window.konversiPointValue}`);
         }
         
+        // Update UI jika element ada
+        updateKonversiUI(outlet, window.konversiPointValue);
+        
+    } catch (error) {
+        window.konversiPointValue = 1;  // ← UPDATE WINDOW
+        console.error('Error get konversi:', error);
+    }
+}
+
+// Fungsi untuk update UI
+function updateKonversiUI(outlet, value) {
+    const konversiElement = document.getElementById('info-konversi');
+    const outletElement = document.getElementById('info-outlet-name');
+    
+    if (konversiElement) konversiElement.textContent = value;
+    if (outletElement) outletElement.textContent = outlet;
+    
+    // Debug log
+    console.log(`UI Updated - Outlet: ${outlet}, Konversi: ${value}`);
+}
         // 5. SEARCH CUSTOMER LAMA (Dengan filter outlet)
         async function searchCustomerLama() {
             const searchTerm = document.getElementById('search-customer-lama').value.trim();
