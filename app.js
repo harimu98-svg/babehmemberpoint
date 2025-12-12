@@ -34,13 +34,7 @@ window.addEventListener('load', async function() {
         }
         
         // Inisialisasi client Supabase
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true
-            }
-        });
-        
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
         console.log('✅ Supabase initialized:', supabase);
         
         // Test koneksi dengan query sederhana
