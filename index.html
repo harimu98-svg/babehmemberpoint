@@ -205,48 +205,33 @@
         }
        /* ULTRA COMPACT FOR ANDROID */
 @media (max-width: 768px) {
-    /* Reset semua padding/margin */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    /* Mobile-specific adjustments */
+    header {
+        padding: 12px 16px !important;
+        border-radius: 0 0 20px 20px !important;
     }
     
-    /* Header super compact */
-   header {
-    padding: 16px 20px !important;  /* ↑ lebih besar lagi */
-    border-radius: 0 0 15px 15px !important;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    min-height: 70px;  /* ← gunakan min-height */
-}
-    
     header .container {
-        flex-direction: row !important;
-        align-items: center;
-        gap: 8px !important;
+        flex-direction: column !important;
+        text-align: center;
+        gap: 12px !important;
     }
     
     header img {
-        width: 40px !important;
-        height: 40px !important;
+        width: 48px !important;
+        height: 48px !important;
         border-width: 2px !important;
     }
     
     header h1 {
-        font-size: 1.1rem !important;
-        line-height: 1.2;
+        font-size: 1.5rem !important;
+        margin-bottom: 4px !important;
     }
     
     header p {
-        font-size: 0.7rem !important;
+        font-size: 0.875rem !important;
     }
     
-    .text-center.md\:text-right {
-        text-align: right !important;
-        font-size: 0.7rem !important;
-    }
     
     /* Main container - NO SPACING */
     main.container {
