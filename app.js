@@ -68,18 +68,18 @@ function setupEventListeners() {
 // Load outlets from Supabase
 async function loadOutlets() {
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/outlet?select=outlet`, {
-            headers: {
-                'apikey': SUPABASE_API_KEY,
-                'Authorization': `Bearer ${SUPABASE_API_KEY}`
-            }
-        });
+        // Opsi 1: Tetap pakai fetch (karena sederhana, masih work)
+        // Opsi 2: Konsisten pakai supabase client:
+        const { data, error } = await supabase
+            .from('outlet')
+            .select('outlet')
+            .order('outlet');
         
-        if (!response.ok) throw new Error('Failed to load outlets');
+        if (error) throw error;
         
-        outlets = await response.json();
+        outlets = data || [];
         
-        // Populate outlet dropdown
+        // Populate outlet dropdown (kode sama)
         outletSelect.innerHTML = '<option value="">Pilih Outlet</option>';
         outlets.forEach(outlet => {
             const option = document.createElement('option');
@@ -116,21 +116,19 @@ async function handleOutletChange() {
 // Load kasirs based on selected outlet
 async function loadKasirs() {
     try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/karyawan?select=nama_karyawan&outlet=eq.${encodeURIComponent(currentOutlet)}&role=eq.kasir`,
-            {
-                headers: {
-                    'apikey': SUPABASE_API_KEY,
-                    'Authorization': `Bearer ${SUPABASE_API_KEY}`
-                }
-            }
-        );
+        // GANTI dari fetch ke supabase client
+        const { data, error } = await supabase
+            .from('karyawan')
+            .select('nama_karyawan')
+            .eq('outlet', currentOutlet)
+            .eq('role', 'kasir')
+            .order('nama_karyawan');
         
-        if (!response.ok) throw new Error('Failed to load kasirs');
+        if (error) throw error;
         
-        kasirs = await response.json();
+        kasirs = data || [];
         
-        // Populate kasir dropdown
+        // Populate kasir dropdown (kode sama)
         kasirSelect.innerHTML = '<option value="">Pilih Kasir</option>';
         kasirs.forEach(kasir => {
             const option = document.createElement('option');
@@ -139,39 +137,35 @@ async function loadKasirs() {
             kasirSelect.appendChild(option);
         });
         
-        // Load konversi point for this outlet
+        // Load konversi point
         await loadKonversiPoint();
     } catch (error) {
         console.error('Error loading kasirs:', error);
         showStatus('Gagal memuat data kasir', 'error');
     }
 }
-
 // Load konversi point from outlet
 async function loadKonversiPoint() {
     try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/outlet?select=konversi_point&outlet=eq.${encodeURIComponent(currentOutlet)}`,
-            {
-                headers: {
-                    'apikey': SUPABASE_API_KEY,
-                    'Authorization': `Bearer ${SUPABASE_API_KEY}`
-                }
-            }
-        );
+        // GANTI fetch dengan supabase client
+        const { data, error } = await supabase
+            .from('outlet')
+            .select('konversi_point')
+            .eq('outlet', currentOutlet)
+            .single();
         
-        if (response.ok) {
-            const data = await response.json();
-            if (data && data[0]) {
-                konversiPointValue = data[0].konversi_point || 0;
-            }
+        if (!error && data) {
+            konversiPointValue = data.konversi_point || 0;
+            console.log(`Konversi point untuk ${currentOutlet}: ${konversiPointValue}`);
+        } else {
+            konversiPointValue = 0;
+            console.warn(`Konversi point tidak ditemukan untuk outlet ${currentOutlet}`);
         }
     } catch (error) {
         console.error('Error loading konversi point:', error);
         konversiPointValue = 0;
     }
 }
-
 // Handle kasir selection change
 function handleKasirChange() {
     currentKasir = kasirSelect.value;
@@ -241,22 +235,20 @@ async function loadOlseraData(searchTerm = '') {
     showLoading(true);
     
     try {
-        let url = `${SUPABASE_URL}/rest/v1/membercard_olsera?select=*`;
+        // Gunakan supabase client, BUKAN fetch()
+        let query = supabase
+            .from('membercard_olsera')
+            .select('*');
         
         if (searchTerm) {
-            url += `&or=(name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%)`;
+            query = query.or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`);
         }
         
-        const response = await fetch(url, {
-            headers: {
-                'apikey': SUPABASE_API_KEY,
-                'Authorization': `Bearer ${SUPABASE_API_KEY}`
-            }
-        });
+        const { data, error } = await query;
         
-        if (!response.ok) throw new Error('Failed to load Olsera data');
+        if (error) throw error;
         
-        olseraData = await response.json();
+        olseraData = data || [];
         currentOlseraPage = 1;
         renderOlseraTable();
     } catch (error) {
@@ -309,22 +301,20 @@ async function loadDigitalData(searchTerm = '') {
     showLoading(true);
     
     try {
-        let url = `${SUPABASE_URL}/rest/v1/membercard?select=*`;
+        // Gunakan supabase client
+        let query = supabase
+            .from('membercard')
+            .select('*');
         
         if (searchTerm) {
-            url += `&or=(nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%)`;
+            query = query.or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`);
         }
         
-        const response = await fetch(url, {
-            headers: {
-                'apikey': SUPABASE_API_KEY,
-                'Authorization': `Bearer ${SUPABASE_API_KEY}`
-            }
-        });
+        const { data, error } = await query;
         
-        if (!response.ok) throw new Error('Failed to load digital data');
+        if (error) throw error;
         
-        digitalData = await response.json();
+        digitalData = data || [];
         currentDigitalPage = 1;
         renderDigitalTable();
     } catch (error) {
@@ -408,19 +398,19 @@ async function searchCustomerLama() {
     showLoading(true);
     
     try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/membercard_olsera?select=*&or=(name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%)&status_migrasi=neq.Sudah%20migrasi`,
-            {
-                headers: {
-                    'apikey': SUPABASE_API_KEY,
-                    'Authorization': `Bearer ${SUPABASE_API_KEY}`
-                }
-            }
-        );
+        // GANTI fetch dengan supabase client - ini inti perbaikan
+        const { data, error } = await supabase
+            .from('membercard_olsera')
+            .select('*')
+            .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`)
+            .neq('status_migrasi', 'Sudah migrasi'); // Tanpa encode %20, supabase client handle sendiri
         
-        if (!response.ok) throw new Error('Failed to search customer lama');
+        if (error) {
+            console.error('Supabase error:', error);
+            throw new Error(`Gagal mencari: ${error.message}`);
+        }
         
-        const results = await response.json();
+        const results = data || [];
         
         const resultsDiv = document.getElementById('customerLamaResults');
         resultsDiv.innerHTML = '';
@@ -432,8 +422,8 @@ async function searchCustomerLama() {
                 const div = document.createElement('div');
                 div.className = 'p-3 border-b border-gray-200 hover:bg-blue-50 cursor-pointer';
                 div.innerHTML = `
-                    <p class="font-medium">${customer.name}</p>
-                    <p class="text-sm text-gray-600">${customer.phone} | ${customer.code}</p>
+                    <p class="font-medium">${customer.name || '-'}</p>
+                    <p class="text-sm text-gray-600">${customer.phone || '-'} | ${customer.code || '-'}</p>
                     <p class="text-sm text-gray-600">Points: ${formatNumber(customer.loyalty_points || 0)}</p>
                 `;
                 div.onclick = () => selectCustomerLama(customer);
@@ -442,13 +432,16 @@ async function searchCustomerLama() {
         }
         
         resultsDiv.classList.remove('hidden');
+        document.getElementById('warningInfo').classList.add('hidden');
+        
     } catch (error) {
         console.error('Error searching customer lama:', error);
-        showWarning('Gagal mencari customer lama');
+        showWarning('Gagal mencari customer lama: ' + error.message);
     } finally {
         showLoading(false);
     }
 }
+
 
 // Select customer lama
 function selectCustomerLama(customer) {
@@ -496,27 +489,20 @@ async function findMatchingCustomerBaru(phone) {
     const cleanPhone = cleanPhoneNumber(phone);
     
     try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/membercard?select=*&nomorWA=eq.${cleanPhone}`,
-            {
-                headers: {
-                    'apikey': SUPABASE_API_KEY,
-                    'Authorization': `Bearer ${SUPABASE_API_KEY}`
-                }
-            }
-        );
+        // GANTI fetch dengan supabase client
+        const { data, error } = await supabase
+            .from('membercard')
+            .select('*')
+            .eq('nomorWA', cleanPhone);
         
-        if (response.ok) {
-            const results = await response.json();
-            if (results.length > 0) {
-                selectCustomerBaru(results[0]);
-            }
+        if (!error && data && data.length > 0) {
+            selectCustomerBaru(data[0]);
         }
     } catch (error) {
         console.error('Error finding matching customer:', error);
+        // Tidak perlu show warning, ini hanya auto-search
     }
 }
-
 // Search customer baru
 async function searchCustomerBaru() {
     const searchTerm = document.getElementById('searchCustomerBaru').value.trim();
@@ -529,19 +515,18 @@ async function searchCustomerBaru() {
     showLoading(true);
     
     try {
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/membercard?select=*&or=(nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%)`,
-            {
-                headers: {
-                    'apikey': SUPABASE_API_KEY,
-                    'Authorization': `Bearer ${SUPABASE_API_KEY}`
-                }
-            }
-        );
+        // GANTI fetch dengan supabase client - ini inti perbaikan
+        const { data, error } = await supabase
+            .from('membercard')
+            .select('*')
+            .or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`);
         
-        if (!response.ok) throw new Error('Failed to search customer baru');
+        if (error) {
+            console.error('Supabase error:', error);
+            throw new Error(`Gagal mencari: ${error.message}`);
+        }
         
-        const results = await response.json();
+        const results = data || [];
         
         const resultsDiv = document.getElementById('customerBaruResults');
         resultsDiv.innerHTML = '';
@@ -553,8 +538,8 @@ async function searchCustomerBaru() {
                 const div = document.createElement('div');
                 div.className = 'p-3 border-b border-gray-200 hover:bg-green-50 cursor-pointer';
                 div.innerHTML = `
-                    <p class="font-medium">${customer.nama}</p>
-                    <p class="text-sm text-gray-600">${customer.nomorWA} | ${customer.id_member}</p>
+                    <p class="font-medium">${customer.nama || '-'}</p>
+                    <p class="text-sm text-gray-600">${customer.nomorWA || '-'} | ${customer.id_member || '-'}</p>
                     <p class="text-sm text-gray-600">Point: ${customer.point || 0}</p>
                 `;
                 div.onclick = () => selectCustomerBaru(customer);
@@ -563,9 +548,11 @@ async function searchCustomerBaru() {
         }
         
         resultsDiv.classList.remove('hidden');
+        document.getElementById('warningInfo').classList.add('hidden');
+        
     } catch (error) {
         console.error('Error searching customer baru:', error);
-        showWarning('Gagal mencari customer baru');
+        showWarning('Gagal mencari customer baru: ' + error.message);
     } finally {
         showLoading(false);
     }
@@ -661,60 +648,44 @@ async function submitMigrasi() {
         const konversiPoint = konversiPointValue || 1;
         const pointBaru = Math.ceil(pointLama / konversiPoint);
         
-        // 1. Update point in membercard
+        // 1. Update point in membercard - GANTI dengan supabase client
         const newPoint = (selectedCustomerBaru.point || 0) + pointBaru;
         
-        const updateMembercardResponse = await fetch(
-            `${SUPABASE_URL}/rest/v1/membercard?id=eq.${selectedCustomerBaru.id}`,
-            {
-                method: 'PATCH',
-                headers: {
-                    'apikey': SUPABASE_API_KEY,
-                    'Authorization': `Bearer ${SUPABASE_API_KEY}`,
-                    'Content-Type': 'application/json',
-                    'Prefer': 'return=representation'
-                },
-                body: JSON.stringify({
-                    point: newPoint,
-                    updated_at: new Date().toISOString()
-                })
-            }
-        );
+        const { error: updateError } = await supabase
+            .from('membercard')
+            .update({
+                point: newPoint,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', selectedCustomerBaru.id);
         
-        if (!updateMembercardResponse.ok) {
-            throw new Error('Failed to update membercard');
+        if (updateError) {
+            console.error('Update membercard error:', updateError);
+            throw new Error('Gagal update membercard: ' + updateError.message);
         }
         
-        // 2. Update membercard_olsera with migration data
-        const updateOlseraResponse = await fetch(
-            `${SUPABASE_URL}/rest/v1/membercard_olsera?id=eq.${selectedCustomerLama.id}`,
-            {
-                method: 'PATCH',
-                headers: {
-                    'apikey': SUPABASE_API_KEY,
-                    'Authorization': `Bearer ${SUPABASE_API_KEY}`,
-                    'Content-Type': 'application/json',
-                    'Prefer': 'return=representation'
-                },
-                body: JSON.stringify({
-                    outlet: currentOutlet,
-                    id_member: selectedCustomerBaru.id_member,
-                    nama: selectedCustomerBaru.nama,
-                    nomor_wa: selectedCustomerBaru.nomorWA,
-                    kasir: currentKasir,
-                    konversi_point: konversiPoint,
-                    status_migrasi: 'Sudah migrasi',
-                    tanggal_migrasi: new Date().toISOString(),
-                    point_migrasi: pointBaru
-                })
-            }
-        );
+        // 2. Update membercard_olsera with migration data - GANTI dengan supabase client
+        const { error: olseraError } = await supabase
+            .from('membercard_olsera')
+            .update({
+                outlet: currentOutlet,
+                id_member: selectedCustomerBaru.id_member,
+                nama: selectedCustomerBaru.nama,
+                nomor_wa: selectedCustomerBaru.nomorWA,
+                kasir: currentKasir,
+                konversi_point: konversiPoint,
+                status_migrasi: 'Sudah migrasi',
+                tanggal_migrasi: new Date().toISOString(),
+                point_migrasi: pointBaru
+            })
+            .eq('id', selectedCustomerLama.id);
         
-        if (!updateOlseraResponse.ok) {
-            throw new Error('Failed to update Olsera data');
+        if (olseraError) {
+            console.error('Update olsera error:', olseraError);
+            throw new Error('Gagal update data Olsera: ' + olseraError.message);
         }
         
-        // 3. Send WhatsApp notification
+        // 3. Send WhatsApp notification (tetap pakai fetch ke WAHA)
         await sendWhatsAppNotification(selectedCustomerBaru.nomorWA, pointBaru, newPoint);
         
         // Show success message
