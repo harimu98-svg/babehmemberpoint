@@ -10,6 +10,7 @@ const WAHA_URL = 'https://waha-yetv8qi4e3zk.anakit.sumopod.my.id/api/sendText';
 const WAHA_API_KEY = 'sfcoGbpdLDkGZhKw2rx8sbb14vf4d8V6';
 
 // Global Variables
+let supabase; 
 let currentOutlet = '';
 let currentKasir = '';
 let currentOutletId = '';
@@ -35,6 +36,15 @@ const statusText = document.getElementById('statusText');
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
+   if (window.supabase) {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
+        console.log('Supabase client initialized:', supabase ? 'SUCCESS' : 'FAILED');
+    } else {
+        console.error('Supabase library not loaded!');
+        showStatus('Error: Supabase library tidak dimuat', 'error');
+        return;
+    }
+    
     loadOutlets();
     setupEventListeners();
 });
@@ -71,8 +81,6 @@ function setupEventListeners() {
 // Load outlets from Supabase
 async function loadOutlets() {
     try {
-        // Opsi 1: Tetap pakai fetch (karena sederhana, masih work)
-        // Opsi 2: Konsisten pakai supabase client:
         const { data, error } = await supabase
             .from('outlet')
             .select('outlet')
@@ -82,7 +90,8 @@ async function loadOutlets() {
         
         outlets = data || [];
         
-        // Populate outlet dropdown (kode sama)
+        // Populate outlet dropdown
+        const outletSelect = document.getElementById('outletSelect');
         outletSelect.innerHTML = '<option value="">Pilih Outlet</option>';
         outlets.forEach(outlet => {
             const option = document.createElement('option');
