@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Babeh Barbershop Membercard Point</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --ungu-doff: #9370DB;
+            --ungu-darker: #7B68EE;
+        }
+        
+        body {
+            background-color: #f8f7ff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        .bg-ungu-doff {
+            background-color: var(--ungu-doff);
+        }
+        
+        .text-ungu-doff {
+            color: var(--ungu-doff);
+        }
+        
+        .border-ungu-doff {
+            border-color: var(--ungu-doff);
+        }
+        
+        .btn-yellow {
+            background-color: #FFD700;
+            color: #333;
+        }
+        
+        .btn-yellow:hover {
+            background-color: #FFC800;
+        }
+        
+        .btn-blue {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .btn-blue:hover {
+            background-color: #1976D2;
+        }
+        
+        .btn-green {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .btn-green:hover {
+            background-color: #388E3C;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 16px;
+            width: 95%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        @media (max-width: 640px) {
+            .modal-content {
+                margin: 2% auto;
+                width: 98%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-purple-700 to-purple-900 text-white p-4 rounded-b-2xl shadow-lg">
+        <div class="container mx-auto">
+            <div class="flex flex-col items-center">
+                <img src="logo.jpg" alt="Babeh Barbershop Logo" class="w-20 h-20 rounded-full border-4 border-white mb-3">
+                <h1 class="text-2xl font-bold text-center">Babeh Barbershop Membercard Point</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4">
+        <!-- Outlet and Kasir Selection -->
+        <div class="bg-white rounded-2xl p-6 shadow-lg mb-6">
+            <h2 class="text-xl font-bold mb-4 text-purple-800">Pilih Outlet & Kasir</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 mb-2">Outlet</label>
+                    <select id="outletSelect" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="">Pilih Outlet</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 mb-2">Kasir</label>
+                    <select id="kasirSelect" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" disabled>
+                        <option value="">Pilih Kasir</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <button id="btnOlsera" class="btn-yellow py-4 px-6 rounded-2xl font-bold text-lg shadow-lg transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                <div class="flex items-center justify-center">
+                    <span class="material-icons mr-2">storage</span>
+                    DATA MEMBERCARD OLSERA
+                </div>
+            </button>
+            
+            <button id="btnDigital" class="btn-blue py-4 px-6 rounded-2xl font-bold text-lg shadow-lg transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                <div class="flex items-center justify-center">
+                    <span class="material-icons mr-2">credit_card</span>
+                    DATA MEMBERCARD DIGITAL
+                </div>
+            </button>
+            
+            <button id="btnMigrasi" class="btn-green py-4 px-6 rounded-2xl font-bold text-lg shadow-lg transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+                <div class="flex items-center justify-center">
+                    <span class="material-icons mr-2">sync</span>
+                    MIGRASI
+                </div>
+            </button>
+        </div>
+
+        <!-- Status Info -->
+        <div id="statusInfo" class="hidden bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-xl mb-6">
+            <div class="flex items-center">
+                <span class="material-icons text-yellow-500 mr-2">info</span>
+                <p id="statusText" class="text-yellow-700"></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-purple-800 to-purple-900 text-white p-6 mt-8 rounded-t-2xl">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-bold mb-2">Head Office</h3>
+                    <p class="text-purple-200">Jl. Abdul Ghani, Rempoa, Ciputat</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-2">Contact</h3>
+                    <p class="text-purple-200">WA 0822-1001-7083</p>
+                </div>
+            </div>
+            <div class="text-center mt-6 pt-6 border-t border-purple-700">
+                <p class="text-purple-300">© 2024 Babeh Barbershop Membercard Point</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Data Olsera -->
+    <div id="modalOlsera" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-purple-800">DATA MEMBERCARD OLSERA</h2>
+                <button onclick="closeModal('modalOlsera')" class="text-gray-500 hover:text-gray-700">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            
+            <!-- Search -->
+            <div class="mb-4">
+                <input type="text" id="searchOlsera" placeholder="Cari berdasarkan Nama atau Phone..." 
+                       class="w-full p-3 border border-gray-300 rounded-xl">
+            </div>
+            
+            <!-- Data Table -->
+            <div class="table-container">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Code</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Loyalty Points</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="olseraTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div id="olseraPagination" class="mt-4 flex justify-between items-center">
+                <button id="prevOlsera" class="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50">Prev</button>
+                <span id="olseraPageInfo" class="text-sm">Page 1 of 1</span>
+                <button id="nextOlsera" class="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Data Digital -->
+    <div id="modalDigital" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-purple-800">DATA MEMBERCARD DIGITAL</h2>
+                <button onclick="closeModal('modalDigital')" class="text-gray-500 hover:text-gray-700">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            
+            <!-- Search -->
+            <div class="mb-4">
+                <input type="text" id="searchDigital" placeholder="Cari berdasarkan Nama atau nomorWA..." 
+                       class="w-full p-3 border border-gray-300 rounded-xl">
+            </div>
+            
+            <!-- Data Table -->
+            <div class="table-container">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID Member</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">No WA</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Point</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="digitalTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div id="digitalPagination" class="mt-4 flex justify-between items-center">
+                <button id="prevDigital" class="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50">Prev</button>
+                <span id="digitalPageInfo" class="text-sm">Page 1 of 1</span>
+                <button id="nextDigital" class="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Migrasi -->
+    <div id="modalMigrasi" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-purple-800">MIGRASI DATA</h2>
+                <button onclick="closeModal('modalMigrasi')" class="text-gray-500 hover:text-gray-700">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            
+            <!-- Outlet & Kasir Info -->
+            <div class="bg-purple-50 p-4 rounded-xl mb-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600">Outlet</p>
+                        <p id="migrasiOutlet" class="font-bold">-</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Kasir</p>
+                        <p id="migrasiKasir" class="font-bold">-</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pilih Customer Lama -->
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2 font-medium">Pilih Customer Lama</label>
+                <div class="flex gap-2">
+                    <input type="text" id="searchCustomerLama" placeholder="Cari customer lama..." 
+                           class="flex-grow p-3 border border-gray-300 rounded-xl">
+                    <button onclick="searchCustomerLama()" class="bg-yellow-500 text-white p-3 rounded-xl hover:bg-yellow-600">
+                        <span class="material-icons">search</span>
+                    </button>
+                </div>
+                <div id="customerLamaResults" class="mt-2 max-h-40 overflow-y-auto hidden">
+                    <!-- Results akan diisi -->
+                </div>
+                <div id="selectedCustomerLama" class="mt-2 p-3 bg-blue-50 rounded-xl hidden">
+                    <!-- Selected customer akan ditampilkan -->
+                </div>
+            </div>
+            
+            <!-- Pilih Customer Baru -->
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2 font-medium">Pilih Customer Baru</label>
+                <div class="flex gap-2">
+                    <input type="text" id="searchCustomerBaru" placeholder="Cari customer baru..." 
+                           class="flex-grow p-3 border border-gray-300 rounded-xl">
+                    <button onclick="searchCustomerBaru()" class="bg-blue-500 text-white p-3 rounded-xl hover:bg-blue-600">
+                        <span class="material-icons">search</span>
+                    </button>
+                </div>
+                <div id="customerBaruResults" class="mt-2 max-h-40 overflow-y-auto hidden">
+                    <!-- Results akan diisi -->
+                </div>
+                <div id="selectedCustomerBaru" class="mt-2 p-3 bg-green-50 rounded-xl hidden">
+                    <!-- Selected customer akan ditampilkan -->
+                </div>
+            </div>
+            
+            <!-- Data Comparison Table -->
+            <div id="dataComparison" class="hidden mb-6">
+                <h3 class="font-bold mb-3 text-purple-800">Perbandingan Data</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="px-4 py-2 border">Data</th>
+                                <th class="px-4 py-2 border">Lama</th>
+                                <th class="px-4 py-2 border">Baru</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="px-4 py-2 border font-medium">Nama Customer</td>
+                                <td id="namaLama" class="px-4 py-2 border"></td>
+                                <td id="namaBaru" class="px-4 py-2 border"></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2 border font-medium">Nomor WA</td>
+                                <td id="waLama" class="px-4 py-2 border"></td>
+                                <td id="waBaru" class="px-4 py-2 border"></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2 border font-medium">Alamat</td>
+                                <td id="alamatLama" class="px-4 py-2 border"></td>
+                                <td id="alamatBaru" class="px-4 py-2 border"></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2 border font-medium">ID Member</td>
+                                <td id="idLama" class="px-4 py-2 border"></td>
+                                <td id="idBaru" class="px-4 py-2 border"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Point Calculation -->
+            <div id="pointCalculation" class="hidden mb-6">
+                <h3 class="font-bold mb-3 text-purple-800">Perhitungan Point</h3>
+                <div class="bg-yellow-50 p-4 rounded-xl">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                        <div>
+                            <p class="text-sm text-gray-600">Point Lama</p>
+                            <p id="pointLama" class="text-xl font-bold">0</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Konversi Point</p>
+                            <p id="konversiPoint" class="text-xl font-bold">0</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Point Baru</p>
+                            <p id="pointBaru" class="text-xl font-bold text-green-600">0</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600">Rumus: ⌈Point Lama ÷ Konversi Point⌉ = <span id="calculationFormula" class="font-medium">0</span></p>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="flex justify-end">
+                <button id="submitMigrasi" onclick="submitMigrasi()" 
+                        class="bg-green-600 text-white py-3 px-6 rounded-xl font-bold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled>
+                    <span class="material-icons mr-2">check_circle</span>
+                    SUBMIT MIGRASI
+                </button>
+            </div>
+            
+            <!-- Warning -->
+            <div id="warningInfo" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl hidden">
+                <p id="warningText" class="text-red-700 text-sm"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl flex flex-col items-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
+            <p class="text-gray-700">Memproses...</p>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                    <span class="material-icons text-green-600 text-3xl">check_circle</span>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Migrasi Berhasil!</h3>
+                <p id="successMessage" class="text-gray-600 mb-4">Data telah berhasil dimigrasi.</p>
+                <button onclick="closeModal('successModal')" class="bg-green-600 text-white py-2 px-6 rounded-xl hover:bg-green-700">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
