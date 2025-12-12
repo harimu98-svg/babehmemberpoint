@@ -8,6 +8,9 @@
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
     
+    <!-- Favicon -->
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Material Tailwind -->
@@ -135,6 +138,11 @@
             color: #1e40af;
         }
         
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -153,14 +161,65 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #8b5cf6;
         }
+        
+        /* Toast Notification - Front Layer */
+        #toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999 !important;
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-left: 5px solid #7b3aed;
+            max-width: 400px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .toast-success {
+            border-left-color: #10b981;
+        }
+        
+        .toast-error {
+            border-left-color: #ef4444;
+        }
+        
+        .toast-warning {
+            border-left-color: #f59e0b;
+        }
+        
+        .toast-info {
+            border-left-color: #3b82f6;
+        }
     </style>
+    
+    <!-- Disable Tailwind CDN warning -->
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: false,
+            }
+        }
+    </script>
 </head>
 <body class="bg-purple-doff min-h-screen">
     <!-- Header -->
     <header class="bg-gradient-to-r from-purple-700 to-purple-900 text-white p-4 rounded-b-3xl shadow-lg">
         <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
             <div class="flex items-center space-x-4 mb-4 md:mb-0">
-                <img id="logo" src="logo.jpg" alt="Babeh Barbershop Logo" class="w-16 h-16 object-cover rounded-full border-4 border-white shadow-lg">
+                <img id="logo" src="logo.jpg" alt="Babeh Barbershop Logo" class="w-16 h-16 object-cover rounded-full border-4 border-white shadow-lg" onerror="this.src='https://via.placeholder.com/64/7b3aed/FFFFFF?text=BB'">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-bold">Babeh Barbershop</h1>
                     <p class="text-purple-200 text-sm md:text-base">Membercard Point System</p>
@@ -197,27 +256,15 @@
             </div>
             
             <div class="mt-4 text-sm text-gray-600">
-                <p><i class="fas fa-info-circle mr-2"></i>Pilih outlet dan kasir terlebih dahulu sebelum menggunakan fitur lainnya</p>
+                <p><i class="fas fa-info-circle mr-2"></i>Pilih outlet dan kasir terlebih dahulu sebelum menggunakan fitur migrasi</p>
             </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Action Button -->
         <div class="bg-white rounded-custom shadow-lg p-6 mb-6">
             <h2 class="text-xl font-bold text-purple-800 mb-4"><i class="fas fa-tasks mr-2"></i>Aksi Membercard</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <button id="btn-olsera" class="btn-yellow p-4 rounded-custom font-bold text-lg flex flex-col items-center justify-center transition duration-300 transform hover:scale-105" disabled>
-                    <i class="fas fa-id-card-alt text-3xl mb-2"></i>
-                    <span>DATA MEMBERCARD OLSERA</span>
-                    <span class="text-sm font-normal mt-1">Data member lama</span>
-                </button>
-                
-                <button id="btn-digital" class="btn-blue p-4 rounded-custom font-bold text-lg flex flex-col items-center justify-center transition duration-300 transform hover:scale-105" disabled>
-                    <i class="fas fa-mobile-alt text-3xl mb-2"></i>
-                    <span>DATA MEMBERCARD DIGITAL</span>
-                    <span class="text-sm font-normal mt-1">Data member baru</span>
-                </button>
-                
+            <div class="grid grid-cols-1 gap-4">
                 <button id="btn-migrasi" class="btn-green p-4 rounded-custom font-bold text-lg flex flex-col items-center justify-center transition duration-300 transform hover:scale-105" disabled>
                     <i class="fas fa-exchange-alt text-3xl mb-2"></i>
                     <span>MIGRASI MEMBERCARD</span>
@@ -233,14 +280,14 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-purple-50 p-4 rounded-custom border border-purple-200">
                     <h3 class="font-bold text-purple-700 mb-2">Outlet & Kasir</h3>
-                    <p class="text-sm"><span id="info-outlet" class="font-semibold">Belum dipilih</span></p>
-                    <p class="text-sm"><span id="info-kasir" class="font-semibold">Belum dipilih</span></p>
+                    <p class="text-sm">Outlet: <span id="info-outlet" class="font-semibold">Belum dipilih</span></p>
+                    <p class="text-sm">Kasir: <span id="info-kasir" class="font-semibold">Belum dipilih</span></p>
                 </div>
                 
                 <div class="bg-yellow-50 p-4 rounded-custom border border-yellow-200">
                     <h3 class="font-bold text-yellow-700 mb-2">Membercard Olsera</h3>
                     <p class="text-sm">Total data: <span id="info-olsera-count" class="font-semibold">-</span></p>
-                    <p class="text-sm">Status migrasi: <span id="info-olsera-migrasi" class="font-semibold">-</span></p>
+                    <p class="text-sm">Sudah migrasi: <span id="info-olsera-migrasi" class="font-semibold">-</span></p>
                 </div>
                 
                 <div class="bg-blue-50 p-4 rounded-custom border border-blue-200">
@@ -274,120 +321,6 @@
         </div>
     </footer>
 
-    <!-- Modal Data Membercard Olsera -->
-    <div id="modal-olsera" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-purple-800"><i class="fas fa-id-card-alt mr-3"></i>Data Membercard Olsera</h2>
-                    <button id="close-olsera" class="text-gray-500 hover:text-gray-700 text-2xl">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div class="mb-6">
-                    <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
-                        <div class="flex-1">
-                            <div class="relative">
-                                <input type="text" id="search-olsera" placeholder="Cari berdasarkan nama atau nomor HP..." class="w-full p-3 pl-10 border border-purple-300 rounded-custom focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                                <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
-                            </div>
-                        </div>
-                        <button id="search-btn-olsera" class="btn-yellow mt-2 md:mt-0 px-6 py-3 rounded-custom font-bold">
-                            <i class="fas fa-search mr-2"></i>Cari
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="table-container">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-purple-100">
-                            <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">ID</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Nama</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Nomor HP</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Loyalty Points</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Status Migrasi</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="olsera-table-body" class="bg-white divide-y divide-gray-200">
-                            <!-- Data will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- Pagination -->
-                <div id="olsera-pagination" class="mt-4 flex justify-center items-center space-x-2">
-                    <!-- Pagination will be generated here -->
-                </div>
-                
-                <div class="mt-6 text-center">
-                    <button id="close-olsera-bottom" class="bg-gray-500 text-white px-6 py-3 rounded-custom font-bold hover:bg-gray-600">
-                        <i class="fas fa-times mr-2"></i>Tutup
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Data Membercard Digital -->
-    <div id="modal-digital" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-blue-800"><i class="fas fa-mobile-alt mr-3"></i>Data Membercard Digital</h2>
-                    <button id="close-digital" class="text-gray-500 hover:text-gray-700 text-2xl">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div class="mb-6">
-                    <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
-                        <div class="flex-1">
-                            <div class="relative">
-                                <input type="text" id="search-digital" placeholder="Cari berdasarkan nama atau nomor WA..." class="w-full p-3 pl-10 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
-                            </div>
-                        </div>
-                        <button id="search-btn-digital" class="btn-blue mt-2 md:mt-0 px-6 py-3 rounded-custom font-bold">
-                            <i class="fas fa-search mr-2"></i>Cari
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="table-container">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-blue-100">
-                            <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">ID Member</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Nama</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Nomor WA</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Point</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Status</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Outlet</th>
-                            </tr>
-                        </thead>
-                        <tbody id="digital-table-body" class="bg-white divide-y divide-gray-200">
-                            <!-- Data will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- Pagination -->
-                <div id="digital-pagination" class="mt-4 flex justify-center items-center space-x-2">
-                    <!-- Pagination will be generated here -->
-                </div>
-                
-                <div class="mt-6 text-center">
-                    <button id="close-digital-bottom" class="bg-gray-500 text-white px-6 py-3 rounded-custom font-bold hover:bg-gray-600">
-                        <i class="fas fa-times mr-2"></i>Tutup
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal Migrasi -->
     <div id="modal-migrasi" class="modal-overlay hidden">
         <div class="modal-content">
@@ -417,7 +350,7 @@
                             <h3 class="font-bold text-yellow-700 mb-3 text-lg"><i class="fas fa-user-clock mr-2"></i>Customer Lama (Olsera)</h3>
                             <div class="mb-4">
                                 <div class="relative">
-                                    <input type="text" id="search-customer-lama" placeholder="Cari customer lama..." class="w-full p-3 pl-10 border border-yellow-300 rounded-custom focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+                                    <input type="text" id="search-customer-lama" placeholder="Cari berdasarkan Nama, No HP, atau ID Member..." class="w-full p-3 pl-10 border border-yellow-300 rounded-custom focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
                                     <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
                                 </div>
                                 <button id="search-btn-customer-lama" class="btn-yellow w-full mt-2 px-6 py-3 rounded-custom font-bold">
@@ -426,11 +359,13 @@
                             </div>
                             
                             <div id="customer-lama-result" class="hidden bg-yellow-50 p-4 rounded-custom border border-yellow-200">
-                                <h4 class="font-bold text-yellow-800 mb-2">Customer Terpilih:</h4>
+                                <h4 class="font-bold text-yellow-800 mb-2">Customer Lama Terpilih:</h4>
                                 <p><span class="font-semibold">Nama:</span> <span id="selected-customer-lama-nama">-</span></p>
                                 <p><span class="font-semibold">No HP:</span> <span id="selected-customer-lama-phone">-</span></p>
-                                <p><span class="font-semibold">Loyalty Points:</span> <span id="selected-customer-lama-points">-</span></p>
                                 <p><span class="font-semibold">ID Member:</span> <span id="selected-customer-lama-id">-</span></p>
+                                <p><span class="font-semibold">Outlet:</span> <span id="selected-customer-lama-outlet">-</span></p>
+                                <p><span class="font-semibold">Loyalty Points:</span> <span id="selected-customer-lama-points">-</span></p>
+                                <p><span class="font-semibold">Status Migrasi:</span> <span id="selected-customer-lama-status" class="status-badge status-pending">-</span></p>
                             </div>
                         </div>
                         
@@ -443,7 +378,7 @@
                                 </div>
                                 
                                 <div class="relative">
-                                    <input type="text" id="search-customer-baru" placeholder="Cari customer baru..." class="w-full p-3 pl-10 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <input type="text" id="search-customer-baru" placeholder="Cari berdasarkan Nama, No WA, atau ID Member..." class="w-full p-3 pl-10 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
                                 </div>
                                 <button id="search-btn-customer-baru" class="btn-blue w-full mt-2 px-6 py-3 rounded-custom font-bold">
@@ -452,11 +387,13 @@
                             </div>
                             
                             <div id="customer-baru-result" class="hidden bg-blue-50 p-4 rounded-custom border border-blue-200">
-                                <h4 class="font-bold text-blue-800 mb-2">Customer Terpilih:</h4>
+                                <h4 class="font-bold text-blue-800 mb-2">Customer Baru Terpilih:</h4>
                                 <p><span class="font-semibold">Nama:</span> <span id="selected-customer-baru-nama">-</span></p>
                                 <p><span class="font-semibold">No WA:</span> <span id="selected-customer-baru-wa">-</span></p>
                                 <p><span class="font-semibold">ID Member:</span> <span id="selected-customer-baru-id">-</span></p>
+                                <p><span class="font-semibold">Outlet:</span> <span id="selected-customer-baru-outlet">-</span></p>
                                 <p><span class="font-semibold">Point Saat Ini:</span> <span id="selected-customer-baru-point">-</span></p>
+                                <p><span class="font-semibold">Status:</span> <span id="selected-customer-baru-status" class="status-badge">-</span></p>
                             </div>
                         </div>
                     </div>
@@ -476,6 +413,11 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr class="border-b">
+                                    <td class="px-4 py-3 font-semibold text-gray-700">Outlet</td>
+                                    <td class="px-4 py-3" id="compare-outlet-lama">-</td>
+                                    <td class="px-4 py-3" id="compare-outlet-baru">-</td>
+                                </tr>
                                 <tr class="border-b">
                                     <td class="px-4 py-3 font-semibold text-gray-700">Nama Customer</td>
                                     <td class="px-4 py-3" id="compare-nama-lama">-</td>
@@ -514,8 +456,18 @@
                         </table>
                     </div>
                     
-                    <div class="mt-6 bg-yellow-50 p-4 rounded-custom border border-yellow-200">
-                        <p class="font-semibold text-yellow-800"><i class="fas fa-exclamation-triangle mr-2"></i>Pastikan validasi data member lama dan data member baru sudah benar sebelum submit migrasi</p>
+                    <!-- Validation Warning -->
+                    <div id="migrasi-warning" class="mt-4 hidden">
+                        <div id="already-migrated-warning" class="bg-red-50 p-4 rounded-custom border border-red-200 mb-3 hidden">
+                            <p class="font-semibold text-red-800"><i class="fas fa-exclamation-circle mr-2"></i>Customer ini sudah melakukan migrasi sebelumnya. Tidak dapat migrasi ulang.</p>
+                        </div>
+                        
+                        <div id="phone-mismatch-warning" class="bg-yellow-50 p-4 rounded-custom border border-yellow-200 hidden">
+                            <p class="font-semibold text-yellow-800"><i class="fas fa-exclamation-triangle mr-2"></i>Nomor WA berbeda antara customer lama dan baru:</p>
+                            <p class="text-sm mt-1">Lama: <span id="warning-phone-lama" class="font-bold">-</span></p>
+                            <p class="text-sm">Baru: <span id="warning-phone-baru" class="font-bold">-</span></p>
+                            <p class="text-sm mt-2">Apakah Anda yakin akan melanjutkan migrasi?</p>
+                        </div>
                     </div>
                     
                     <div class="mt-6 text-center">
@@ -532,33 +484,11 @@
                 </div>
             </div>
         </div>
-    </div>
+    </modal>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-custom shadow-lg z-50 hidden transform transition-transform duration-300 translate-y-10">
-        <div class="flex items-center">
-            <i id="toast-icon" class="fas fa-info-circle mr-3 text-xl"></i>
-            <div>
-                <p id="toast-title" class="font-bold"></p>
-                <p id="toast-message" class="text-sm"></p>
-            </div>
-            <button id="close-toast" class="ml-4 text-gray-400 hover:text-white">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white p-6 rounded-custom shadow-xl flex flex-col items-center">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-700 mb-4"></div>
-            <p class="text-gray-700 font-semibold" id="loading-text">Memuat data...</p>
-        </div>
-    </div>
-
-    <!-- Search Results Modal for Customer Selection -->
+    <!-- Search Results Modal -->
     <div id="modal-search-results" class="modal-overlay hidden">
-        <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-content" style="max-width: 1000px;">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h2 id="search-results-title" class="text-2xl font-bold text-purple-800"></h2>
@@ -592,102 +522,89 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="hidden">
+        <div class="flex items-start">
+            <div id="toast-icon" class="mr-3 mt-1">
+                <i class="fas fa-info-circle text-xl"></i>
+            </div>
+            <div class="flex-1">
+                <p id="toast-title" class="font-bold text-gray-800"></p>
+                <p id="toast-message" class="text-sm text-gray-600 mt-1"></p>
+            </div>
+            <button id="close-toast" class="ml-4 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-6 rounded-custom shadow-xl flex flex-col items-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-700 mb-4"></div>
+            <p class="text-gray-700 font-semibold" id="loading-text">Memuat data...</p>
+        </div>
+    </div>
+
     <script>
-        // Supabase Configuration
+        // =================== KONFIGURASI ===================
         const supabaseUrl = 'https://intzwjmlypmopzauxeqt.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludHp3am1seXBtb3B6YXV4ZXF0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDcxNzkxMiwiZXhwIjoyMDcwMjkzOTEyfQ.Sx_VwOEHbLjVhc3rL96hlIGNkiZ44a4oD9T8DcBzwGI';
-        
-        // WAHA Configuration
         const WAHA_URL = 'https://waha-yetv8qi4e3zk.anakit.sumopod.my.id/api/sendText';
         const WAHA_API_KEY = 'sfcoGbpdLDkGZhKw2rx8sbb14vf4d8V6';
         
-        // Initialize Supabase client
+        // =================== INISIALISASI ===================
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
         
-        // Global variables
+        // =================== VARIABEL GLOBAL ===================
         let selectedOutlet = '';
         let selectedKasir = '';
         let konversiPointValue = 1;
-        
-        let currentOlseraPage = 1;
-        let currentDigitalPage = 1;
         let currentSearchPage = 1;
-        let searchType = ''; // 'olsera', 'digital', 'customer-lama', 'customer-baru'
+        let searchType = '';
         let searchResults = [];
-        
         let selectedCustomerLama = null;
         let selectedCustomerBaru = null;
         
-        // DOM Elements
+        // =================== DOM ELEMENTS ===================
         const outletSelect = document.getElementById('outlet-select');
         const kasirSelect = document.getElementById('kasir-select');
         const currentOutletSpan = document.getElementById('current-outlet');
         const currentKasirSpan = document.getElementById('current-kasir');
         const infoOutletSpan = document.getElementById('info-outlet');
         const infoKasirSpan = document.getElementById('info-kasir');
-        
-        const btnOlsera = document.getElementById('btn-olsera');
-        const btnDigital = document.getElementById('btn-digital');
         const btnMigrasi = document.getElementById('btn-migrasi');
-        
-        // Modals
-        const modalOlsera = document.getElementById('modal-olsera');
-        const modalDigital = document.getElementById('modal-digital');
         const modalMigrasi = document.getElementById('modal-migrasi');
         const modalSearchResults = document.getElementById('modal-search-results');
-        
-        // Toast
         const toast = document.getElementById('toast');
         const toastTitle = document.getElementById('toast-title');
         const toastMessage = document.getElementById('toast-message');
         const toastIcon = document.getElementById('toast-icon');
-        
-        // Loading overlay
         const loadingOverlay = document.getElementById('loading-overlay');
         const loadingText = document.getElementById('loading-text');
         
-        // Initialize application
+        // =================== INISIALISASI APLIKASI ===================
         document.addEventListener('DOMContentLoaded', function() {
             loadOutlets();
             setupEventListeners();
-            
-            // PWA installation
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js').catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-                });
-            }
-            
-            // Update logo src (fallback if not found)
-            const logo = document.getElementById('logo');
-            logo.onerror = function() {
-                this.src = 'https://via.placeholder.com/64/7b3aed/FFFFFF?text=BB';
-            };
         });
         
-        // Setup event listeners
+        // =================== SETUP EVENT LISTENERS ===================
         function setupEventListeners() {
             // Outlet selection
-            outletSelect.addEventListener('change', function() {
+            outletSelect.addEventListener('change', async function() {
                 selectedOutlet = this.value;
                 currentOutletSpan.textContent = this.options[this.selectedIndex].text;
                 infoOutletSpan.textContent = this.options[this.selectedIndex].text;
                 
                 if (selectedOutlet) {
-                    loadKasir(selectedOutlet);
-                    btnOlsera.disabled = false;
-                    btnDigital.disabled = false;
+                    await loadKasir(selectedOutlet);
+                    await loadSystemInfo();
                     btnMigrasi.disabled = false;
-                    
-                    // Get konversi point from outlet
                     getKonversiPoint(selectedOutlet);
                 } else {
                     kasirSelect.disabled = true;
                     kasirSelect.innerHTML = '<option value="">-- Pilih Kasir --</option>';
-                    btnOlsera.disabled = true;
-                    btnDigital.disabled = true;
                     btnMigrasi.disabled = true;
                 }
             });
@@ -698,29 +615,18 @@
                 currentKasirSpan.textContent = this.options[this.selectedIndex].text;
                 infoKasirSpan.textContent = this.options[this.selectedIndex].text;
                 
-                // Update migrasi modal
                 document.getElementById('migrasi-outlet').textContent = outletSelect.options[outletSelect.selectedIndex].text;
                 document.getElementById('migrasi-kasir').textContent = this.options[this.selectedIndex].text;
             });
             
-            // Modal open buttons
-            btnOlsera.addEventListener('click', openModalOlsera);
-            btnDigital.addEventListener('click', openModalDigital);
+            // Modal open/close
             btnMigrasi.addEventListener('click', openModalMigrasi);
-            
-            // Modal close buttons
-            document.getElementById('close-olsera').addEventListener('click', closeModalOlsera);
-            document.getElementById('close-olsera-bottom').addEventListener('click', closeModalOlsera);
-            document.getElementById('close-digital').addEventListener('click', closeModalDigital);
-            document.getElementById('close-digital-bottom').addEventListener('click', closeModalDigital);
             document.getElementById('close-migrasi').addEventListener('click', closeModalMigrasi);
             document.getElementById('close-migrasi-bottom').addEventListener('click', closeModalMigrasi);
             document.getElementById('close-search-results').addEventListener('click', closeModalSearchResults);
             document.getElementById('close-search-results-bottom').addEventListener('click', closeModalSearchResults);
             
             // Search functionality
-            document.getElementById('search-btn-olsera').addEventListener('click', searchOlsera);
-            document.getElementById('search-btn-digital').addEventListener('click', searchDigital);
             document.getElementById('search-btn-customer-lama').addEventListener('click', searchCustomerLama);
             document.getElementById('search-btn-customer-baru').addEventListener('click', searchCustomerBaru);
             
@@ -733,14 +639,6 @@
             });
             
             // Search input enter key
-            document.getElementById('search-olsera').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') searchOlsera();
-            });
-            
-            document.getElementById('search-digital').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') searchDigital();
-            });
-            
             document.getElementById('search-customer-lama').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') searchCustomerLama();
             });
@@ -751,14 +649,14 @@
             
             // Close modals when clicking outside
             window.addEventListener('click', function(e) {
-                if (e.target === modalOlsera) closeModalOlsera();
-                if (e.target === modalDigital) closeModalDigital();
                 if (e.target === modalMigrasi) closeModalMigrasi();
                 if (e.target === modalSearchResults) closeModalSearchResults();
             });
         }
         
-        // Load outlets from Supabase
+        // =================== FUNGSI UTAMA ===================
+        
+        // 1. LOAD OUTLETS
         async function loadOutlets() {
             showLoading('Memuat data outlet...');
             
@@ -781,10 +679,6 @@
                     });
                     
                     showToast('success', 'Data outlet berhasil dimuat', `Total outlet: ${data.length}`);
-                    
-                    // Update info
-                    document.getElementById('info-olsera-count').textContent = '0';
-                    document.getElementById('info-digital-count').textContent = '0';
                 } else {
                     showToast('warning', 'Data outlet tidak ditemukan', 'Tambahkan data outlet terlebih dahulu');
                 }
@@ -796,7 +690,7 @@
             }
         }
         
-        // Load kasir based on selected outlet
+        // 2. LOAD KASIR
         async function loadKasir(outlet) {
             showLoading('Memuat data kasir...');
             
@@ -820,8 +714,6 @@
                         option.textContent = item.nama_karyawan;
                         kasirSelect.appendChild(option);
                     });
-                    
-                    showToast('success', 'Data kasir berhasil dimuat', `Total kasir: ${data.length}`);
                 } else {
                     showToast('warning', 'Data kasir tidak ditemukan', `Tidak ada kasir di outlet ${outlet}`);
                 }
@@ -833,7 +725,49 @@
             }
         }
         
-        // Get konversi point from outlet
+        // 3. LOAD SYSTEM INFO (Auto-load setelah outlet dipilih)
+        async function loadSystemInfo() {
+            if (!selectedOutlet) return;
+            
+            try {
+                // Hitung membercard_olsera berdasarkan outlet
+                const { count: olseraCount } = await supabase
+                    .from('membercard_olsera')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('outlet', selectedOutlet);
+                
+                // Hitung status migrasi
+                const { count: migratedCount } = await supabase
+                    .from('membercard_olsera')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('outlet', selectedOutlet)
+                    .eq('status_migrasi', 'Sudah Migrasi');
+                
+                // Hitung membercard digital berdasarkan outlet
+                const { count: digitalCount } = await supabase
+                    .from('membercard')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('outlet', selectedOutlet);
+                
+                // Hitung status aktif
+                const { count: activeCount } = await supabase
+                    .from('membercard')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('outlet', selectedOutlet)
+                    .eq('status', 'active');
+                
+                // Update UI
+                document.getElementById('info-olsera-count').textContent = olseraCount || 0;
+                document.getElementById('info-olsera-migrasi').textContent = `${migratedCount || 0} dari ${olseraCount || 0} sudah migrasi`;
+                document.getElementById('info-digital-count').textContent = digitalCount || 0;
+                document.getElementById('info-digital-active').textContent = `${activeCount || 0} dari ${digitalCount || 0} aktif`;
+                
+            } catch (error) {
+                console.error('Error loading system info:', error);
+            }
+        }
+        
+        // 4. GET KONVERSI POINT
         async function getKonversiPoint(outlet) {
             try {
                 const { data, error } = await supabase
@@ -853,66 +787,33 @@
             }
         }
         
-        // Open modals
-        function openModalOlsera() {
-            modalOlsera.classList.remove('hidden');
-            searchOlsera();
-        }
-        
-        function openModalDigital() {
-            modalDigital.classList.remove('hidden');
-            searchDigital();
-        }
-        
-        function openModalMigrasi() {
-            if (!selectedOutlet || !selectedKasir) {
-                showToast('warning', 'Pilih outlet dan kasir terlebih dahulu', 'Silakan pilih outlet dan kasir sebelum melakukan migrasi');
+        // 5. SEARCH CUSTOMER LAMA (Dengan filter outlet)
+        async function searchCustomerLama() {
+            const searchTerm = document.getElementById('search-customer-lama').value.trim();
+            searchType = 'customer-lama';
+            currentSearchPage = 1;
+            
+            if (!searchTerm) {
+                showToast('warning', 'Masukkan kata kunci pencarian', 'Silakan masukkan nama, nomor HP, atau ID Member');
                 return;
             }
             
-            modalMigrasi.classList.remove('hidden');
-            document.getElementById('migrasi-outlet').textContent = outletSelect.options[outletSelect.selectedIndex].text;
-            document.getElementById('migrasi-kasir').textContent = kasirSelect.options[kasirSelect.selectedIndex].text;
+            if (!selectedOutlet) {
+                showToast('warning', 'Pilih outlet terlebih dahulu', 'Silakan pilih outlet sebelum mencari customer');
+                return;
+            }
             
-            // Reset form
-            resetMigrasiForm();
-        }
-        
-        // Close modals
-        function closeModalOlsera() {
-            modalOlsera.classList.add('hidden');
-        }
-        
-        function closeModalDigital() {
-            modalDigital.classList.add('hidden');
-        }
-        
-        function closeModalMigrasi() {
-            modalMigrasi.classList.add('hidden');
-        }
-        
-        function closeModalSearchResults() {
-            modalSearchResults.classList.add('hidden');
-        }
-        
-        // Search functions
-        async function searchOlsera() {
-            const searchTerm = document.getElementById('search-olsera').value.trim();
-            currentOlseraPage = 1;
-            
-            showLoading('Mencari data member Olsera...');
+            showLoading('Mencari customer lama...');
             
             try {
+                // FILTER: hanya data dengan outlet yang dipilih, search by name, phone, atau code
                 let query = supabase
                     .from('membercard_olsera')
-                    .select('*', { count: 'exact' });
+                    .select('*', { count: 'exact' })
+                    .eq('outlet', selectedOutlet)  // FILTER OUTLET
+                    .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%,code.ilike.%${searchTerm}%`);
                 
-                if (searchTerm) {
-                    query = query.or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`);
-                }
-                
-                // Add pagination
-                const from = (currentOlseraPage - 1) * 10;
+                const from = (currentSearchPage - 1) * 10;
                 const to = from + 9;
                 query = query.range(from, to).order('name');
                 
@@ -920,131 +821,54 @@
                 
                 if (error) throw error;
                 
-                displayOlseraResults(data, count);
-                
-                // Update info
-                document.getElementById('info-olsera-count').textContent = count || 0;
-                
-                const migratedCount = data.filter(item => item.status_migrasi === 'Sudah Migrasi').length;
-                document.getElementById('info-olsera-migrasi').textContent = `${migratedCount} dari ${data.length} sudah migrasi`;
-                
-            } catch (error) {
-                console.error('Error searching Olsera data:', error);
-                showToast('error', 'Gagal mencari data Olsera', error.message);
-            } finally {
-                hideLoading();
-            }
-        }
-        
-        async function searchDigital() {
-            const searchTerm = document.getElementById('search-digital').value.trim();
-            currentDigitalPage = 1;
-            
-            showLoading('Mencari data member digital...');
-            
-            try {
-                let query = supabase
-                    .from('membercard')
-                    .select('*', { count: 'exact' });
-                
-                if (searchTerm) {
-                    query = query.or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`);
+                if (data.length === 0) {
+                    showToast('info', 'Customer tidak ditemukan', 'Tidak ada customer lama dengan kata kunci tersebut di outlet ini');
+                    return;
                 }
                 
-                // Add pagination
-                const from = (currentDigitalPage - 1) * 10;
-                const to = from + 9;
-                query = query.range(from, to).order('nama');
-                
-                const { data, error, count } = await query;
-                
-                if (error) throw error;
-                
-                displayDigitalResults(data, count);
-                
-                // Update info
-                document.getElementById('info-digital-count').textContent = count || 0;
-                
-                const activeCount = data.filter(item => item.status === 'active').length;
-                document.getElementById('info-digital-active').textContent = `${activeCount} dari ${data.length} aktif`;
+                searchResults = data;
+                displaySearchResults(data, count, 'customer-lama');
                 
             } catch (error) {
-                console.error('Error searching digital data:', error);
-                showToast('error', 'Gagal mencari data digital', error.message);
+                console.error('Error searching customer lama:', error);
+                showToast('error', 'Gagal mencari customer lama', error.message);
             } finally {
                 hideLoading();
             }
         }
         
-        async function searchCustomerLama() {
-    const searchTerm = document.getElementById('search-customer-lama').value.trim();
-    searchType = 'customer-lama';
-    currentSearchPage = 1;
-    
-    if (!searchTerm) {
-        showToast('warning', 'Masukkan kata kunci pencarian', 'Silakan masukkan nama atau nomor HP untuk mencari customer lama');
-        return;
-    }
-    
-    showLoading('Mencari customer lama...');
-    
-    try {
-        // PERBAIKAN: Hapus filter status_migrasi, gunakan ilike untuk case-insensitive
-        let query = supabase
-            .from('membercard_olsera')
-            .select('*', { count: 'exact' })
-            .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`);
-            // HAPUS: .is('status_migrasi', null) atau .or('status_migrasi.is.null,status_migrasi.eq.belum migrasi')
-        
-        // Add pagination
-        const from = (currentSearchPage - 1) * 10;
-        const to = from + 9;
-        query = query.range(from, to).order('name');
-        
-        const { data, error, count } = await query;
-        
-        if (error) throw error;
-        
-        if (data.length === 0) {
-            showToast('info', 'Customer tidak ditemukan', 'Tidak ada customer lama dengan kata kunci tersebut');
-            return;
-        }
-        
-        searchResults = data;
-        displaySearchResults(data, count, 'customer-lama');
-        
-    } catch (error) {
-        console.error('Error searching customer lama:', error);
-        showToast('error', 'Gagal mencari customer lama', error.message);
-    } finally {
-        hideLoading();
-    }
-}
+        // 6. SEARCH CUSTOMER BARU (Dengan filter outlet)
         async function searchCustomerBaru() {
             const searchTerm = document.getElementById('search-customer-baru').value.trim();
             searchType = 'customer-baru';
             currentSearchPage = 1;
             
-            // If we have selected customer lama, try to find automatically first
+            // Jika ada customer lama terpilih, coba auto-find
             if (selectedCustomerLama && !searchTerm) {
                 await findCustomerBaruByPhone(selectedCustomerLama.phone);
                 return;
             }
             
             if (!searchTerm) {
-                showToast('warning', 'Masukkan kata kunci pencarian', 'Silakan masukkan nama atau nomor WA untuk mencari customer baru');
+                showToast('warning', 'Masukkan kata kunci pencarian', 'Silakan masukkan nama, nomor WA, atau ID Member');
+                return;
+            }
+            
+            if (!selectedOutlet) {
+                showToast('warning', 'Pilih outlet terlebih dahulu', 'Silakan pilih outlet sebelum mencari customer');
                 return;
             }
             
             showLoading('Mencari customer baru...');
             
             try {
+                // FILTER: hanya data dengan outlet yang dipilih, search by nama, nomorWA, atau id_member
                 let query = supabase
                     .from('membercard')
                     .select('*', { count: 'exact' })
-                    .or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`);
+                    .eq('outlet', selectedOutlet)  // FILTER OUTLET
+                    .or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%,id_member.ilike.%${searchTerm}%`);
                 
-                // Add pagination
                 const from = (currentSearchPage - 1) * 10;
                 const to = from + 9;
                 query = query.range(from, to).order('nama');
@@ -1054,7 +878,7 @@
                 if (error) throw error;
                 
                 if (data.length === 0) {
-                    showToast('info', 'Customer tidak ditemukan', 'Tidak ada customer baru dengan kata kunci tersebut');
+                    showToast('info', 'Customer tidak ditemukan', 'Tidak ada customer baru dengan kata kunci tersebut di outlet ini');
                     return;
                 }
                 
@@ -1069,6 +893,7 @@
             }
         }
         
+        // 7. AUTO-FIND CUSTOMER BARU BY PHONE
         async function findCustomerBaruByPhone(phone) {
             showLoading('Mencari customer baru berdasarkan nomor HP...');
             
@@ -1086,17 +911,16 @@
                 const { data, error } = await supabase
                     .from('membercard')
                     .select('*')
+                    .eq('outlet', selectedOutlet)  // FILTER OUTLET
                     .ilike('nomorWA', `%${searchPhone}%`)
                     .limit(1);
                 
                 if (error) throw error;
                 
                 if (data && data.length > 0) {
-                    // Auto-select customer baru
                     document.getElementById('customer-baru-auto').classList.remove('hidden');
                     selectCustomerBaru(data[0]);
                 } else {
-                    // Show modal for manual selection
                     showToast('info', 'Customer baru tidak ditemukan', 'Silakan cari customer baru secara manual');
                     document.getElementById('customer-baru-auto').classList.add('hidden');
                 }
@@ -1108,128 +932,40 @@
             }
         }
         
-        // Display results functions
-        function displayOlseraResults(data, totalCount) {
-            const tbody = document.getElementById('olsera-table-body');
-            tbody.innerHTML = '';
-            
-            if (data.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-                        <i class="fas fa-database text-3xl mb-2 block"></i>
-                        <p>Tidak ada data ditemukan</p>
-                    </td>
-                `;
-                tbody.appendChild(row);
-                return;
-            }
-            
-            data.forEach(item => {
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-gray-50';
-                
-                const statusClass = item.status_migrasi === 'Sudah Migrasi' ? 'status-migrated' : 'status-active';
-                const statusText = item.status_migrasi === 'Sudah Migrasi' ? 'Sudah Migrasi' : 'Belum Migrasi';
-                
-                row.innerHTML = `
-                    <td class="px-4 py-3 text-sm">${item.code || '-'}</td>
-                    <td class="px-4 py-3">
-                        <div class="font-medium text-gray-900">${item.name || '-'}</div>
-                        <div class="text-xs text-gray-500">${item.customer_type || '-'}</div>
-                    </td>
-                    <td class="px-4 py-3 text-sm">${item.phone || '-'}</td>
-                    <td class="px-4 py-3 text-sm font-bold">${item.loyalty_points || 0}</td>
-                    <td class="px-4 py-3">
-                        <span class="status-badge ${statusClass}">${statusText}</span>
-                    </td>
-                    <td class="px-4 py-3 text-sm">
-                        <button class="text-purple-600 hover:text-purple-900 mr-3" onclick="viewOlseraDetail(${item.id})">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-            
-            // Generate pagination
-            generatePagination('olsera-pagination', currentOlseraPage, totalCount, 10, 'olsera');
-        }
-        
-        function displayDigitalResults(data, totalCount) {
-            const tbody = document.getElementById('digital-table-body');
-            tbody.innerHTML = '';
-            
-            if (data.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-                        <i class="fas fa-database text-3xl mb-2 block"></i>
-                        <p>Tidak ada data ditemukan</p>
-                    </td>
-                `;
-                tbody.appendChild(row);
-                return;
-            }
-            
-            data.forEach(item => {
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-gray-50';
-                
-                const statusClass = item.status === 'active' ? 'status-active' : 'status-inactive';
-                
-                row.innerHTML = `
-                    <td class="px-4 py-3 text-sm font-bold">${item.id_member || '-'}</td>
-                    <td class="px-4 py-3">
-                        <div class="font-medium text-gray-900">${item.nama || '-'}</div>
-                        <div class="text-xs text-gray-500">${item.tanggal_create || '-'}</div>
-                    </td>
-                    <td class="px-4 py-3 text-sm">${item.nomorWA || '-'}</td>
-                    <td class="px-4 py-3 text-sm font-bold">${item.point || 0}</td>
-                    <td class="px-4 py-3">
-                        <span class="status-badge ${statusClass}">${item.status || 'unknown'}</span>
-                    </td>
-                    <td class="px-4 py-3 text-sm">${item.outlet || '-'}</td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-            
-            // Generate pagination
-            generatePagination('digital-pagination', currentDigitalPage, totalCount, 10, 'digital');
-        }
-        
+        // 8. DISPLAY SEARCH RESULTS (Dengan kolom outlet dan status)
         function displaySearchResults(data, totalCount, type) {
             const modal = modalSearchResults;
             const title = document.getElementById('search-results-title');
             const thead = document.getElementById('search-results-thead');
             const tbody = document.getElementById('search-results-tbody');
             
-            // Set title based on type
-            if (type === 'customer-lama') {
-                title.textContent = 'Pilih Customer Lama (Olsera)';
-            } else {
-                title.textContent = 'Pilih Customer Baru (Digital)';
-            }
+            // Set title
+            title.textContent = type === 'customer-lama' 
+                ? 'Pilih Customer Lama (Olsera)' 
+                : 'Pilih Customer Baru (Digital)';
             
             // Set table headers
             if (type === 'customer-lama') {
                 thead.innerHTML = `
                     <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-yellow-800 uppercase">Outlet</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-yellow-800 uppercase">ID Member</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-yellow-800 uppercase">Nama</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-yellow-800 uppercase">Nomor HP</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-yellow-800 uppercase">Loyalty Points</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-yellow-800 uppercase">Status Migrasi</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-yellow-800 uppercase">Aksi</th>
                     </tr>
                 `;
             } else {
                 thead.innerHTML = `
                     <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">Outlet</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">ID Member</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">Nama</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">Nomor WA</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">ID Member</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">Point</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">Status</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">Aksi</th>
                     </tr>
                 `;
@@ -1241,7 +977,7 @@
             if (data.length === 0) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td colspan="${type === 'customer-lama' ? 4 : 5}" class="px-4 py-8 text-center text-gray-500">
+                    <td colspan="${type === 'customer-lama' ? 7 : 7}" class="px-4 py-8 text-center text-gray-500">
                         <i class="fas fa-database text-3xl mb-2 block"></i>
                         <p>Tidak ada data ditemukan</p>
                     </td>
@@ -1253,28 +989,52 @@
                     row.className = 'hover:bg-gray-50';
                     
                     if (type === 'customer-lama') {
+                        // Tampilkan status migrasi
+                        const statusClass = item.status_migrasi === 'Sudah Migrasi' 
+                            ? 'status-migrated' 
+                            : item.status_migrasi === 'belum migrasi' 
+                                ? 'status-pending'
+                                : 'status-pending';
+                        const statusText = item.status_migrasi === 'Sudah Migrasi' 
+                            ? 'Sudah Migrasi' 
+                            : item.status_migrasi === 'belum migrasi'
+                                ? 'Belum Migrasi'
+                                : 'Belum Migrasi';
+                        
                         row.innerHTML = `
+                            <td class="px-4 py-3 text-sm">${item.outlet || '-'}</td>
+                            <td class="px-4 py-3 text-sm font-bold">${item.code || '-'}</td>
                             <td class="px-4 py-3">
                                 <div class="font-medium text-gray-900">${item.name || '-'}</div>
-                                <div class="text-xs text-gray-500">${item.code || '-'}</div>
                             </td>
                             <td class="px-4 py-3 text-sm">${item.phone || '-'}</td>
                             <td class="px-4 py-3 text-sm font-bold">${item.loyalty_points || 0}</td>
+                            <td class="px-4 py-3">
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                            </td>
                             <td class="px-4 py-3 text-sm">
-                                <button class="btn-yellow px-3 py-1 rounded-custom text-xs font-bold" onclick="selectCustomerLama(${item.id})">
-                                    <i class="fas fa-check mr-1"></i>PILIH
+                                <button class="btn-yellow px-3 py-1 rounded-custom text-xs font-bold" onclick="selectCustomerLama(${item.id})" ${item.status_migrasi === 'Sudah Migrasi' ? 'disabled style="opacity:0.5; cursor:not-allowed"' : ''}>
+                                    <i class="fas fa-check mr-1"></i>${item.status_migrasi === 'Sudah Migrasi' ? 'SUDAH MIGRASI' : 'PILIH'}
                                 </button>
                             </td>
                         `;
                     } else {
+                        // Tampilkan status membercard
+                        const statusClass = item.status === 'active' 
+                            ? 'status-active' 
+                            : 'status-inactive';
+                        
                         row.innerHTML = `
+                            <td class="px-4 py-3 text-sm">${item.outlet || '-'}</td>
+                            <td class="px-4 py-3 text-sm font-bold">${item.id_member || '-'}</td>
                             <td class="px-4 py-3">
                                 <div class="font-medium text-gray-900">${item.nama || '-'}</div>
-                                <div class="text-xs text-gray-500">${item.outlet || '-'}</div>
                             </td>
                             <td class="px-4 py-3 text-sm">${item.nomorWA || '-'}</td>
-                            <td class="px-4 py-3 text-sm font-bold">${item.id_member || '-'}</td>
                             <td class="px-4 py-3 text-sm font-bold">${item.point || 0}</td>
+                            <td class="px-4 py-3">
+                                <span class="status-badge ${statusClass}">${item.status || 'unknown'}</span>
+                            </td>
                             <td class="px-4 py-3 text-sm">
                                 <button class="btn-blue px-3 py-1 rounded-custom text-xs font-bold" onclick="selectCustomerBaru(${item.id})">
                                     <i class="fas fa-check mr-1"></i>PILIH
@@ -1294,136 +1054,8 @@
             modal.classList.remove('hidden');
         }
         
-        // Pagination functions
-        function generatePagination(containerId, currentPage, totalCount, itemsPerPage, type) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            
-            if (!totalCount || totalCount <= itemsPerPage) return;
-            
-            const totalPages = Math.ceil(totalCount / itemsPerPage);
-            const maxVisiblePages = 5;
-            
-            // Previous button
-            const prevButton = document.createElement('button');
-            prevButton.textContent = '«';
-            prevButton.className = 'pagination-btn';
-            prevButton.disabled = currentPage === 1;
-            prevButton.onclick = function() {
-                if (currentPage > 1) {
-                    if (type === 'olsera') {
-                        currentOlseraPage--;
-                        searchOlsera();
-                    } else if (type === 'digital') {
-                        currentDigitalPage--;
-                        searchDigital();
-                    } else if (type === 'search') {
-                        currentSearchPage--;
-                        loadSearchResultsPage();
-                    }
-                }
-            };
-            container.appendChild(prevButton);
-            
-            // Page numbers
-            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-            
-            if (endPage - startPage + 1 < maxVisiblePages) {
-                startPage = Math.max(1, endPage - maxVisiblePages + 1);
-            }
-            
-            for (let i = startPage; i <= endPage; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.textContent = i;
-                pageButton.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
-                pageButton.onclick = function() {
-                    if (type === 'olsera') {
-                        currentOlseraPage = i;
-                        searchOlsera();
-                    } else if (type === 'digital') {
-                        currentDigitalPage = i;
-                        searchDigital();
-                    } else if (type === 'search') {
-                        currentSearchPage = i;
-                        loadSearchResultsPage();
-                    }
-                };
-                container.appendChild(pageButton);
-            }
-            
-            // Next button
-            const nextButton = document.createElement('button');
-            nextButton.textContent = '»';
-            nextButton.className = 'pagination-btn';
-            nextButton.disabled = currentPage === totalPages;
-            nextButton.onclick = function() {
-                if (currentPage < totalPages) {
-                    if (type === 'olsera') {
-                        currentOlseraPage++;
-                        searchOlsera();
-                    } else if (type === 'digital') {
-                        currentDigitalPage++;
-                        searchDigital();
-                    } else if (type === 'search') {
-                        currentSearchPage++;
-                        loadSearchResultsPage();
-                    }
-                }
-            };
-            container.appendChild(nextButton);
-            
-            // Page info
-            const pageInfo = document.createElement('span');
-            pageInfo.textContent = ` Hal ${currentPage} dari ${totalPages} (Total: ${totalCount})`;
-            pageInfo.className = 'ml-3 text-sm text-gray-600';
-            container.appendChild(pageInfo);
-        }
-        
-        async function loadSearchResultsPage() {
-    showLoading('Memuat halaman...');
-    
-    try {
-        let query;
-        const from = (currentSearchPage - 1) * 10;
-        const to = from + 9;
-        
-        if (searchType === 'customer-lama') {
-            const searchTerm = document.getElementById('search-customer-lama').value.trim();
-            // PERBAIKAN: Hapus filter status_migrasi
-            query = supabase
-                .from('membercard_olsera')
-                .select('*', { count: 'exact' })
-                .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`)
-                .range(from, to)
-                .order('name');
-        } else {
-            const searchTerm = document.getElementById('search-customer-baru').value.trim();
-            query = supabase
-                .from('membercard')
-                .select('*', { count: 'exact' })
-                .or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`)
-                .range(from, to)
-                .order('nama');
-        }
-        
-        const { data, error, count } = await query;
-        
-        if (error) throw error;
-        
-        searchResults = data;
-        displaySearchResults(data, count, searchType);
-        
-    } catch (error) {
-        console.error('Error loading search results page:', error);
-        showToast('error', 'Gagal memuat halaman', error.message);
-    } finally {
-        hideLoading();
-    }
-}
-        
-        // Customer selection functions
-        function selectCustomerLama(customerId) {
+        // 9. SELECT CUSTOMER LAMA
+        window.selectCustomerLama = function(customerId) {
             const customer = searchResults.find(item => item.id === customerId);
             
             if (!customer) return;
@@ -1433,8 +1065,17 @@
             // Update UI
             document.getElementById('selected-customer-lama-nama').textContent = customer.name || '-';
             document.getElementById('selected-customer-lama-phone').textContent = customer.phone || '-';
-            document.getElementById('selected-customer-lama-points').textContent = customer.loyalty_points || 0;
             document.getElementById('selected-customer-lama-id').textContent = customer.code || '-';
+            document.getElementById('selected-customer-lama-outlet').textContent = customer.outlet || '-';
+            document.getElementById('selected-customer-lama-points').textContent = customer.loyalty_points || 0;
+            
+            // Update status migrasi dengan badge
+            const statusElement = document.getElementById('selected-customer-lama-status');
+            statusElement.textContent = customer.status_migrasi || 'Belum Migrasi';
+            statusElement.className = 'status-badge ' + 
+                (customer.status_migrasi === 'Sudah Migrasi' ? 'status-migrated' : 
+                 customer.status_migrasi === 'belum migrasi' ? 'status-pending' : 'status-pending');
+            
             document.getElementById('customer-lama-result').classList.remove('hidden');
             
             // Close search modal
@@ -1444,9 +1085,15 @@
             if (customer.phone) {
                 findCustomerBaruByPhone(customer.phone);
             }
-        }
+            
+            // Jika customer baru sudah dipilih, show comparison
+            if (selectedCustomerBaru) {
+                showComparison();
+            }
+        };
         
-        function selectCustomerBaru(customerId) {
+        // 10. SELECT CUSTOMER BARU
+        window.selectCustomerBaru = function(customerId) {
             const customer = searchResults.find(item => item.id === customerId);
             
             if (!customer) return;
@@ -1457,18 +1104,27 @@
             document.getElementById('selected-customer-baru-nama').textContent = customer.nama || '-';
             document.getElementById('selected-customer-baru-wa').textContent = customer.nomorWA || '-';
             document.getElementById('selected-customer-baru-id').textContent = customer.id_member || '-';
+            document.getElementById('selected-customer-baru-outlet').textContent = customer.outlet || '-';
             document.getElementById('selected-customer-baru-point').textContent = customer.point || 0;
+            
+            // Update status dengan badge
+            const statusElement = document.getElementById('selected-customer-baru-status');
+            statusElement.textContent = customer.status || 'unknown';
+            statusElement.className = 'status-badge ' + 
+                (customer.status === 'active' ? 'status-active' : 'status-inactive');
+            
             document.getElementById('customer-baru-result').classList.remove('hidden');
             
             // Close search modal
             closeModalSearchResults();
             
-            // Show comparison if both customers are selected
-            if (selectedCustomerLama && selectedCustomerBaru) {
+            // Jika customer lama sudah dipilih, show comparison
+            if (selectedCustomerLama) {
                 showComparison();
             }
-        }
+        };
         
+        // 11. SHOW COMPARISON (Dengan validasi)
         function showComparison() {
             if (!selectedCustomerLama || !selectedCustomerBaru) return;
             
@@ -1477,6 +1133,8 @@
             const newPoints = Math.ceil(loyaltyPoints / konversiPointValue);
             
             // Update comparison table
+            document.getElementById('compare-outlet-lama').textContent = selectedCustomerLama.outlet || '-';
+            document.getElementById('compare-outlet-baru').textContent = selectedCustomerBaru.outlet || '-';
             document.getElementById('compare-nama-lama').textContent = selectedCustomerLama.name || '-';
             document.getElementById('compare-nama-baru').textContent = selectedCustomerBaru.nama || '-';
             document.getElementById('compare-phone-lama').textContent = selectedCustomerLama.phone || '-';
@@ -1489,52 +1147,106 @@
             document.getElementById('compare-konversi').textContent = konversiPointValue;
             document.getElementById('compare-point-baru').textContent = newPoints;
             
+            // VALIDASI 1: Cek status migrasi
+            const alreadyMigratedWarning = document.getElementById('already-migrated-warning');
+            if (selectedCustomerLama.status_migrasi === 'Sudah Migrasi') {
+                alreadyMigratedWarning.classList.remove('hidden');
+                document.getElementById('submit-migrasi').disabled = true;
+                document.getElementById('submit-migrasi').style.opacity = '0.5';
+                document.getElementById('submit-migrasi').style.cursor = 'not-allowed';
+            } else {
+                alreadyMigratedWarning.classList.add('hidden');
+                document.getElementById('submit-migrasi').disabled = false;
+                document.getElementById('submit-migrasi').style.opacity = '1';
+                document.getElementById('submit-migrasi').style.cursor = 'pointer';
+            }
+            
+            // VALIDASI 2: Cek nomor WA berbeda
+            const phoneMismatchWarning = document.getElementById('phone-mismatch-warning');
+            
+            // Format phone untuk comparison
+            let phoneLama = selectedCustomerLama.phone || '';
+            let phoneBaru = selectedCustomerBaru.nomorWA || '';
+            
+            // Normalize phone numbers
+            phoneLama = phoneLama.replace('+62', '62').replace(/^0/, '62');
+            phoneBaru = phoneBaru.replace('+62', '62').replace(/^0/, '62');
+            
+            if (phoneLama !== phoneBaru) {
+                document.getElementById('warning-phone-lama').textContent = selectedCustomerLama.phone || '-';
+                document.getElementById('warning-phone-baru').textContent = selectedCustomerBaru.nomorWA || '-';
+                phoneMismatchWarning.classList.remove('hidden');
+            } else {
+                phoneMismatchWarning.classList.add('hidden');
+            }
+            
+            // Show warning section jika ada warning
+            const warningSection = document.getElementById('migrasi-warning');
+            if (alreadyMigratedWarning.classList.contains('hidden') && 
+                phoneMismatchWarning.classList.contains('hidden')) {
+                warningSection.classList.add('hidden');
+            } else {
+                warningSection.classList.remove('hidden');
+            }
+            
             // Show comparison section
             document.getElementById('comparison-section').classList.remove('hidden');
         }
         
-        function resetMigrasiForm() {
-            selectedCustomerLama = null;
-            selectedCustomerBaru = null;
-            
-            document.getElementById('customer-lama-result').classList.add('hidden');
-            document.getElementById('customer-baru-result').classList.add('hidden');
-            document.getElementById('customer-baru-auto').classList.add('hidden');
-            document.getElementById('comparison-section').classList.add('hidden');
-            
-            document.getElementById('search-customer-lama').value = '';
-            document.getElementById('search-customer-baru').value = '';
-        }
-        
-        // Submit migrasi
+        // 12. SUBMIT MIGRASI (Dengan validasi)
         async function submitMigrasi() {
             if (!selectedCustomerLama || !selectedCustomerBaru) {
                 showToast('warning', 'Data belum lengkap', 'Pilih customer lama dan customer baru terlebih dahulu');
                 return;
             }
             
-            // Validation
+            // VALIDASI 1: Status sudah migrasi
             if (selectedCustomerLama.status_migrasi === 'Sudah Migrasi') {
                 showToast('error', 'Tidak dapat migrasi', 'Customer lama sudah melakukan migrasi sebelumnya');
                 return;
             }
             
+            // VALIDASI 2: Konfirmasi jika nomor WA berbeda
+            let phoneLama = selectedCustomerLama.phone || '';
+            let phoneBaru = selectedCustomerBaru.nomorWA || '';
+            
+            // Normalize phone numbers
+            phoneLama = phoneLama.replace('+62', '62').replace(/^0/, '62');
+            phoneBaru = phoneBaru.replace('+62', '62').replace(/^0/, '62');
+            
+            if (phoneLama !== phoneBaru) {
+                const confirmMessage = `Nomor WA berbeda:\n\n` +
+                    `Lama: ${selectedCustomerLama.phone}\n` +
+                    `Baru: ${selectedCustomerBaru.nomorWA}\n\n` +
+                    `Apakah Anda yakin akan melanjutkan migrasi?`;
+                
+                if (!confirm(confirmMessage)) {
+                    return;
+                }
+            }
+            
             // Calculate new points
             const loyaltyPoints = parseFloat(selectedCustomerLama.loyalty_points) || 0;
             const newPoints = Math.ceil(loyaltyPoints / konversiPointValue);
+            const currentPoints = parseInt(selectedCustomerBaru.point) || 0;
+            const updatedPoints = currentPoints + newPoints;
             
-            // Confirmation
-            if (!confirm(`Apakah Anda yakin akan melakukan migrasi?\n\nPoint Lama: ${loyaltyPoints}\nKonversi: ${konversiPointValue}\nPoint Baru: ${newPoints}`)) {
+            // Final confirmation
+            if (!confirm(`Konfirmasi Migrasi:\n\n` +
+                `Customer Lama: ${selectedCustomerLama.name}\n` +
+                `Customer Baru: ${selectedCustomerBaru.nama}\n` +
+                `Point Lama: ${loyaltyPoints}\n` +
+                `Konversi: ${konversiPointValue}\n` +
+                `Point Baru: ${newPoints}\n` +
+                `Total Point: ${updatedPoints}\n\n` +
+                `Lanjutkan migrasi?`)) {
                 return;
             }
             
             showLoading('Memproses migrasi...');
             
             try {
-                // Update membercard.point (add new points to existing points)
-                const currentPoints = parseInt(selectedCustomerBaru.point) || 0;
-                const updatedPoints = currentPoints + newPoints;
-                
+                // 1. Update membercard.point
                 const { error: error1 } = await supabase
                     .from('membercard')
                     .update({ 
@@ -1546,7 +1258,7 @@
                 
                 if (error1) throw error1;
                 
-                // Update membercard_olsera with migration data
+                // 2. Update membercard_olsera dengan migration data
                 const migrationData = {
                     outlet: selectedOutlet,
                     id_member: selectedCustomerBaru.id_member,
@@ -1566,15 +1278,18 @@
                 
                 if (error2) throw error2;
                 
-                // Send WhatsApp notification
+                // 3. Send WhatsApp notification
                 await sendWhatsAppNotification(selectedCustomerBaru.nomorWA, selectedCustomerBaru.nama, newPoints, updatedPoints);
                 
-                showToast('success', 'Migrasi berhasil', `Point baru: ${newPoints} (Total: ${updatedPoints}) telah ditambahkan ke membercard ${selectedCustomerBaru.nama}`);
+                // 4. Show success message
+                showToast('success', 'Migrasi berhasil', 
+                    `Point baru: ${newPoints} (Total: ${updatedPoints}) telah ditambahkan ke membercard ${selectedCustomerBaru.nama}`);
                 
-                // Reset form
+                // 5. Reset form dan update system info
                 resetMigrasiForm();
+                await loadSystemInfo();
                 
-                // Close modal after 3 seconds
+                // 6. Close modal after 3 seconds
                 setTimeout(() => {
                     closeModalMigrasi();
                 }, 3000);
@@ -1587,15 +1302,14 @@
             }
         }
         
-        // Send WhatsApp notification
+        // 13. SEND WHATSAPP NOTIFICATION
         async function sendWhatsAppNotification(nomorWA, nama, pointBaru, totalPoint) {
             try {
-                // Format phone number
                 let chatId = nomorWA.toString().trim();
                 
                 // Convert to proper format: 62xxxxxxxxxx@c.us
                 if (chatId.startsWith('+62')) {
-                    chatId = chatId.substring(1); // Remove +
+                    chatId = chatId.substring(1);
                 } else if (chatId.startsWith('08')) {
                     chatId = '62' + chatId.substring(1);
                 } else if (chatId.startsWith('628')) {
@@ -1604,12 +1318,10 @@
                     chatId = '62' + chatId;
                 }
                 
-                // Ensure it ends with @c.us
                 if (!chatId.endsWith('@c.us')) {
                     chatId += '@c.us';
                 }
                 
-                // Prepare message
                 const message = `Selamat membercard Babeh Barbershop anda telah berhasil dimigrasi!\n\n` +
                                `Nama: ${nama}\n` +
                                `Point migrasi: ${pointBaru} point\n` +
@@ -1619,7 +1331,6 @@
                                `Head Office: Jl. Abdul Ghani, Rempoa, Ciputat\n` +
                                `Contact: WA 0822-1001-7083`;
                 
-                // Send request to WAHA API
                 const response = await fetch(WAHA_URL, {
                     method: 'POST',
                     headers: {
@@ -1643,67 +1354,197 @@
                 
             } catch (error) {
                 console.error('Error sending WhatsApp notification:', error);
-                // Don't show error to user, just log it
             }
         }
         
-        // View detail functions
-        function viewOlseraDetail(id) {
-            const customer = searchResults.find(item => item.id === id);
-            if (!customer) return;
+        // =================== FUNGSI BANTUAN ===================
+        
+        // PAGINATION
+        function generatePagination(containerId, currentPage, totalCount, itemsPerPage, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
             
-            let detailHtml = `
-                <div class="bg-white rounded-custom p-6">
-                    <h3 class="text-xl font-bold text-purple-800 mb-4">Detail Membercard Olsera</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div><span class="font-semibold">ID:</span> ${customer.code || '-'}</div>
-                        <div><span class="font-semibold">Nama:</span> ${customer.name || '-'}</div>
-                        <div><span class="font-semibold">Jenis Kelamin:</span> ${customer.gender || '-'}</div>
-                        <div><span class="font-semibold">Tipe Customer:</span> ${customer.customer_type || '-'}</div>
-                        <div><span class="font-semibold">Email:</span> ${customer.email || '-'}</div>
-                        <div><span class="font-semibold">Telepon:</span> ${customer.phone || '-'}</div>
-                        <div><span class="font-semibold">Tanggal Lahir:</span> ${customer.birth_date || '-'}</div>
-                        <div><span class="font-semibold">Join Date:</span> ${customer.join_date ? new Date(customer.join_date).toLocaleDateString('id-ID') : '-'}</div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <span class="font-semibold">Alamat:</span>
-                        <p class="mt-1">${customer.address || '-'}</p>
-                        <p>${customer.subdistrict || ''} ${customer.city || ''} ${customer.state_province || ''} ${customer.postal_code || ''}</p>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        <div><span class="font-semibold">Loyalty Points:</span> ${customer.loyalty_points || 0}</div>
-                        <div><span class="font-semibold">Deposit:</span> ${customer.deposit || 0}</div>
-                        <div><span class="font-semibold">Credit Limit:</span> ${customer.credit_limit || 0}</div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <span class="font-semibold">Status:</span>
-                        ${customer.non_active === 'true' ? '<span class="status-badge status-inactive ml-2">Non Active</span>' : '<span class="status-badge status-active ml-2">Active</span>'}
-                        ${customer.status_migrasi === 'Sudah Migrasi' ? '<span class="status-badge status-migrated ml-2">Sudah Migrasi</span>' : ''}
-                    </div>
-                    
-                    <div class="mt-6 text-center">
-                        <button onclick="closeDetailModal()" class="bg-gray-500 text-white px-6 py-2 rounded-custom font-bold">
-                            <i class="fas fa-times mr-2"></i>Tutup
-                        </button>
-                    </div>
-                </div>
-            `;
+            if (!totalCount || totalCount <= itemsPerPage) return;
             
-            // Show in modal
-            const modal = modalSearchResults;
-            modal.querySelector('.modal-content').innerHTML = detailHtml;
-            modal.classList.remove('hidden');
+            const totalPages = Math.ceil(totalCount / itemsPerPage);
+            const maxVisiblePages = 5;
+            
+            // Previous button
+            const prevButton = document.createElement('button');
+            prevButton.textContent = '«';
+            prevButton.className = 'pagination-btn';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function() {
+                if (currentPage > 1) {
+                    if (type === 'search') {
+                        currentSearchPage--;
+                        loadSearchResultsPage();
+                    }
+                }
+            };
+            container.appendChild(prevButton);
+            
+            // Page numbers
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+                pageButton.onclick = function() {
+                    if (type === 'search') {
+                        currentSearchPage = i;
+                        loadSearchResultsPage();
+                    }
+                };
+                container.appendChild(pageButton);
+            }
+            
+            // Next button
+            const nextButton = document.createElement('button');
+            nextButton.textContent = '»';
+            nextButton.className = 'pagination-btn';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function() {
+                if (currentPage < totalPages) {
+                    if (type === 'search') {
+                        currentSearchPage++;
+                        loadSearchResultsPage();
+                    }
+                }
+            };
+            container.appendChild(nextButton);
+            
+            // Page info
+            const pageInfo = document.createElement('span');
+            pageInfo.textContent = ` Hal ${currentPage} dari ${totalPages} (Total: ${totalCount})`;
+            pageInfo.className = 'ml-3 text-sm text-gray-600';
+            container.appendChild(pageInfo);
         }
         
-        function closeDetailModal() {
+        // LOAD SEARCH RESULTS PAGE
+        async function loadSearchResultsPage() {
+            showLoading('Memuat halaman...');
+            
+            try {
+                let query;
+                const from = (currentSearchPage - 1) * 10;
+                const to = from + 9;
+                
+                if (searchType === 'customer-lama') {
+                    const searchTerm = document.getElementById('search-customer-lama').value.trim();
+                    query = supabase
+                        .from('membercard_olsera')
+                        .select('*', { count: 'exact' })
+                        .eq('outlet', selectedOutlet)
+                        .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%,code.ilike.%${searchTerm}%`)
+                        .range(from, to)
+                        .order('name');
+                } else {
+                    const searchTerm = document.getElementById('search-customer-baru').value.trim();
+                    query = supabase
+                        .from('membercard')
+                        .select('*', { count: 'exact' })
+                        .eq('outlet', selectedOutlet)
+                        .or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%,id_member.ilike.%${searchTerm}%`)
+                        .range(from, to)
+                        .order('nama');
+                }
+                
+                const { data, error, count } = await query;
+                
+                if (error) throw error;
+                
+                searchResults = data;
+                displaySearchResults(data, count, searchType);
+                
+            } catch (error) {
+                console.error('Error loading search results page:', error);
+                showToast('error', 'Gagal memuat halaman', error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // RESET MIGRASI FORM
+        function resetMigrasiForm() {
+            selectedCustomerLama = null;
+            selectedCustomerBaru = null;
+            
+            document.getElementById('customer-lama-result').classList.add('hidden');
+            document.getElementById('customer-baru-result').classList.add('hidden');
+            document.getElementById('customer-baru-auto').classList.add('hidden');
+            document.getElementById('comparison-section').classList.add('hidden');
+            document.getElementById('migrasi-warning').classList.add('hidden');
+            document.getElementById('already-migrated-warning').classList.add('hidden');
+            document.getElementById('phone-mismatch-warning').classList.add('hidden');
+            
+            document.getElementById('search-customer-lama').value = '';
+            document.getElementById('search-customer-baru').value = '';
+            
+            document.getElementById('submit-migrasi').disabled = false;
+            document.getElementById('submit-migrasi').style.opacity = '1';
+            document.getElementById('submit-migrasi').style.cursor = 'pointer';
+        }
+        
+        // MODAL FUNCTIONS
+        function openModalMigrasi() {
+            if (!selectedOutlet || !selectedKasir) {
+                showToast('warning', 'Pilih outlet dan kasir terlebih dahulu', 'Silakan pilih outlet dan kasir sebelum melakukan migrasi');
+                return;
+            }
+            
+            modalMigrasi.classList.remove('hidden');
+            document.getElementById('migrasi-outlet').textContent = outletSelect.options[outletSelect.selectedIndex].text;
+            document.getElementById('migrasi-kasir').textContent = kasirSelect.options[kasirSelect.selectedIndex].text;
+            
+            resetMigrasiForm();
+        }
+        
+        function closeModalMigrasi() {
+            modalMigrasi.classList.add('hidden');
+        }
+        
+        function closeModalSearchResults() {
             modalSearchResults.classList.add('hidden');
         }
         
-        // Utility functions
+        // TOAST NOTIFICATION (Front Layer)
+        function showToast(type, title, message) {
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            
+            // Set style based on type
+            toast.className = '';
+            toast.classList.add('toast-' + type);
+            
+            // Set icon
+            const icon = toastIcon.querySelector('i');
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle text-xl text-green-500';
+            } else if (type === 'error') {
+                icon.className = 'fas fa-exclamation-circle text-xl text-red-500';
+            } else if (type === 'warning') {
+                icon.className = 'fas fa-exclamation-triangle text-xl text-yellow-500';
+            } else {
+                icon.className = 'fas fa-info-circle text-xl text-blue-500';
+            }
+            
+            // Show toast
+            toast.classList.remove('hidden');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 5000);
+        }
+        
+        // LOADING FUNCTIONS
         function showLoading(text) {
             loadingText.textContent = text;
             loadingOverlay.classList.remove('hidden');
@@ -1712,43 +1553,6 @@
         function hideLoading() {
             loadingOverlay.classList.add('hidden');
         }
-        
-        function showToast(type, title, message) {
-            toastTitle.textContent = title;
-            toastMessage.textContent = message;
-            
-            // Set icon and color based on type
-            if (type === 'success') {
-                toastIcon.className = 'fas fa-check-circle mr-3 text-xl text-green-500';
-                toast.style.backgroundColor = '#10b981';
-            } else if (type === 'error') {
-                toastIcon.className = 'fas fa-exclamation-circle mr-3 text-xl text-red-500';
-                toast.style.backgroundColor = '#ef4444';
-            } else if (type === 'warning') {
-                toastIcon.className = 'fas fa-exclamation-triangle mr-3 text-xl text-yellow-500';
-                toast.style.backgroundColor = '#f59e0b';
-            } else {
-                toastIcon.className = 'fas fa-info-circle mr-3 text-xl text-blue-500';
-                toast.style.backgroundColor = '#3b82f6';
-            }
-            
-            toast.classList.remove('hidden');
-            toast.classList.remove('translate-y-10');
-            
-            // Auto hide after 5 seconds
-            setTimeout(() => {
-                toast.classList.add('translate-y-10');
-                setTimeout(() => {
-                    toast.classList.add('hidden');
-                }, 300);
-            }, 5000);
-        }
-        
-        // Make functions available globally for onclick attributes
-        window.selectCustomerLama = selectCustomerLama;
-        window.selectCustomerBaru = selectCustomerBaru;
-        window.viewOlseraDetail = viewOlseraDetail;
-        window.closeDetailModal = closeDetailModal;
     </script>
 </body>
 </html>
