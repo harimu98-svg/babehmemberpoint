@@ -2,9 +2,6 @@
 const SUPABASE_URL = 'https://intzwjmlypmopzauxeqt.supabase.co';
 const SUPABASE_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludHp3am1seXBtb3B6YXV4ZXF0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDcxNzkxMiwiZXhwIjoyMDcwMjkzOTEyfQ.Sx_VwOEHbLjVhc3rL96hlIGNkiZ44a4oD9T8DcBzwGI';
 
-// Initialize Supabase Client
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
-
 // WAHA Configuration
 const WAHA_URL = 'https://waha-yetv8qi4e3zk.anakit.sumopod.my.id/api/sendText';
 const WAHA_API_KEY = 'sfcoGbpdLDkGZhKw2rx8sbb14vf4d8V6';
@@ -71,14 +68,16 @@ function setupEventListeners() {
 // Load outlets from Supabase
 async function loadOutlets() {
     try {
-        const { data, error } = await supabase
-            .from('outlet')
-            .select('outlet')
-            .order('outlet');
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/outlet?select=outlet`, {
+            headers: {
+                'apikey': SUPABASE_API_KEY,
+                'Authorization': `Bearer ${SUPABASE_API_KEY}`
+            }
+        });
         
-        if (error) throw error;
+        if (!response.ok) throw new Error('Failed to load outlets');
         
-        outlets = data || [];
+        outlets = await response.json();
         
         // Populate outlet dropdown
         outletSelect.innerHTML = '<option value="">Pilih Outlet</option>';
@@ -117,16 +116,19 @@ async function handleOutletChange() {
 // Load kasirs based on selected outlet
 async function loadKasirs() {
     try {
-        const { data, error } = await supabase
-            .from('karyawan')
-            .select('nama_karyawan')
-            .eq('outlet', currentOutlet)
-            .eq('role', 'kasir')
-            .order('nama_karyawan');
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/karyawan?select=nama_karyawan&outlet=eq.${encodeURIComponent(currentOutlet)}&role=eq.kasir`,
+            {
+                headers: {
+                    'apikey': SUPABASE_API_KEY,
+                    'Authorization': `Bearer ${SUPABASE_API_KEY}`
+                }
+            }
+        );
         
-        if (error) throw error;
+        if (!response.ok) throw new Error('Failed to load kasirs');
         
-        kasirs = data || [];
+        kasirs = await response.json();
         
         // Populate kasir dropdown
         kasirSelect.innerHTML = '<option value="">Pilih Kasir</option>';
@@ -134,7 +136,7 @@ async function loadKasirs() {
             const option = document.createElement('option');
             option.value = kasir.nama_karyawan;
             option.textContent = kasir.nama_karyawan;
-            outletSelect.appendChild(option);
+            kasirSelect.appendChild(option);
         });
         
         // Load konversi point for this outlet
@@ -148,14 +150,21 @@ async function loadKasirs() {
 // Load konversi point from outlet
 async function loadKonversiPoint() {
     try {
-        const { data, error } = await supabase
-            .from('outlet')
-            .select('konversi_point')
-            .eq('outlet', currentOutlet)
-            .single();
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/outlet?select=konversi_point&outlet=eq.${encodeURIComponent(currentOutlet)}`,
+            {
+                headers: {
+                    'apikey': SUPABASE_API_KEY,
+                    'Authorization': `Bearer ${SUPABASE_API_KEY}`
+                }
+            }
+        );
         
-        if (!error && data) {
-            konversiPointValue = data.konversi_point || 0;
+        if (response.ok) {
+            const data = await response.json();
+            if (data && data[0]) {
+                konversiPointValue = data[0].konversi_point || 0;
+            }
         }
     } catch (error) {
         console.error('Error loading konversi point:', error);
@@ -232,19 +241,22 @@ async function loadOlseraData(searchTerm = '') {
     showLoading(true);
     
     try {
-        let query = supabase
-            .from('membercard_olsera')
-            .select('*');
+        let url = `${SUPABASE_URL}/rest/v1/membercard_olsera?select=*`;
         
         if (searchTerm) {
-            query = query.or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`);
+            url += `&or=(name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%)`;
         }
         
-        const { data, error } = await query;
+        const response = await fetch(url, {
+            headers: {
+                'apikey': SUPABASE_API_KEY,
+                'Authorization': `Bearer ${SUPABASE_API_KEY}`
+            }
+        });
         
-        if (error) throw error;
+        if (!response.ok) throw new Error('Failed to load Olsera data');
         
-        olseraData = data || [];
+        olseraData = await response.json();
         currentOlseraPage = 1;
         renderOlseraTable();
     } catch (error) {
@@ -297,19 +309,22 @@ async function loadDigitalData(searchTerm = '') {
     showLoading(true);
     
     try {
-        let query = supabase
-            .from('membercard')
-            .select('*');
+        let url = `${SUPABASE_URL}/rest/v1/membercard?select=*`;
         
         if (searchTerm) {
-            query = query.or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`);
+            url += `&or=(nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%)`;
         }
         
-        const { data, error } = await query;
+        const response = await fetch(url, {
+            headers: {
+                'apikey': SUPABASE_API_KEY,
+                'Authorization': `Bearer ${SUPABASE_API_KEY}`
+            }
+        });
         
-        if (error) throw error;
+        if (!response.ok) throw new Error('Failed to load digital data');
         
-        digitalData = data || [];
+        digitalData = await response.json();
         currentDigitalPage = 1;
         renderDigitalTable();
     } catch (error) {
@@ -393,15 +408,19 @@ async function searchCustomerLama() {
     showLoading(true);
     
     try {
-        const { data, error } = await supabase
-            .from('membercard_olsera')
-            .select('*')
-            .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`)
-            .neq('status_migrasi', 'Sudah migrasi');
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/membercard_olsera?select=*&or=(name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%)&status_migrasi=neq.Sudah%20migrasi`,
+            {
+                headers: {
+                    'apikey': SUPABASE_API_KEY,
+                    'Authorization': `Bearer ${SUPABASE_API_KEY}`
+                }
+            }
+        );
         
-        if (error) throw error;
+        if (!response.ok) throw new Error('Failed to search customer lama');
         
-        const results = data || [];
+        const results = await response.json();
         
         const resultsDiv = document.getElementById('customerLamaResults');
         resultsDiv.innerHTML = '';
@@ -477,13 +496,21 @@ async function findMatchingCustomerBaru(phone) {
     const cleanPhone = cleanPhoneNumber(phone);
     
     try {
-        const { data, error } = await supabase
-            .from('membercard')
-            .select('*')
-            .eq('nomorWA', cleanPhone);
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/membercard?select=*&nomorWA=eq.${cleanPhone}`,
+            {
+                headers: {
+                    'apikey': SUPABASE_API_KEY,
+                    'Authorization': `Bearer ${SUPABASE_API_KEY}`
+                }
+            }
+        );
         
-        if (!error && data && data.length > 0) {
-            selectCustomerBaru(data[0]);
+        if (response.ok) {
+            const results = await response.json();
+            if (results.length > 0) {
+                selectCustomerBaru(results[0]);
+            }
         }
     } catch (error) {
         console.error('Error finding matching customer:', error);
@@ -502,14 +529,19 @@ async function searchCustomerBaru() {
     showLoading(true);
     
     try {
-        const { data, error } = await supabase
-            .from('membercard')
-            .select('*')
-            .or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`);
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/membercard?select=*&or=(nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%)`,
+            {
+                headers: {
+                    'apikey': SUPABASE_API_KEY,
+                    'Authorization': `Bearer ${SUPABASE_API_KEY}`
+                }
+            }
+        );
         
-        if (error) throw error;
+        if (!response.ok) throw new Error('Failed to search customer baru');
         
-        const results = data || [];
+        const results = await response.json();
         
         const resultsDiv = document.getElementById('customerBaruResults');
         resultsDiv.innerHTML = '';
@@ -632,33 +664,55 @@ async function submitMigrasi() {
         // 1. Update point in membercard
         const newPoint = (selectedCustomerBaru.point || 0) + pointBaru;
         
-        const { error: updateError } = await supabase
-            .from('membercard')
-            .update({
-                point: newPoint,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', selectedCustomerBaru.id);
+        const updateMembercardResponse = await fetch(
+            `${SUPABASE_URL}/rest/v1/membercard?id=eq.${selectedCustomerBaru.id}`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'apikey': SUPABASE_API_KEY,
+                    'Authorization': `Bearer ${SUPABASE_API_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=representation'
+                },
+                body: JSON.stringify({
+                    point: newPoint,
+                    updated_at: new Date().toISOString()
+                })
+            }
+        );
         
-        if (updateError) throw new Error('Gagal update membercard: ' + updateError.message);
+        if (!updateMembercardResponse.ok) {
+            throw new Error('Failed to update membercard');
+        }
         
         // 2. Update membercard_olsera with migration data
-        const { error: olseraError } = await supabase
-            .from('membercard_olsera')
-            .update({
-                outlet: currentOutlet,
-                id_member: selectedCustomerBaru.id_member,
-                nama: selectedCustomerBaru.nama,
-                nomor_wa: selectedCustomerBaru.nomorWA,
-                kasir: currentKasir,
-                konversi_point: konversiPoint,
-                status_migrasi: 'Sudah migrasi',
-                tanggal_migrasi: new Date().toISOString(),
-                point_migrasi: pointBaru
-            })
-            .eq('id', selectedCustomerLama.id);
+        const updateOlseraResponse = await fetch(
+            `${SUPABASE_URL}/rest/v1/membercard_olsera?id=eq.${selectedCustomerLama.id}`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'apikey': SUPABASE_API_KEY,
+                    'Authorization': `Bearer ${SUPABASE_API_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=representation'
+                },
+                body: JSON.stringify({
+                    outlet: currentOutlet,
+                    id_member: selectedCustomerBaru.id_member,
+                    nama: selectedCustomerBaru.nama,
+                    nomor_wa: selectedCustomerBaru.nomorWA,
+                    kasir: currentKasir,
+                    konversi_point: konversiPoint,
+                    status_migrasi: 'Sudah migrasi',
+                    tanggal_migrasi: new Date().toISOString(),
+                    point_migrasi: pointBaru
+                })
+            }
+        );
         
-        if (olseraError) throw new Error('Gagal update data Olsera: ' + olseraError.message);
+        if (!updateOlseraResponse.ok) {
+            throw new Error('Failed to update Olsera data');
+        }
         
         // 3. Send WhatsApp notification
         await sendWhatsAppNotification(selectedCustomerBaru.nomorWA, pointBaru, newPoint);
