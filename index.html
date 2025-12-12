@@ -1824,14 +1824,17 @@ function updateCustomerBaruUI(customer) {
                 }
                 
                 // **PESAN DENGAN FORMAT TABEL MENGGUNAKAN EMOJI**
-        const message = `✅ *MIGRASI BERHASIL*\n\n` +
-               `💇‍♂️ ${nama}\n` +
-               `⭐ +${pointBaru} point\n` +
-               `💎 Total: ${totalPoint} point\n` +
-               `📅 ${new Date().toLocaleDateString('id-ID')}\n\n` +
+       const message = `✅ *MIGRASI MEMBER BERHASIL*\n\n` +
+               `📋 *Data Migrasi:*\n` +
+               `💇‍♂️ Nama    : ${nama}\n` +
+               `🏪 Outlet  : ${window.selectedOutlet || 'Babeh Barbershop'}\n` +
+               `⭐ Point+   : ${pointBaru}\n` +
+               `💰 Total    : ${totalPoint} point\n` +
+               `📅 Tanggal  : ${new Date().toLocaleDateString('id-ID')}\n\n` +
+               `🎊 *Selamat!* Point Anda telah diperbarui.\n\n` +
             
-               `📞*WA ONLY* 0822-1001-7083\n\n` +
-               `💈 Babeh Barbershop`;
+                `💈 *Babeh Barbershop*\n\n` +
+                `📞*WA ONLY* 0822-1001-7083`;
                 
                 const response = await fetch(WAHA_URL, {
                     method: 'POST',
