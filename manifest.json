@@ -1,11 +1,11 @@
 {
   "name": "Babeh Barbershop Membercard Point",
   "short_name": "Babeh Membercard",
-  "description": "Aplikasi migrasi membercard Babeh Barbershop",
+  "description": "Aplikasi manajemen membercard dan migrasi point untuk Babeh Barbershop",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#9370DB",
-  "theme_color": "#9370DB",
+  "background_color": "#f5f0ff",
+  "theme_color": "#7b3aed",
   "icons": [
     {
       "src": "logo.jpg",
