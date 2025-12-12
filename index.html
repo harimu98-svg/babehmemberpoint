@@ -1107,49 +1107,85 @@
         
         // 7. AUTO-FIND CUSTOMER BARU BY PHONE
         async function findCustomerBaruByPhone(phone) {
-            showLoading('Mencari customer baru berdasarkan nomor HP...');
+    showLoading('Mencari customer baru berdasarkan nomor HP...');
+    
+    // Cari dengan BEBERAPA VARIASI format
+    const phoneVariations = [];
+    
+    // Tambahkan variasi format yang mungkin
+    const originalPhone = phone.trim();
+    
+    // 1. Format asli
+    phoneVariations.push(originalPhone);
+    
+    // 2. Format +62
+    if (originalPhone.startsWith('08')) {
+        phoneVariations.push('+62' + originalPhone.substring(1));
+    } else if (originalPhone.startsWith('62')) {
+        phoneVariations.push('+62' + originalPhone.substring(2));
+    }
+    
+    // 3. Format 62 tanpa +
+    if (originalPhone.startsWith('08')) {
+        phoneVariations.push('62' + originalPhone.substring(1));
+    } else if (originalPhone.startsWith('+62')) {
+        phoneVariations.push(originalPhone.substring(1));
+    }
+    
+    // 4. Format 0
+    if (originalPhone.startsWith('62')) {
+        phoneVariations.push('0' + originalPhone.substring(2));
+    } else if (originalPhone.startsWith('+62')) {
+        phoneVariations.push('0' + originalPhone.substring(3));
+    }
+    
+    // 5. Hapus semua karakter non-digit
+    const digitsOnly = originalPhone.replace(/\D/g, '');
+    phoneVariations.push(digitsOnly);
+    
+    // Hapus duplikat
+    const uniqueVariations = [...new Set(phoneVariations)];
+    
+    console.log('Phone variations for search:', uniqueVariations);
+    
+    try {
+        // Bangun query dengan OR untuk semua variasi
+        let query = supabase
+            .from('membercard')
+            .select('*')
+            .ilike('outlet', `%${window.selectedOutlet.trim()}%`);
+        
+        // Tambahkan kondisi OR untuk setiap variasi
+        const orConditions = uniqueVariations.map(variation => 
+            `nomorWA.ilike.%${variation}%`
+        ).join(',');
+        
+        query = query.or(orConditions).limit(1);
+        
+        const { data, error } = await query;
+        
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+            console.log('✅ AUTO-FIND: Data ditemukan:', data[0].nama);
             
-            // Convert phone format for search
-            let searchPhone = phone;
-            if (phone.startsWith('+62')) {
-                searchPhone = phone.replace('+62', '62');
-            } else if (phone.startsWith('08')) {
-                searchPhone = '62' + phone.substring(1);
-            } else if (phone.startsWith('628')) {
-                searchPhone = phone;
-            }
+            showToast('success', 'Customer Baru Ditemukan', 
+                'Data customer baru ditemukan otomatis berdasarkan nomor HP lama');
             
-            try {
-                const { data, error } = await supabase
-                    .from('membercard')
-                    .select('*')
-                    .ilike('outlet', `%${window.selectedOutlet.trim()}%`)
-                    .ilike('nomorWA', `%${searchPhone}%`)
-                    .limit(1);
-                
-                if (error) throw error;
-                
-                if (data && data.length > 0) {
-                    console.log('🚨 AUTO-FIND: Data ditemukan, memanggil selectCustomerBaru...');
-                    console.log('Customer data:', data[0]);
-                    
-                    showToast('success', 'Customer Baru Ditemukan', 
-                        'Data customer baru ditemukan otomatis berdasarkan nomor HP lama');
-                    
-                    // PANGGIL FUNGSI
-                    selectCustomerBaru(data[0]);
-                    
-                } else {
-                    showToast('info', 'Customer Baru Tidak Ditemukan', 
-                        'Silakan cari customer baru secara manual');
-                }
-            } catch (error) {
-                console.error('Error finding customer baru by phone:', error);
-                showToast('error', 'Pencarian Gagal', 'Gagal mencari customer baru otomatis');
-            } finally {
-                hideLoading();
-            }
+            selectCustomerBaru(data[0]);
+            
+        } else {
+            console.log('❌ AUTO-FIND: Tidak ditemukan untuk variasi:', uniqueVariations);
+            showToast('info', 'Customer Baru Tidak Ditemukan', 
+                'Silakan cari customer baru secara manual');
         }
+    } catch (error) {
+        console.error('Error finding customer baru by phone:', error);
+        showToast('error', 'Pencarian Gagal', 'Gagal mencari customer baru otomatis');
+    } finally {
+        hideLoading();
+    }
+}
         
         // 8. DISPLAY SEARCH RESULTS (Dengan kolom outlet dan status)
         function displaySearchResults(data, totalCount, type) {
