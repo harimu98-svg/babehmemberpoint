@@ -203,134 +203,164 @@
         .toast-info {
             border-left-color: #3b82f6;
         }
-        /* Tambahkan ini di bagian akhir <style> */
+       /* ULTRA COMPACT FOR ANDROID */
 @media (max-width: 768px) {
-    /* Mobile-specific adjustments */
+    /* Reset semua padding/margin */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    /* Header super compact */
     header {
-        padding: 12px 16px !important;
-        border-radius: 0 0 20px 20px !important;
+        padding: 8px 12px !important;
+        border-radius: 0 0 12px 12px !important;
+        position: sticky;
+        top: 0;
+        z-index: 100;
     }
     
     header .container {
-        flex-direction: column !important;
-        text-align: center;
-        gap: 12px !important;
+        flex-direction: row !important;
+        align-items: center;
+        gap: 8px !important;
     }
     
     header img {
-        width: 48px !important;
-        height: 48px !important;
+        width: 40px !important;
+        height: 40px !important;
         border-width: 2px !important;
     }
     
     header h1 {
-        font-size: 1.5rem !important;
-        margin-bottom: 4px !important;
+        font-size: 1.1rem !important;
+        line-height: 1.2;
     }
     
     header p {
-        font-size: 0.875rem !important;
+        font-size: 0.7rem !important;
     }
     
-    /* Main content spacing */
+    .text-center.md\:text-right {
+        text-align: right !important;
+        font-size: 0.7rem !important;
+    }
+    
+    /* Main container - NO SPACING */
     main.container {
-        padding: 12px !important;
+        padding: 8px !important;
     }
     
-    /* Section spacing */
+    /* Section super compact */
     .bg-white.rounded-custom.shadow-lg {
-        margin-bottom: 16px !important;
-        padding: 16px !important;
+        margin-bottom: 8px !important;
+        padding: 12px !important;
+        border-radius: 8px !important;
     }
     
     .bg-white h2 {
-        margin-bottom: 12px !important;
-        font-size: 1.125rem !important;
+        margin-bottom: 8px !important;
+        font-size: 0.95rem !important;
     }
     
-    /* Form fields */
-    select, input {
-        padding: 10px 12px !important;
-        font-size: 14px !important;
+    /* Form fields ultra compact */
+    .grid.grid-cols-1.md\:grid-cols-2.gap-6 {
+        gap: 8px !important;
     }
     
     label {
-        margin-bottom: 6px !important;
-        font-size: 13px !important;
+        margin-bottom: 4px !important;
+        font-size: 0.8rem !important;
     }
     
-    /* Info System Grid - lebih compact */
-    .grid.grid-cols-1.md\:grid-cols-3.gap-4 {
-        gap: 10px !important;
+    select, input {
+        padding: 6px 8px !important;
+        font-size: 0.85rem !important;
+        height: 36px !important;
     }
     
-    .bg-purple-50, .bg-yellow-50, .bg-blue-50 {
-        padding: 12px !important;
+    .mt-4.text-sm {
+        margin-top: 6px !important;
+        font-size: 0.7rem !important;
     }
     
-    .bg-purple-50 h3, .bg-yellow-50 h3, .bg-blue-50 h3 {
-        font-size: 14px !important;
-        margin-bottom: 6px !important;
+    /* Action button compact */
+    #btn-migrasi {
+        padding: 10px !important;
+        font-size: 0.9rem !important;
+        border-radius: 8px !important;
     }
     
-    .bg-purple-50 p, .bg-yellow-50 p, .bg-blue-50 p {
-        font-size: 12px !important;
-        line-height: 1.3 !important;
+    #btn-migrasi i {
+        font-size: 20px !important;
         margin-bottom: 4px !important;
     }
     
-    /* Action button */
-    .btn-green {
-        padding: 14px !important;
-        font-size: 1rem !important;
-    }
-    
-    .btn-green i {
-        font-size: 24px !important;
-        margin-bottom: 6px !important;
-    }
-    
-    .btn-green span:last-child {
-        font-size: 11px !important;
+    #btn-migrasi span:last-child {
+        font-size: 0.7rem !important;
         margin-top: 2px !important;
     }
     
-    /* Footer */
+    /* INFO SYSTEM - SUPER COMPACT GRID */
+    .grid.grid-cols-2.gap-3 {
+        gap: 6px !important;
+    }
+    
+    .bg-purple-50, .bg-yellow-50, .bg-blue-50, .bg-green-50 {
+        padding: 8px !important;
+        border-radius: 6px !important;
+    }
+    
+    .bg-purple-50 h3, .bg-yellow-50 h3, .bg-blue-50 h3, .bg-green-50 h3 {
+        font-size: 0.75rem !important;
+        margin-bottom: 4px !important;
+        line-height: 1;
+    }
+    
+    .bg-purple-50 p, .bg-yellow-50 p, .bg-blue-50 p, .bg-green-50 p {
+        font-size: 0.7rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 2px !important;
+    }
+    
+    /* Footer ultra compact */
     footer {
-        padding: 20px 16px !important;
-        margin-top: 20px !important;
-        border-radius: 20px 20px 0 0 !important;
+        padding: 12px !important;
+        margin-top: 8px !important;
+        border-radius: 12px 12px 0 0 !important;
     }
     
     footer .grid {
-        gap: 16px !important;
+        gap: 8px !important;
     }
     
     footer h3 {
-        font-size: 1rem !important;
-        margin-bottom: 8px !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 4px !important;
     }
     
     footer p {
-        font-size: 0.875rem !important;
-        line-height: 1.4 !important;
+        font-size: 0.7rem !important;
+        line-height: 1.2 !important;
     }
     
-    footer .mt-6.pt-4 {
-        margin-top: 16px !important;
-        padding-top: 12px !important;
-        font-size: 11px !important;
+    footer .mt-4.pt-3 {
+        margin-top: 8px !important;
+        padding-top: 6px !important;
+        font-size: 0.65rem !important;
     }
     
-    /* Modal adjustments */
+    /* Modal compact */
     .modal-content {
-        width: 95% !important;
-        max-height: 85vh !important;
-        margin: 10px !important;
+        width: 98% !important;
+        max-height: 90vh !important;
+        margin: 4px !important;
+        border-radius: 12px !important;
     }
     
     .modal-content .p-6 {
-        padding: 16px !important;
+        padding: 12px !important;
     }
 }
     </style>
@@ -346,109 +376,95 @@
 </head>
 <body class="bg-purple-doff min-h-screen">
     <!-- Header yang lebih compact -->
-<header class="bg-gradient-to-r from-purple-700 to-purple-900 text-white py-3 px-4 rounded-b-2xl shadow-lg">
-    <div class="container mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
-        <div class="flex items-center space-x-3">
-            <img id="logo" src="logo.jpg" alt="Babeh Barbershop Logo" class="w-12 h-12 object-cover rounded-full border-3 border-white shadow">
+<header class="bg-gradient-to-r from-purple-700 to-purple-900 text-white py-2 px-3">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <img id="logo" src="logo.jpg" alt="Logo" class="w-8 h-8 rounded-full border-2 border-white">
             <div>
-                <h1 class="text-xl md:text-2xl font-bold">Babeh Barbershop</h1>
-                <p class="text-purple-200 text-xs md:text-sm">Membercard Point System</p>
+                <h1 class="text-sm font-bold">Babeh Barbershop</h1>
+                <p class="text-xs text-purple-200">Membercard Point</p>
             </div>
         </div>
-        
-        <div class="text-center md:text-right text-xs md:text-sm">
-            <p><i class="fas fa-store mr-1"></i><span id="current-outlet">Pilih Outlet</span></p>
-            <p><i class="fas fa-user-tie mr-1"></i><span id="current-kasir">Pilih Kasir</span></p>
+        <div class="text-xs text-right">
+            <p><i class="fas fa-store text-xs mr-1"></i><span id="current-outlet">Pilih</span></p>
+            <p><i class="fas fa-user-tie text-xs mr-1"></i><span id="current-kasir">Pilih</span></p>
         </div>
     </div>
 </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto p-4">
-        <!-- Outlet & Kasir Selection -->
-        <div class="bg-white rounded-custom shadow-lg p-6 mb-6">
-            <h2 class="text-xl font-bold text-purple-800 mb-4"><i class="fas fa-cogs mr-2"></i>Pengaturan Awal</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Outlet</label>
-                    <select id="outlet-select" class="w-full p-3 border border-purple-300 rounded-custom focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                        <option value="">-- Pilih Outlet --</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Kasir</label>
-                    <select id="kasir-select" class="w-full p-3 border border-purple-300 rounded-custom focus:ring-2 focus:ring-purple-500 focus:border-purple-500" disabled>
-                        <option value="">-- Pilih Kasir --</option>
-                    </select>
-                </div>
+    <main class="p-2">
+    <!-- Outlet & Kasir Selection -->
+    <div class="bg-white rounded-lg shadow p-3 mb-2">
+        <h2 class="text-sm font-bold text-purple-800 mb-2"><i class="fas fa-cogs text-xs mr-1"></i>Pengaturan</h2>
+        <div class="grid grid-cols-2 gap-2">
+            <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">Outlet</label>
+                <select id="outlet-select" class="w-full p-2 text-xs border border-purple-300 rounded">
+                    <option value="">-- Pilih --</option>
+                </select>
             </div>
-            
-            <div class="mt-4 text-sm text-gray-600">
-                <p><i class="fas fa-info-circle mr-2"></i>Pilih outlet dan kasir terlebih dahulu sebelum menggunakan fitur migrasi</p>
+            <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">Kasir</label>
+                <select id="kasir-select" class="w-full p-2 text-xs border border-purple-300 rounded" disabled>
+                    <option value="">-- Pilih --</option>
+                </select>
             </div>
         </div>
+        <p class="text-xs text-gray-500 mt-2"><i class="fas fa-info-circle text-xs mr-1"></i>Pilih outlet & kasir dulu</p>
+    </div>
 
-        <!-- Action Button -->
-        <div class="bg-white rounded-custom shadow-lg p-6 mb-6">
-            <h2 class="text-xl font-bold text-purple-800 mb-4"><i class="fas fa-tasks mr-2"></i>Aksi Membercard</h2>
-            
-            <div class="grid grid-cols-1 gap-4">
-                <button id="btn-migrasi" class="btn-green p-4 rounded-custom font-bold text-lg flex flex-col items-center justify-center transition duration-300 transform hover:scale-105" disabled>
-                    <i class="fas fa-exchange-alt text-3xl mb-2"></i>
-                    <span>MIGRASI MEMBERCARD</span>
-                    <span class="text-sm font-normal mt-1">Konversi point lama ke baru</span>
-                </button>
+    <!-- Action Button -->
+    <div class="bg-white rounded-lg shadow p-3 mb-2">
+        <button id="btn-migrasi" class="w-full bg-green-500 text-white p-3 rounded-lg font-bold flex flex-col items-center disabled:opacity-50" disabled>
+            <i class="fas fa-exchange-alt text-lg mb-1"></i>
+            <span class="text-sm">MIGRASI MEMBERCARD</span>
+            <span class="text-xs mt-1">Konversi point lama ke baru</span>
+        </button>
+    </div>
+
+    <!-- Status Info - SUPER COMPACT -->
+    <div class="bg-white rounded-lg shadow p-3 mb-2">
+        <h2 class="text-sm font-bold text-purple-800 mb-2"><i class="fas fa-info-circle text-xs mr-1"></i>Informasi</h2>
+        <div class="grid grid-cols-2 gap-2">
+            <div class="bg-purple-50 p-2 rounded border border-purple-200">
+                <h3 class="font-bold text-purple-700 text-xs mb-1">Outlet & Kasir</h3>
+                <p class="text-xs"><span id="info-outlet" class="font-semibold">-</span></p>
+                <p class="text-xs"><span id="info-kasir" class="font-semibold">-</span></p>
+            </div>
+            <div class="bg-yellow-50 p-2 rounded border border-yellow-200">
+                <h3 class="font-bold text-yellow-700 text-xs mb-1">Olsera</h3>
+                <p class="text-xs">Total: <span id="info-olsera-count" class="font-bold">-</span></p>
+                <p class="text-xs">Migrasi: <span id="info-olsera-migrasi" class="font-bold">-</span></p>
+            </div>
+            <div class="bg-blue-50 p-2 rounded border border-blue-200">
+                <h3 class="font-bold text-blue-700 text-xs mb-1">Digital</h3>
+                <p class="text-xs">Total: <span id="info-digital-count" class="font-bold">-</span></p>
+                <p class="text-xs">Aktif: <span id="info-digital-active" class="font-bold">-</span></p>
+            </div>
+            <div class="bg-green-50 p-2 rounded border border-green-200">
+                <h3 class="font-bold text-green-700 text-xs mb-1">Konversi</h3>
+                <p class="text-xs">Nilai: <span id="info-konversi" class="font-bold">1</span></p>
+                <p class="text-xs">Outlet: <span class="text-green-800" id="info-outlet-name">-</span></p>
             </div>
         </div>
-
-        <!-- Status Info - Compact Layout -->
-<div class="bg-white rounded-custom shadow-lg p-4 mb-4">
-    <h2 class="text-lg font-bold text-purple-800 mb-3"><i class="fas fa-info-circle mr-2"></i>Informasi Sistem</h2>
-    
-    <div class="grid grid-cols-2 gap-3">
-        <!-- Outlet & Kasir -->
-        <div class="bg-purple-50 p-3 rounded-custom border border-purple-200">
-            <h3 class="font-bold text-purple-700 text-sm mb-1">Outlet & Kasir</h3>
-            <p class="text-xs"><span class="font-semibold">Outlet:</span><br><span id="info-outlet" class="text-purple-800">Belum dipilih</span></p>
-            <p class="text-xs mt-1"><span class="font-semibold">Kasir:</span><br><span id="info-kasir" class="text-purple-800">Belum dipilih</span></p>
-        </div>
-        
-        <!-- Membercard Olsera -->
-        <div class="bg-yellow-50 p-3 rounded-custom border border-yellow-200">
-            <h3 class="font-bold text-yellow-700 text-sm mb-1">Membercard Olsera</h3>
-            <p class="text-xs"><span class="font-semibold">Total:</span> <span id="info-olsera-count" class="font-bold">-</span></p>
-            <p class="text-xs mt-1"><span class="font-semibold">Sudah Migrasi:</span><br><span id="info-olsera-migrasi" class="font-bold">-</span></p>
-        </div>
-        
-        <!-- Membercard Digital -->
-        <div class="bg-blue-50 p-3 rounded-custom border border-blue-200">
-            <h3 class="font-bold text-blue-700 text-sm mb-1">Membercard Digital</h3>
-            <p class="text-xs"><span class="font-semibold">Total:</span> <span id="info-digital-count" class="font-bold">-</span></p>
-            <p class="text-xs mt-1"><span class="font-semibold">Aktif:</span> <span id="info-digital-active" class="font-bold">-</span></p>
-        </div>
-    </main>
+    </div>
+</main>
 
   <!-- Footer yang lebih compact -->
-<footer class="bg-gradient-to-r from-purple-800 to-purple-900 text-white py-4 px-6 rounded-t-2xl shadow-lg mt-6">
-    <div class="container mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <h3 class="text-base font-bold mb-2"><i class="fas fa-map-marker-alt mr-2"></i>Head Office</h3>
-                <p class="text-purple-200 text-sm">Jl. Abdul Ghani, Rempoa, Ciputat</p>
-            </div>
-            
-            <div>
-                <h3 class="text-base font-bold mb-2"><i class="fas fa-phone-alt mr-2"></i>Contact</h3>
-                <p class="text-purple-200 text-sm">WA: 0822-1001-7083</p>
-                <p class="text-xs text-purple-300 mt-1">Babeh Barbershop v1.0</p>
-            </div>
+<footer class="bg-gradient-to-r from-purple-800 to-purple-900 text-white p-3 mt-3">
+    <div class="grid grid-cols-2 gap-3 text-xs">
+        <div>
+            <p class="font-bold mb-1"><i class="fas fa-map-marker-alt text-xs mr-1"></i>Head Office</p>
+            <p class="text-purple-200">Jl. Abdul Ghani, Ciputat</p>
         </div>
-        
-        <div class="mt-4 pt-3 border-t border-purple-700 text-center text-xs text-purple-300">
-            <p><i class="fas fa-shield-alt mr-1"></i>PWA - Installable di Android</p>
+        <div>
+            <p class="font-bold mb-1"><i class="fas fa-phone-alt text-xs mr-1"></i>Contact</p>
+            <p class="text-purple-200">WA: 0822-1001-7083</p>
         </div>
+    </div>
+    <div class="text-center text-xs text-purple-300 mt-2 pt-2 border-t border-purple-700">
+        <p>Babeh Barbershop v1.0</p>
     </div>
 </footer>
 
