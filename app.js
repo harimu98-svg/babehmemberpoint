@@ -1,6 +1,7 @@
 // ================= CONFIGURATION =================
 const SUPABASE_URL = 'https://intzwjmlypmopzauxeqt.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludHp3am1seXBtb3B6YXV4ZXF0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDcxNzkxMiwiZXhwIjoyMDcwMjkzOTEyfQ.Sx_VwOEHbLjVhc3rL96hlIGNkiZ44a4oD9T8DcBzwGI';
+// GUNAKAN ANONYMOUS KEY BUKAN SERVICE ROLE KEY
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludHp3am1seXBtb3B6YXV4ZXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3MTc5MTIsImV4cCI6MjA3MDI5MzkxMn0.VwwVEDdHtYP5gui4epTcNfLXhPkmfFbRVb5y8mrXJiM';
 const WAHA_URL = 'https://waha-yetv8qi4e3zk.anakit.sumopod.my.id/api/sendText';
 const WAHA_KEY = 'sfcoGbpdLDkGZhKw2rx8sbb14vf4d8V6';
 
@@ -17,14 +18,17 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Aplikasi dimulai...');
     
     // Cek apakah Supabase sudah dimuat
-    if (!window.supabase) {
+    if (typeof supabase === 'undefined' || !window.supabase) {
         console.error('❌ Supabase library tidak ditemukan!');
         showError('Supabase tidak dimuat. Muat ulang halaman.');
+        
+        // Coba load ulang Supabase
+        loadSupabaseLibrary();
         return;
     }
     
     try {
-        // Inisialisasi Supabase
+        // Inisialisasi Supabase - CARA YANG BENAR
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         console.log('✅ Supabase initialized:', supabase);
         
@@ -35,6 +39,25 @@ document.addEventListener('DOMContentLoaded', function() {
         showError('Gagal menghubungkan ke database');
     }
 });
+
+// ================= FUNGSI BANTUAN =================
+function loadSupabaseLibrary() {
+    // Jika Supabase belum dimuat, muat ulang script
+    console.log('Mencoba memuat ulang Supabase library...');
+    
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    script.onload = function() {
+        console.log('✅ Supabase library dimuat ulang');
+        window.location.reload(); // Reload halaman setelah library dimuat
+    };
+    script.onerror = function() {
+        console.error('❌ Gagal memuat Supabase library');
+        showError('Tidak dapat memuat Supabase. Periksa koneksi internet.');
+    };
+    
+    document.head.appendChild(script);
+}
 
 // ================= SETUP FUNCTIONS =================
 function setupApp() {
@@ -565,6 +588,15 @@ function showLoading(show) {
 
 function formatNumber(num) {
     return new Intl.NumberFormat('id-ID').format(num);
+}
+
+// Helper untuk parse amount dari string Rupiah
+function parseAmountFromRupiah(rupiahStr) {
+    if (!rupiahStr) return 0;
+    
+    // Hapus "Rp ", titik, dan spasi
+    const cleanStr = rupiahStr.replace(/[^\d\-]/g, '');
+    return parseInt(cleanStr) || 0;
 }
 
 // ================= GLOBAL FUNCTIONS =================
