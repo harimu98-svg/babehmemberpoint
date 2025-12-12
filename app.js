@@ -3,69 +3,26 @@ const SUPABASE_URL = 'https://intzwjmlypmopzauxeqt.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludHp3am1seXBtb3B6YXV4ZXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3MTc5MTIsImV4cCI6MjA3MDI5MzkxMn0.VwwVEDdHtYP5gui4epTcNfLXhPkmfFbRVb5y8mrXJiM';
 const WAHA_URL = 'https://waha-yetv8qi4e3zk.anakit.sumopod.my.id/api/sendText';
 const WAHA_KEY = 'sfcoGbpdLDkGZhKw2rx8sbb14vf4d8V6';
-// Inisialisasi Supabase
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-// ================= GLOBAL STATE =================
-let supabase = null;
-let currentOutlet = '';
-let currentKasir = '';
-let konversiPoint = 0;
-let selectedLama = null;
-let selectedBaru = null;
-
-// ================= INITIALIZATION =================
-// Tunggu sampai semua konten dimuat termasuk script Supabase
-window.addEventListener('load', async function() {
-    console.log('🚀 Aplikasi dimulai...');
-    
-    // Tunggu sedikit untuk memastikan Supabase sudah dimuat
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Inisialisasi Supabase
-    try {
-        if (typeof supabase === 'undefined' || !window.supabase) {
-            console.error('❌ Supabase library tidak ditemukan!');
-            
-            // Coba lagi setelah 1 detik
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            if (typeof supabase === 'undefined' || !window.supabase) {
-                throw new Error('Supabase library gagal dimuat. Periksa koneksi internet.');
-            }
-        }
-        
-        // Inisialisasi client Supabase
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true
-            }
-        });
-        
-        console.log('✅ Supabase initialized:', supabase);
-        
-        // Test koneksi dengan query sederhana
-        const { data, error } = await supabase
-            .from('outlet')
-            .select('count')
-            .limit(1);
-            
-        if (error) {
-            console.error('❌ Test query gagal:', error);
-            showError('Gagal terhubung ke database');
-            return;
-        }
-        
-        console.log('✅ Test koneksi berhasil');
-        
-        // Setup aplikasi
-        setupApp();
-        
-    } catch (error) {
-        console.error('❌ Gagal inisialisasi:', error);
-        showError('Gagal menghubungkan ke database: ' + error.message);
+// ================= INISIALISASI =================
+let supabase; // Deklarasikan sebagai variabel kosong
+try {
+    // Pastikan library sudah dimuat sebelum membuat client
+    if (window.supabase) {
+        supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        console.log('✅ Supabase initialized');
+    } else {
+        throw new Error('Supabase library tidak tersedia di window object.');
     }
-});
+} catch (error) {
+    console.error('❌ Gagal inisialisasi Supabase:', error);
+    // Tampilkan pesan error ke user di halaman jika perlu
+    const errorEl = document.createElement('div');
+    errorEl.style.cssText = 'background: #fee; color: #c00; padding: 20px; margin: 10px; border: 1px solid #fcc;';
+    errorEl.innerHTML = `<strong>Kesalahan Aplikasi:</strong> Gagal menghubungkan ke server. <br><small>Detail: ${error.message}</small>`;
+    document.body.prepend(errorEl);
+    // Hentikan eksekusi fungsi lain yang bergantung pada `supabase`
+    supabase = null;
+}
 
 // ================= SETUP FUNCTIONS =================
 function setupApp() {
