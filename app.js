@@ -6,10 +6,10 @@ const SUPABASE_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 const WAHA_URL = 'https://waha-yetv8qi4e3zk.anakit.sumopod.my.id/api/sendText';
 const WAHA_API_KEY = 'sfcoGbpdLDkGZhKw2rx8sbb14vf4d8V6';
 
-// Global Variables - HAPUS deklarasi supabase di sini
+// Global Variables
+let supabase = null;
 let currentOutlet = '';
 let currentKasir = '';
-let currentOutletId = '';
 let outlets = [];
 let kasirs = [];
 let olseraData = [];
@@ -21,75 +21,56 @@ let selectedCustomerLama = null;
 let selectedCustomerBaru = null;
 let konversiPointValue = 0;
 
-// DOM Elements
-let outletSelect, kasirSelect, btnOlsera, btnDigital, btnMigrasi, statusInfo, statusText;
-
 // Initialize when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize DOM Elements
-    outletSelect = document.getElementById('outletSelect');
-    kasirSelect = document.getElementById('kasirSelect');
-    btnOlsera = document.getElementById('btnOlsera');
-    btnDigital = document.getElementById('btnDigital');
-    btnMigrasi = document.getElementById('btnMigrasi');
-    statusInfo = document.getElementById('statusInfo');
-    statusText = document.getElementById('statusText');
-    
-    // Initialize Supabase client
-    initSupabase();
-    loadOutlets();
-    setupEventListeners();
-});
-
-// Initialize Supabase
-function initSupabase() {
-    // Pastikan library sudah dimuat
-    if (typeof window.supabase === 'undefined') {
-        console.error('Supabase library not loaded!');
-        showStatus('Error: Supabase library tidak dimuat. Muat ulang halaman.', 'error');
-        return null;
-    }
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('DOM loaded, initializing app...');
     
     try {
-        // Inisialisasi client
-        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
-        console.log('Supabase client initialized successfully');
-        return window.supabaseClient;
+        // Initialize Supabase
+        if (typeof window.supabase === 'undefined') {
+            console.error('Supabase library not found!');
+            showStatus('Error: Supabase library tidak ditemukan. Periksa koneksi internet.', 'error');
+            return;
+        }
+        
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
+        console.log('Supabase initialized:', supabase ? 'SUCCESS' : 'FAILED');
+        
+        // Load outlets
+        await loadOutlets();
+        setupEventListeners();
+        
     } catch (error) {
-        console.error('Failed to initialize Supabase:', error);
-        showStatus('Gagal inisialisasi database', 'error');
-        return null;
+        console.error('Initialization error:', error);
+        showStatus('Gagal memuat aplikasi: ' + error.message, 'error');
     }
-}
-
-// Helper function untuk mendapatkan supabase client
-function getSupabase() {
-    if (!window.supabaseClient) {
-        window.supabaseClient = initSupabase();
-    }
-    return window.supabaseClient;
-}
+});
 
 // Setup event listeners
 function setupEventListeners() {
-    outletSelect.addEventListener('change', handleOutletChange);
-    kasirSelect.addEventListener('change', handleKasirChange);
+    document.getElementById('outletSelect').addEventListener('change', handleOutletChange);
+    document.getElementById('kasirSelect').addEventListener('change', handleKasirChange);
     
-    btnOlsera.addEventListener('click', () => openModal('modalOlsera'));
-    btnDigital.addEventListener('click', () => openModal('modalDigital'));
-    btnMigrasi.addEventListener('click', () => openModal('modalMigrasi'));
+    document.getElementById('btnOlsera').addEventListener('click', () => openModal('modalOlsera'));
+    document.getElementById('btnDigital').addEventListener('click', () => openModal('modalDigital'));
+    document.getElementById('btnMigrasi').addEventListener('click', () => openModal('modalMigrasi'));
     
-    // Olsera modal events
-    document.getElementById('searchOlsera').addEventListener('input', searchOlsera);
+    // Search events
+    document.getElementById('searchOlsera').addEventListener('input', function() {
+        loadOlseraData(this.value);
+    });
+    
+    document.getElementById('searchDigital').addEventListener('input', function() {
+        loadDigitalData(this.value);
+    });
+    
+    // Pagination
     document.getElementById('prevOlsera').addEventListener('click', () => changeOlseraPage(-1));
     document.getElementById('nextOlsera').addEventListener('click', () => changeOlseraPage(1));
-    
-    // Digital modal events
-    document.getElementById('searchDigital').addEventListener('input', searchDigital);
     document.getElementById('prevDigital').addEventListener('click', () => changeDigitalPage(-1));
     document.getElementById('nextDigital').addEventListener('click', () => changeDigitalPage(1));
     
-    // Migrasi modal events
+    // Migrasi search
     document.getElementById('searchCustomerLama').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') searchCustomerLama();
     });
@@ -99,12 +80,9 @@ function setupEventListeners() {
     });
 }
 
-// Load outlets from Supabase - MENGGUNAKAN SUPABASE CLIENT
+// Load outlets
 async function loadOutlets() {
     try {
-        const supabase = getSupabase();
-        if (!supabase) return;
-        
         const { data, error } = await supabase
             .from('outlet')
             .select('outlet')
@@ -113,9 +91,9 @@ async function loadOutlets() {
         if (error) throw error;
         
         outlets = data || [];
-        
-        // Populate outlet dropdown
+        const outletSelect = document.getElementById('outletSelect');
         outletSelect.innerHTML = '<option value="">Pilih Outlet</option>';
+        
         outlets.forEach(outlet => {
             const option = document.createElement('option');
             option.value = outlet.outlet;
@@ -130,10 +108,10 @@ async function loadOutlets() {
     }
 }
 
-// Handle outlet selection change
+// Handle outlet change
 async function handleOutletChange() {
-    currentOutlet = outletSelect.value;
-    currentOutletId = currentOutlet;
+    currentOutlet = document.getElementById('outletSelect').value;
+    const kasirSelect = document.getElementById('kasirSelect');
     
     if (currentOutlet) {
         await loadKasirs();
@@ -144,16 +122,12 @@ async function handleOutletChange() {
         kasirSelect.disabled = true;
         kasirSelect.innerHTML = '<option value="">Pilih Kasir</option>';
         updateButtonStates();
-        showStatus('Silakan pilih outlet terlebih dahulu', 'info');
     }
 }
 
-// Load kasirs based on selected outlet - MENGGUNAKAN SUPABASE CLIENT
+// Load kasirs
 async function loadKasirs() {
     try {
-        const supabase = getSupabase();
-        if (!supabase) return;
-        
         const { data, error } = await supabase
             .from('karyawan')
             .select('nama_karyawan')
@@ -164,9 +138,9 @@ async function loadKasirs() {
         if (error) throw error;
         
         kasirs = data || [];
-        
-        // Populate kasir dropdown
+        const kasirSelect = document.getElementById('kasirSelect');
         kasirSelect.innerHTML = '<option value="">Pilih Kasir</option>';
+        
         kasirs.forEach(kasir => {
             const option = document.createElement('option');
             option.value = kasir.nama_karyawan;
@@ -174,7 +148,6 @@ async function loadKasirs() {
             kasirSelect.appendChild(option);
         });
         
-        // Load konversi point for this outlet
         await loadKonversiPoint();
     } catch (error) {
         console.error('Error loading kasirs:', error);
@@ -182,12 +155,9 @@ async function loadKasirs() {
     }
 }
 
-// Load konversi point from outlet - MENGGUNAKAN SUPABASE CLIENT
+// Load konversi point
 async function loadKonversiPoint() {
     try {
-        const supabase = getSupabase();
-        if (!supabase) return;
-        
         const { data, error } = await supabase
             .from('outlet')
             .select('konversi_point')
@@ -196,61 +166,32 @@ async function loadKonversiPoint() {
         
         if (!error && data) {
             konversiPointValue = data.konversi_point || 0;
-            console.log(`Konversi point: ${konversiPointValue}`);
         }
     } catch (error) {
-        console.error('Error loading konversi point:', error);
         konversiPointValue = 0;
     }
 }
 
-// Handle kasir selection change
+// Handle kasir change
 function handleKasirChange() {
-    currentKasir = kasirSelect.value;
+    currentKasir = document.getElementById('kasirSelect').value;
     
     if (currentKasir) {
         updateButtonStates();
         showStatus(`Kasir dipilih: ${currentKasir}`, 'success');
     } else {
         updateButtonStates();
-        showStatus('Silakan pilih kasir', 'info');
     }
 }
 
-// Update button states based on selections
+// Update button states
 function updateButtonStates() {
     const hasOutlet = !!currentOutlet;
     const hasKasir = !!currentKasir;
     
-    btnOlsera.disabled = !hasOutlet || !hasKasir;
-    btnDigital.disabled = !hasOutlet || !hasKasir;
-    btnMigrasi.disabled = !hasOutlet || !hasKasir;
-}
-
-// Show status message
-function showStatus(message, type = 'info') {
-    if (!statusText) return;
-    
-    statusText.textContent = message;
-    
-    // Reset classes
-    statusInfo.className = 'flex items-center p-4 rounded-xl mb-6';
-    
-    if (type === 'error') {
-        statusInfo.classList.add('bg-red-50', 'border-l-4', 'border-red-500');
-        statusText.classList.add('text-red-700');
-    } else if (type === 'success') {
-        statusInfo.classList.add('bg-green-50', 'border-l-4', 'border-green-500');
-        statusText.classList.add('text-green-700');
-    } else if (type === 'warning') {
-        statusInfo.classList.add('bg-yellow-50', 'border-l-4', 'border-yellow-500');
-        statusText.classList.add('text-yellow-700');
-    } else {
-        statusInfo.classList.add('bg-blue-50', 'border-l-4', 'border-blue-500');
-        statusText.classList.add('text-blue-700');
-    }
-    
-    statusInfo.classList.remove('hidden');
+    document.getElementById('btnOlsera').disabled = !hasOutlet || !hasKasir;
+    document.getElementById('btnDigital').disabled = !hasOutlet || !hasKasir;
+    document.getElementById('btnMigrasi').disabled = !hasOutlet || !hasKasir;
 }
 
 // Modal functions
@@ -270,17 +211,12 @@ function closeModal(modalId) {
     document.getElementById(modalId).style.display = 'none';
 }
 
-// Load Olsera data - MENGGUNAKAN SUPABASE CLIENT
+// Load Olsera data
 async function loadOlseraData(searchTerm = '') {
     showLoading(true);
     
     try {
-        const supabase = getSupabase();
-        if (!supabase) return;
-        
-        let query = supabase
-            .from('membercard_olsera')
-            .select('*');
+        let query = supabase.from('membercard_olsera').select('*');
         
         if (searchTerm) {
             query = query.or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`);
@@ -332,23 +268,17 @@ function renderOlseraTable() {
         tbody.appendChild(row);
     });
     
-    // Update pagination
     document.getElementById('olseraPageInfo').textContent = `Page ${currentOlseraPage} of ${totalPages}`;
     document.getElementById('prevOlsera').disabled = currentOlseraPage === 1;
     document.getElementById('nextOlsera').disabled = currentOlseraPage === totalPages;
 }
 
-// Load Digital data - MENGGUNAKAN SUPABASE CLIENT
+// Load Digital data
 async function loadDigitalData(searchTerm = '') {
     showLoading(true);
     
     try {
-        const supabase = getSupabase();
-        if (!supabase) return;
-        
-        let query = supabase
-            .from('membercard')
-            .select('*');
+        let query = supabase.from('membercard').select('*');
         
         if (searchTerm) {
             query = query.or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`);
@@ -400,7 +330,6 @@ function renderDigitalTable() {
         tbody.appendChild(row);
     });
     
-    // Update pagination
     document.getElementById('digitalPageInfo').textContent = `Page ${currentDigitalPage} of ${totalPages}`;
     document.getElementById('prevDigital').disabled = currentDigitalPage === 1;
     document.getElementById('nextDigital').disabled = currentDigitalPage === totalPages;
@@ -411,7 +340,6 @@ function setupMigrasiModal() {
     document.getElementById('migrasiOutlet').textContent = currentOutlet;
     document.getElementById('migrasiKasir').textContent = currentKasir;
     
-    // Reset selections
     selectedCustomerLama = null;
     selectedCustomerBaru = null;
     document.getElementById('searchCustomerLama').value = '';
@@ -430,7 +358,7 @@ function setupMigrasiModal() {
     document.getElementById('submitMigrasi').disabled = true;
 }
 
-// Search customer lama - MENGGUNAKAN SUPABASE CLIENT
+// Search customer lama
 async function searchCustomerLama() {
     const searchTerm = document.getElementById('searchCustomerLama').value.trim();
     
@@ -442,9 +370,6 @@ async function searchCustomerLama() {
     showLoading(true);
     
     try {
-        const supabase = getSupabase();
-        if (!supabase) return;
-        
         const { data, error } = await supabase
             .from('membercard_olsera')
             .select('*')
@@ -454,7 +379,6 @@ async function searchCustomerLama() {
         if (error) throw error;
         
         const results = data || [];
-        
         const resultsDiv = document.getElementById('customerLamaResults');
         resultsDiv.innerHTML = '';
         
@@ -483,7 +407,67 @@ async function searchCustomerLama() {
     }
 }
 
-// Search customer baru - MENGGUNAKAN SUPABASE CLIENT
+// Select customer lama
+function selectCustomerLama(customer) {
+    selectedCustomerLama = customer;
+    
+    const selectedDiv = document.getElementById('selectedCustomerLama');
+    selectedDiv.innerHTML = `
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="font-bold">${customer.name}</p>
+                <p class="text-sm text-gray-600">${customer.phone} | ${customer.code}</p>
+                <p class="text-sm">Points: <span class="font-bold">${formatNumber(customer.loyalty_points || 0)}</span></p>
+            </div>
+            <button onclick="deselectCustomerLama()" class="text-red-500 hover:text-red-700">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+    `;
+    
+    selectedDiv.classList.remove('hidden');
+    document.getElementById('customerLamaResults').classList.add('hidden');
+    document.getElementById('searchCustomerLama').value = '';
+    
+    if (customer.phone) {
+        findMatchingCustomerBaru(customer.phone);
+    }
+}
+
+// Deselect customer lama
+function deselectCustomerLama() {
+    selectedCustomerLama = null;
+    selectedCustomerBaru = null;
+    document.getElementById('selectedCustomerLama').innerHTML = '';
+    document.getElementById('selectedCustomerLama').classList.add('hidden');
+    document.getElementById('selectedCustomerBaru').innerHTML = '';
+    document.getElementById('selectedCustomerBaru').classList.add('hidden');
+    document.getElementById('dataComparison').classList.add('hidden');
+    document.getElementById('pointCalculation').classList.add('hidden');
+    document.getElementById('submitMigrasi').disabled = true;
+}
+
+// Find matching customer baru
+async function findMatchingCustomerBaru(phone) {
+    if (!phone) return;
+    
+    const cleanPhone = phone.replace(/[^\d]/g, '').replace(/^0+/, '');
+    
+    try {
+        const { data, error } = await supabase
+            .from('membercard')
+            .select('*')
+            .eq('nomorWA', cleanPhone);
+        
+        if (!error && data && data.length > 0) {
+            selectCustomerBaru(data[0]);
+        }
+    } catch (error) {
+        console.error('Error finding matching customer:', error);
+    }
+}
+
+// Search customer baru
 async function searchCustomerBaru() {
     const searchTerm = document.getElementById('searchCustomerBaru').value.trim();
     
@@ -495,9 +479,6 @@ async function searchCustomerBaru() {
     showLoading(true);
     
     try {
-        const supabase = getSupabase();
-        if (!supabase) return;
-        
         const { data, error } = await supabase
             .from('membercard')
             .select('*')
@@ -506,7 +487,6 @@ async function searchCustomerBaru() {
         if (error) throw error;
         
         const results = data || [];
-        
         const resultsDiv = document.getElementById('customerBaruResults');
         resultsDiv.innerHTML = '';
         
@@ -535,7 +515,203 @@ async function searchCustomerBaru() {
     }
 }
 
-// Fungsi-fungsi helper lainnya (sisa kode tetap sama)...
+// Select customer baru
+function selectCustomerBaru(customer) {
+    selectedCustomerBaru = customer;
+    
+    const selectedDiv = document.getElementById('selectedCustomerBaru');
+    selectedDiv.innerHTML = `
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="font-bold">${customer.nama}</p>
+                <p class="text-sm text-gray-600">${customer.nomorWA} | ${customer.id_member}</p>
+                <p class="text-sm">Point: <span class="font-bold">${customer.point || 0}</span></p>
+            </div>
+            <button onclick="deselectCustomerBaru()" class="text-red-500 hover:text-red-700">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+    `;
+    
+    selectedDiv.classList.remove('hidden');
+    document.getElementById('customerBaruResults').classList.add('hidden');
+    document.getElementById('searchCustomerBaru').value = '';
+    
+    if (selectedCustomerLama && selectedCustomerBaru) {
+        showDataComparison();
+    }
+}
+
+// Deselect customer baru
+function deselectCustomerBaru() {
+    selectedCustomerBaru = null;
+    document.getElementById('selectedCustomerBaru').innerHTML = '';
+    document.getElementById('selectedCustomerBaru').classList.add('hidden');
+    document.getElementById('dataComparison').classList.add('hidden');
+    document.getElementById('pointCalculation').classList.add('hidden');
+    document.getElementById('submitMigrasi').disabled = true;
+}
+
+// Show data comparison
+function showDataComparison() {
+    document.getElementById('namaLama').textContent = selectedCustomerLama.name || '-';
+    document.getElementById('namaBaru').textContent = selectedCustomerBaru.nama || '-';
+    document.getElementById('waLama').textContent = selectedCustomerLama.phone || '-';
+    document.getElementById('waBaru').textContent = selectedCustomerBaru.nomorWA || '-';
+    document.getElementById('alamatLama').textContent = selectedCustomerLama.address || '-';
+    document.getElementById('alamatBaru').textContent = selectedCustomerBaru.alamat || '-';
+    document.getElementById('idLama').textContent = selectedCustomerLama.code || '-';
+    document.getElementById('idBaru').textContent = selectedCustomerBaru.id_member || '-';
+    
+    const pointLama = parseFloat(selectedCustomerLama.loyalty_points || 0);
+    const konversiPoint = konversiPointValue || 1;
+    const pointBaru = Math.ceil(pointLama / konversiPoint);
+    
+    document.getElementById('pointLama').textContent = formatNumber(pointLama);
+    document.getElementById('konversiPoint').textContent = formatNumber(konversiPoint);
+    document.getElementById('pointBaru').textContent = pointBaru;
+    document.getElementById('calculationFormula').textContent = `⌈${formatNumber(pointLama)} ÷ ${formatNumber(konversiPoint)}⌉ = ${pointBaru}`;
+    
+    document.getElementById('dataComparison').classList.remove('hidden');
+    document.getElementById('pointCalculation').classList.remove('hidden');
+    document.getElementById('submitMigrasi').disabled = false;
+}
+
+// Submit migrasi
+async function submitMigrasi() {
+    if (!selectedCustomerLama || !selectedCustomerBaru) {
+        showWarning('Pilih customer lama dan baru terlebih dahulu');
+        return;
+    }
+    
+    if (selectedCustomerLama.status_migrasi === 'Sudah migrasi') {
+        showWarning('Customer lama sudah dimigrasi sebelumnya');
+        return;
+    }
+    
+    showLoading(true);
+    
+    try {
+        const pointLama = parseFloat(selectedCustomerLama.loyalty_points || 0);
+        const konversiPoint = konversiPointValue || 1;
+        const pointBaru = Math.ceil(pointLama / konversiPoint);
+        const newPoint = (selectedCustomerBaru.point || 0) + pointBaru;
+        
+        // Update membercard
+        const { error: updateError } = await supabase
+            .from('membercard')
+            .update({
+                point: newPoint,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', selectedCustomerBaru.id);
+        
+        if (updateError) throw new Error('Gagal update membercard: ' + updateError.message);
+        
+        // Update membercard_olsera
+        const { error: olseraError } = await supabase
+            .from('membercard_olsera')
+            .update({
+                outlet: currentOutlet,
+                id_member: selectedCustomerBaru.id_member,
+                nama: selectedCustomerBaru.nama,
+                nomor_wa: selectedCustomerBaru.nomorWA,
+                kasir: currentKasir,
+                konversi_point: konversiPoint,
+                status_migrasi: 'Sudah migrasi',
+                tanggal_migrasi: new Date().toISOString(),
+                point_migrasi: pointBaru
+            })
+            .eq('id', selectedCustomerLama.id);
+        
+        if (olseraError) throw new Error('Gagal update data Olsera: ' + olseraError.message);
+        
+        // Send WhatsApp
+        await sendWhatsAppNotification(selectedCustomerBaru.nomorWA, pointBaru, newPoint);
+        
+        // Show success
+        document.getElementById('successMessage').textContent = 
+            `Migrasi berhasil! ${pointBaru} point telah ditambahkan ke membercard ${selectedCustomerBaru.nama}. Total point sekarang: ${newPoint}`;
+        
+        showLoading(false);
+        closeModal('modalMigrasi');
+        openModal('successModal');
+        
+        // Refresh data
+        loadOlseraData();
+        loadDigitalData();
+        
+    } catch (error) {
+        console.error('Error during migration:', error);
+        showLoading(false);
+        showWarning('Gagal melakukan migrasi: ' + error.message);
+    }
+}
+
+// Send WhatsApp notification
+async function sendWhatsAppNotification(phoneNumber, pointAdded, totalPoints) {
+    try {
+        const cleanPhone = phoneNumber.replace(/[^\d]/g, '').replace(/^0+/, '');
+        const chatId = `62${cleanPhone}@c.us`;
+        
+        const message = `Selamat! Membercard Babeh Barbershop Anda telah berhasil dimigrasi.\n\n` +
+                       `Point yang ditambahkan: ${pointAdded}\n` +
+                       `Total point sekarang: ${totalPoints}\n\n` +
+                       `Terima kasih telah menjadi member setia Babeh Barbershop!\n\n` +
+                       `Head Office: Jl. Abdul Ghani, Rempoa, Ciputat\n` +
+                       `Contact: 0822-1001-7083`;
+        
+        const response = await fetch(WAHA_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Api-Key': WAHA_API_KEY
+            },
+            body: JSON.stringify({
+                session: 'session3',
+                chatId: chatId,
+                text: message
+            })
+        });
+        
+        if (!response.ok) {
+            console.warn('WA notification failed, but migration succeeded');
+        }
+    } catch (error) {
+        console.warn('Error sending WA:', error);
+    }
+}
+
+// Helper functions
+function formatNumber(num) {
+    return new Intl.NumberFormat('id-ID').format(num);
+}
+
+function showStatus(message, type = 'info') {
+    const statusInfo = document.getElementById('statusInfo');
+    const statusText = document.getElementById('statusText');
+    
+    if (!statusText) return;
+    
+    statusText.textContent = message;
+    statusInfo.className = 'flex items-center p-4 rounded-xl mb-6';
+    
+    if (type === 'error') {
+        statusInfo.classList.add('bg-red-50', 'border-l-4', 'border-red-500');
+        statusText.classList.add('text-red-700');
+    } else if (type === 'success') {
+        statusInfo.classList.add('bg-green-50', 'border-l-4', 'border-green-500');
+        statusText.classList.add('text-green-700');
+    } else if (type === 'warning') {
+        statusInfo.classList.add('bg-yellow-50', 'border-l-4', 'border-yellow-500');
+        statusText.classList.add('text-yellow-700');
+    } else {
+        statusInfo.classList.add('bg-blue-50', 'border-l-4', 'border-blue-500');
+        statusText.classList.add('text-blue-700');
+    }
+    
+    statusInfo.classList.remove('hidden');
+}
 
 function showWarning(message) {
     document.getElementById('warningText').textContent = message;
@@ -546,13 +722,40 @@ function showLoading(show) {
     document.getElementById('loading').style.display = show ? 'flex' : 'none';
 }
 
-// Helper functions
-function formatNumber(num) {
-    return new Intl.NumberFormat('id-ID').format(num);
+function changeOlseraPage(direction) {
+    const totalPages = Math.ceil(olseraData.length / itemsPerPage);
+    const newPage = currentOlseraPage + direction;
+    
+    if (newPage >= 1 && newPage <= totalPages) {
+        currentOlseraPage = newPage;
+        renderOlseraTable();
+    }
 }
 
-function cleanPhoneNumber(phone) {
-    return phone.replace(/[^\d]/g, '').replace(/^0+/, '');
+function changeDigitalPage(direction) {
+    const totalPages = Math.ceil(digitalData.length / itemsPerPage);
+    const newPage = currentDigitalPage + direction;
+    
+    if (newPage >= 1 && newPage <= totalPages) {
+        currentDigitalPage = newPage;
+        renderDigitalTable();
+    }
 }
 
-// ... tambahkan fungsi-fungsi lainnya yang sudah diperbaiki sebelumnya
+// Close modals when clicking outside
+window.onclick = function(event) {
+    document.querySelectorAll('.modal').forEach(modal => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+};
+
+// PWA Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(error => {
+            console.log('ServiceWorker registration failed:', error);
+        });
+    });
+}
