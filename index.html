@@ -1106,50 +1106,61 @@
         }
         
         // 7. AUTO-FIND CUSTOMER BARU BY PHONE
-        async function findCustomerBaruByPhone(phone) {
-            showLoading('Mencari customer baru berdasarkan nomor HP...');
-            
-            // Convert phone format for search
-            let searchPhone = phone;
-            if (phone.startsWith('+62')) {
-                searchPhone = phone.replace('+62', '62');
-            } else if (phone.startsWith('08')) {
-                searchPhone = '62' + phone.substring(1);
-            } else if (phone.startsWith('628')) {
-                searchPhone = phone;
-            }
-            
-            try {
-                const { data, error } = await supabase
-                    .from('membercard')
-                    .select('*')
-                    .ilike('outlet', `%${window.selectedOutlet.trim()}%`)
-                    .ilike('nomorWA', `%${searchPhone}%`)
-                    .limit(1);
-                
-                if (error) throw error;
-                
-                if (data && data.length > 0) {
-                    console.log('🚨 AUTO-FIND: Data ditemukan, memanggil selectCustomerBaru...');
-                    console.log('Customer data:', data[0]);
-                    
-                    showToast('success', 'Customer Baru Ditemukan', 
-                        'Data customer baru ditemukan otomatis berdasarkan nomor HP lama');
-                    
-                    // PANGGIL FUNGSI
-                    selectCustomerBaru(data[0]);
-                    
-                } else {
-                    showToast('info', 'Customer Baru Tidak Ditemukan', 
-                        'Silakan cari customer baru secara manual');
-                }
-            } catch (error) {
-                console.error('Error finding customer baru by phone:', error);
-                showToast('error', 'Pencarian Gagal', 'Gagal mencari customer baru otomatis');
-            } finally {
-                hideLoading();
-            }
+async function findCustomerBaruByPhone(phone) {
+    console.log('🔍 AUTO-FIND: Searching for phone:', phone);
+    
+    showLoading('Mencari customer baru berdasarkan nomor HP...');
+    
+    // Convert phone format for search
+    let searchPhone = phone;
+    if (phone.startsWith('+62')) {
+        searchPhone = phone.replace('+62', '62');
+    } else if (phone.startsWith('08')) {
+        searchPhone = '62' + phone.substring(1);
+    } else if (phone.startsWith('628')) {
+        searchPhone = phone;
+    }
+    
+    console.log('🔍 Search phone (converted):', searchPhone);
+    
+    try {
+        const { data, error } = await supabase
+            .from('membercard')
+            .select('*')
+            .ilike('outlet', `%${window.selectedOutlet.trim()}%`)
+            .ilike('nomorWA', `%${searchPhone}%`)
+            .limit(1);
+        
+        if (error) {
+            console.error('❌ Query error:', error);
+            throw error;
         }
+        
+        console.log('🔍 Query results:', data);
+        
+        if (data && data.length > 0) {
+            console.log('✅ AUTO-FOUND:', data[0]);
+            
+            showToast('success', 'Customer Baru Ditemukan', 
+                'Data customer baru ditemukan otomatis berdasarkan nomor HP lama');
+            
+            // BERI JEDA SEBELUM UPDATE UI (biar toast keluar dulu)
+            setTimeout(() => {
+                selectCustomerBaru(data[0]);
+            }, 300);
+            
+        } else {
+            console.log('❌ No customer found for phone:', searchPhone);
+            showToast('info', 'Customer Baru Tidak Ditemukan', 
+                'Silakan cari customer baru secara manual');
+        }
+    } catch (error) {
+        console.error('❌ Error finding customer baru by phone:', error);
+        showToast('error', 'Pencarian Gagal', 'Gagal mencari customer baru otomatis');
+    } finally {
+        hideLoading();
+    }
+}
         
         // 8. DISPLAY SEARCH RESULTS (Dengan kolom outlet dan status)
         function displaySearchResults(data, totalCount, type) {
