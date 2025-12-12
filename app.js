@@ -5,8 +5,50 @@ const WAHA_URL = 'https://waha-yetv8qi4e3zk.anakit.sumopod.my.id/api/sendText';
 const WAHA_KEY = 'sfcoGbpdLDkGZhKw2rx8sbb14vf4d8V6';
 
 // Inisialisasi Supabase
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+let supabase = null; // Deklarasi kosong dulu
 
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🔄 Checking Supabase...');
+    
+    // 1. Cek apakah library sudah dimuat
+    if (typeof window.supabase === 'undefined') {
+        console.error('❌ Supabase library not found in window');
+        alert('ERROR: Library database tidak ditemukan. Muat ulang halaman.');
+        return;
+    }
+    
+    // 2. Coba buat client
+    try {
+        supabase = window.supabase.createClient(
+            'https://intzwjmlypmopzauxeqt.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludHp3am1seXBtb3B6YXV4ZXF0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDcxNzkxMiwiZXhwIjoyMDcwMjkzOTEyfQ.Sx_VwOEHbLjVhc3rL96hlIGNkiZ44a4oD9T8DcBzwGI'
+        );
+        
+        console.log('✅ Supabase client created:', supabase);
+        
+        // 3. Test koneksi
+        const { data, error } = await supabase
+            .from('outlet')
+            .select('count')
+            .limit(1);
+            
+        if (error) {
+            throw error;
+        }
+        
+        console.log('✅ Database connection test passed');
+        
+        // 4. Lanjutkan inisialisasi aplikasi
+        initApp();
+        
+    } catch (error) {
+        console.error('❌ Failed to initialize Supabase:', error);
+        alert('Gagal menghubungkan ke database: ' + error.message);
+    }
+});
+
+function initApp() {
+    console.log('🚀 Starting application...');
 // ================= SETUP FUNCTIONS =================
 function setupApp() {
     loadOutlets();
