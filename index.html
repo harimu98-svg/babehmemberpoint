@@ -6,450 +6,1749 @@
     <title>Babeh Barbershop Membercard Point</title>
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/manifest.json">
     
-    <!-- Tailwind CSS via CDN (Alternative) -->
-
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Material Tailwind -->
+    <link href="https://cdn.jsdelivr.net/npm/material-tailwind@2.1.5/css/material-tailwind.min.css" rel="stylesheet">
+    
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
     
-    <!-- Custom Tailwind Config -->
     <style>
         :root {
-            --ungu-doff: #9370DB;
-            --ungu-darker: #7B68EE;
+            --primary-color: #7b3aed;
+            --primary-light: #9d6af5;
+            --primary-dark: #5a2db2;
         }
         
         body {
-            background-color: #f8f7ff;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f5f0ff;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
         
-        .bg-ungu-doff {
-            background-color: var(--ungu-doff);
+        .bg-purple-doff {
+            background-color: #f5f0ff;
         }
         
-        .text-ungu-doff {
-            color: var(--ungu-doff);
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
         
-        .border-ungu-doff {
-            border-color: var(--ungu-doff);
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        @media (min-width: 768px) {
+            .modal-content {
+                width: 95%;
+            }
+        }
+        
+        .rounded-custom {
+            border-radius: 12px;
         }
         
         .btn-yellow {
-            background-color: #FFD700;
-            color: #333;
+            background-color: #fbbf24;
+            color: #78350f;
         }
         
         .btn-yellow:hover {
-            background-color: #FFC800;
+            background-color: #f59e0b;
         }
         
         .btn-blue {
-            background-color: #2196F3;
+            background-color: #3b82f6;
             color: white;
         }
         
         .btn-blue:hover {
-            background-color: #1976D2;
+            background-color: #2563eb;
         }
         
         .btn-green {
-            background-color: #4CAF50;
+            background-color: #10b981;
             color: white;
         }
         
         .btn-green:hover {
-            background-color: #388E3C;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 50;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 16px;
-            width: 95%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
+            background-color: #059669;
         }
         
         .table-container {
-            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
         }
         
-        @media (max-width: 640px) {
-            .modal-content {
-                margin: 2% auto;
-                width: 98%;
-                padding: 15px;
-            }
+        .pagination-btn {
+            padding: 8px 16px;
+            margin: 0 4px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
         }
         
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #9370DB;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
+        .pagination-btn.active {
+            background-color: #7b3aed;
+            color: white;
+            border-color: #7b3aed;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-inactive {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .status-migrated {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5cf6;
         }
     </style>
-    
-    <!-- Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body class="min-h-screen">
+<body class="bg-purple-doff min-h-screen">
     <!-- Header -->
-    <header class="bg-gradient-to-r from-purple-700 to-purple-900 text-white p-4 rounded-b-2xl shadow-lg">
-        <div class="container mx-auto">
-            <div class="flex flex-col items-center">
-                <img src="logo.jpg" alt="Babeh Barbershop Logo" class="w-20 h-20 rounded-full border-4 border-white mb-3">
-                <h1 class="text-2xl font-bold text-center">Babeh Barbershop Membercard Point</h1>
+    <header class="bg-gradient-to-r from-purple-700 to-purple-900 text-white p-4 rounded-b-3xl shadow-lg">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                <img id="logo" src="logo.jpg" alt="Babeh Barbershop Logo" class="w-16 h-16 object-cover rounded-full border-4 border-white shadow-lg">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold">Babeh Barbershop</h1>
+                    <p class="text-purple-200 text-sm md:text-base">Membercard Point System</p>
+                </div>
+            </div>
+            
+            <div class="text-right">
+                <p class="text-sm md:text-base"><i class="fas fa-store mr-2"></i><span id="current-outlet">Pilih Outlet</span></p>
+                <p class="text-sm md:text-base"><i class="fas fa-user-tie mr-2"></i><span id="current-kasir">Pilih Kasir</span></p>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="container mx-auto p-4">
-        <!-- Outlet and Kasir Selection -->
-        <div class="bg-white rounded-2xl p-6 shadow-lg mb-6">
-            <h2 class="text-xl font-bold mb-4 text-purple-800">Pilih Outlet & Kasir</h2>
+        <!-- Outlet & Kasir Selection -->
+        <div class="bg-white rounded-custom shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-bold text-purple-800 mb-4"><i class="fas fa-cogs mr-2"></i>Pengaturan Awal</h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-gray-700 mb-2">Outlet</label>
-                    <select id="outletSelect" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <option value="">Pilih Outlet</option>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Outlet</label>
+                    <select id="outlet-select" class="w-full p-3 border border-purple-300 rounded-custom focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <option value="">-- Pilih Outlet --</option>
                     </select>
                 </div>
                 
                 <div>
-                    <label class="block text-gray-700 mb-2">Kasir</label>
-                    <select id="kasirSelect" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" disabled>
-                        <option value="">Pilih Kasir</option>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Kasir</label>
+                    <select id="kasir-select" class="w-full p-3 border border-purple-300 rounded-custom focus:ring-2 focus:ring-purple-500 focus:border-purple-500" disabled>
+                        <option value="">-- Pilih Kasir --</option>
                     </select>
                 </div>
+            </div>
+            
+            <div class="mt-4 text-sm text-gray-600">
+                <p><i class="fas fa-info-circle mr-2"></i>Pilih outlet dan kasir terlebih dahulu sebelum menggunakan fitur lainnya</p>
             </div>
         </div>
 
         <!-- Action Buttons -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <button id="btnOlsera" class="btn-yellow py-4 px-6 rounded-2xl font-bold text-lg shadow-lg transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
-                <div class="flex items-center justify-center">
-                    <span class="material-icons mr-2">storage</span>
-                    DATA MEMBERCARD OLSERA
-                </div>
-            </button>
+        <div class="bg-white rounded-custom shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-bold text-purple-800 mb-4"><i class="fas fa-tasks mr-2"></i>Aksi Membercard</h2>
             
-            <button id="btnDigital" class="btn-blue py-4 px-6 rounded-2xl font-bold text-lg shadow-lg transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
-                <div class="flex items-center justify-center">
-                    <span class="material-icons mr-2">credit_card</span>
-                    DATA MEMBERCARD DIGITAL
-                </div>
-            </button>
-            
-            <button id="btnMigrasi" class="btn-green py-4 px-6 rounded-2xl font-bold text-lg shadow-lg transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
-                <div class="flex items-center justify-center">
-                    <span class="material-icons mr-2">sync</span>
-                    MIGRASI
-                </div>
-            </button>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button id="btn-olsera" class="btn-yellow p-4 rounded-custom font-bold text-lg flex flex-col items-center justify-center transition duration-300 transform hover:scale-105" disabled>
+                    <i class="fas fa-id-card-alt text-3xl mb-2"></i>
+                    <span>DATA MEMBERCARD OLSERA</span>
+                    <span class="text-sm font-normal mt-1">Data member lama</span>
+                </button>
+                
+                <button id="btn-digital" class="btn-blue p-4 rounded-custom font-bold text-lg flex flex-col items-center justify-center transition duration-300 transform hover:scale-105" disabled>
+                    <i class="fas fa-mobile-alt text-3xl mb-2"></i>
+                    <span>DATA MEMBERCARD DIGITAL</span>
+                    <span class="text-sm font-normal mt-1">Data member baru</span>
+                </button>
+                
+                <button id="btn-migrasi" class="btn-green p-4 rounded-custom font-bold text-lg flex flex-col items-center justify-center transition duration-300 transform hover:scale-105" disabled>
+                    <i class="fas fa-exchange-alt text-3xl mb-2"></i>
+                    <span>MIGRASI MEMBERCARD</span>
+                    <span class="text-sm font-normal mt-1">Konversi point lama ke baru</span>
+                </button>
+            </div>
         </div>
 
         <!-- Status Info -->
-        <div id="statusInfo" class="hidden bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-xl mb-6">
-            <div class="flex items-center">
-                <span class="material-icons text-yellow-500 mr-2">info</span>
-                <p id="statusText" class="text-yellow-700"></p>
+        <div class="bg-white rounded-custom shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-bold text-purple-800 mb-4"><i class="fas fa-info-circle mr-2"></i>Informasi Sistem</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-purple-50 p-4 rounded-custom border border-purple-200">
+                    <h3 class="font-bold text-purple-700 mb-2">Outlet & Kasir</h3>
+                    <p class="text-sm"><span id="info-outlet" class="font-semibold">Belum dipilih</span></p>
+                    <p class="text-sm"><span id="info-kasir" class="font-semibold">Belum dipilih</span></p>
+                </div>
+                
+                <div class="bg-yellow-50 p-4 rounded-custom border border-yellow-200">
+                    <h3 class="font-bold text-yellow-700 mb-2">Membercard Olsera</h3>
+                    <p class="text-sm">Total data: <span id="info-olsera-count" class="font-semibold">-</span></p>
+                    <p class="text-sm">Status migrasi: <span id="info-olsera-migrasi" class="font-semibold">-</span></p>
+                </div>
+                
+                <div class="bg-blue-50 p-4 rounded-custom border border-blue-200">
+                    <h3 class="font-bold text-blue-700 mb-2">Membercard Digital</h3>
+                    <p class="text-sm">Total data: <span id="info-digital-count" class="font-semibold">-</span></p>
+                    <p class="text-sm">Status aktif: <span id="info-digital-active" class="font-semibold">-</span></p>
+                </div>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gradient-to-r from-purple-800 to-purple-900 text-white p-6 mt-8 rounded-t-2xl">
+    <footer class="bg-gradient-to-r from-purple-800 to-purple-900 text-white p-6 rounded-t-3xl shadow-lg mt-8">
         <div class="container mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <h3 class="text-lg font-bold mb-2">Head Office</h3>
+                    <h3 class="text-lg font-bold mb-3"><i class="fas fa-map-marker-alt mr-2"></i>Head Office</h3>
                     <p class="text-purple-200">Jl. Abdul Ghani, Rempoa, Ciputat</p>
                 </div>
+                
                 <div>
-                    <h3 class="text-lg font-bold mb-2">Contact</h3>
-                    <p class="text-purple-200">WA 0822-1001-7083</p>
+                    <h3 class="text-lg font-bold mb-3"><i class="fas fa-phone-alt mr-2"></i>Contact</h3>
+                    <p class="text-purple-200">WA: 0822-1001-7083</p>
+                    <p class="text-sm text-purple-300 mt-2">Babeh Barbershop Membercard Point System v1.0</p>
                 </div>
             </div>
-            <div class="text-center mt-6 pt-6 border-t border-purple-700">
-                <p class="text-purple-300">© 2024 Babeh Barbershop Membercard Point</p>
+            
+            <div class="mt-6 pt-4 border-t border-purple-700 text-center text-sm text-purple-300">
+                <p><i class="fas fa-shield-alt mr-2"></i>Sistem PWA - Dapat diinstall di perangkat Android</p>
             </div>
         </div>
     </footer>
 
-    <!-- Modal Data Olsera -->
-    <div id="modalOlsera" class="modal">
+    <!-- Modal Data Membercard Olsera -->
+    <div id="modal-olsera" class="modal-overlay hidden">
         <div class="modal-content">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-purple-800">DATA MEMBERCARD OLSERA</h2>
-                <button onclick="closeModal('modalOlsera')" class="text-gray-500 hover:text-gray-700">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            
-            <!-- Search -->
-            <div class="mb-4">
-                <input type="text" id="searchOlsera" placeholder="Cari berdasarkan Nama atau Phone..." 
-                       class="w-full p-3 border border-gray-300 rounded-xl">
-            </div>
-            
-            <!-- Data Table -->
-            <div class="table-container">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Code</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Loyalty Points</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="olseraTableBody" class="bg-white divide-y divide-gray-200">
-                        <!-- Data akan diisi oleh JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Pagination -->
-            <div id="olseraPagination" class="mt-4 flex justify-between items-center">
-                <button id="prevOlsera" class="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50">Prev</button>
-                <span id="olseraPageInfo" class="text-sm">Page 1 of 1</span>
-                <button id="nextOlsera" class="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50">Next</button>
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-purple-800"><i class="fas fa-id-card-alt mr-3"></i>Data Membercard Olsera</h2>
+                    <button id="close-olsera" class="text-gray-500 hover:text-gray-700 text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
+                        <div class="flex-1">
+                            <div class="relative">
+                                <input type="text" id="search-olsera" placeholder="Cari berdasarkan nama atau nomor HP..." class="w-full p-3 pl-10 border border-purple-300 rounded-custom focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                                <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <button id="search-btn-olsera" class="btn-yellow mt-2 md:mt-0 px-6 py-3 rounded-custom font-bold">
+                            <i class="fas fa-search mr-2"></i>Cari
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-purple-100">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">ID</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Nama</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Nomor HP</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Loyalty Points</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Status Migrasi</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-purple-800 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="olsera-table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div id="olsera-pagination" class="mt-4 flex justify-center items-center space-x-2">
+                    <!-- Pagination will be generated here -->
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <button id="close-olsera-bottom" class="bg-gray-500 text-white px-6 py-3 rounded-custom font-bold hover:bg-gray-600">
+                        <i class="fas fa-times mr-2"></i>Tutup
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Data Digital -->
-    <div id="modalDigital" class="modal">
+    <!-- Modal Data Membercard Digital -->
+    <div id="modal-digital" class="modal-overlay hidden">
         <div class="modal-content">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-purple-800">DATA MEMBERCARD DIGITAL</h2>
-                <button onclick="closeModal('modalDigital')" class="text-gray-500 hover:text-gray-700">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            
-            <!-- Search -->
-            <div class="mb-4">
-                <input type="text" id="searchDigital" placeholder="Cari berdasarkan Nama atau nomorWA..." 
-                       class="w-full p-3 border border-gray-300 rounded-xl">
-            </div>
-            
-            <!-- Data Table -->
-            <div class="table-container">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID Member</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">No WA</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Point</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="digitalTableBody" class="bg-white divide-y divide-gray-200">
-                        <!-- Data akan diisi oleh JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Pagination -->
-            <div id="digitalPagination" class="mt-4 flex justify-between items-center">
-                <button id="prevDigital" class="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50">Prev</button>
-                <span id="digitalPageInfo" class="text-sm">Page 1 of 1</span>
-                <button id="nextDigital" class="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50">Next</button>
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-blue-800"><i class="fas fa-mobile-alt mr-3"></i>Data Membercard Digital</h2>
+                    <button id="close-digital" class="text-gray-500 hover:text-gray-700 text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:space-x-4">
+                        <div class="flex-1">
+                            <div class="relative">
+                                <input type="text" id="search-digital" placeholder="Cari berdasarkan nama atau nomor WA..." class="w-full p-3 pl-10 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <button id="search-btn-digital" class="btn-blue mt-2 md:mt-0 px-6 py-3 rounded-custom font-bold">
+                            <i class="fas fa-search mr-2"></i>Cari
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-blue-100">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">ID Member</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Nama</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Nomor WA</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Point</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Status</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider">Outlet</th>
+                            </tr>
+                        </thead>
+                        <tbody id="digital-table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div id="digital-pagination" class="mt-4 flex justify-center items-center space-x-2">
+                    <!-- Pagination will be generated here -->
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <button id="close-digital-bottom" class="bg-gray-500 text-white px-6 py-3 rounded-custom font-bold hover:bg-gray-600">
+                        <i class="fas fa-times mr-2"></i>Tutup
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Modal Migrasi -->
-    <div id="modalMigrasi" class="modal">
+    <div id="modal-migrasi" class="modal-overlay hidden">
         <div class="modal-content">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-purple-800">MIGRASI DATA</h2>
-                <button onclick="closeModal('modalMigrasi')" class="text-gray-500 hover:text-gray-700">
-                    <span class="material-icons">close</span>
-                </button>
-            </div>
-            
-            <!-- Outlet & Kasir Info -->
-            <div class="bg-purple-50 p-4 rounded-xl mb-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-sm text-gray-600">Outlet</p>
-                        <p id="migrasiOutlet" class="font-bold">-</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-600">Kasir</p>
-                        <p id="migrasiKasir" class="font-bold">-</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Pilih Customer Lama -->
-            <div class="mb-6">
-                <label class="block text-gray-700 mb-2 font-medium">Pilih Customer Lama</label>
-                <div class="flex gap-2">
-                    <input type="text" id="searchCustomerLama" placeholder="Cari customer lama..." 
-                           class="flex-grow p-3 border border-gray-300 rounded-xl">
-                    <button onclick="searchCustomerLama()" class="bg-yellow-500 text-white p-3 rounded-xl hover:bg-yellow-600">
-                        <span class="material-icons">search</span>
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-green-800"><i class="fas fa-exchange-alt mr-3"></i>Migrasi Membercard</h2>
+                    <button id="close-migrasi" class="text-gray-500 hover:text-gray-700 text-2xl">
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <div id="customerLamaResults" class="mt-2 max-h-40 overflow-y-auto hidden">
-                    <!-- Results akan diisi -->
-                </div>
-                <div id="selectedCustomerLama" class="mt-2 p-3 bg-blue-50 rounded-xl hidden">
-                    <!-- Selected customer akan ditampilkan -->
-                </div>
-            </div>
-            
-            <!-- Pilih Customer Baru -->
-            <div class="mb-6">
-                <label class="block text-gray-700 mb-2 font-medium">Pilih Customer Baru</label>
-                <div class="flex gap-2">
-                    <input type="text" id="searchCustomerBaru" placeholder="Cari customer baru..." 
-                           class="flex-grow p-3 border border-gray-300 rounded-xl">
-                    <button onclick="searchCustomerBaru()" class="bg-blue-500 text-white p-3 rounded-xl hover:bg-blue-600">
-                        <span class="material-icons">search</span>
-                    </button>
-                </div>
-                <div id="customerBaruResults" class="mt-2 max-h-40 overflow-y-auto hidden">
-                    <!-- Results akan diisi -->
-                </div>
-                <div id="selectedCustomerBaru" class="mt-2 p-3 bg-green-50 rounded-xl hidden">
-                    <!-- Selected customer akan ditampilkan -->
-                </div>
-            </div>
-            
-            <!-- Data Comparison Table -->
-            <div id="dataComparison" class="hidden mb-6">
-                <h3 class="font-bold mb-3 text-purple-800">Perbandingan Data</h3>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white border border-gray-200">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th class="px-4 py-2 border">Data</th>
-                                <th class="px-4 py-2 border">Lama</th>
-                                <th class="px-4 py-2 border">Baru</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="px-4 py-2 border font-medium">Nama Customer</td>
-                                <td id="namaLama" class="px-4 py-2 border"></td>
-                                <td id="namaBaru" class="px-4 py-2 border"></td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-2 border font-medium">Nomor WA</td>
-                                <td id="waLama" class="px-4 py-2 border"></td>
-                                <td id="waBaru" class="px-4 py-2 border"></td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-2 border font-medium">Alamat</td>
-                                <td id="alamatLama" class="px-4 py-2 border"></td>
-                                <td id="alamatBaru" class="px-4 py-2 border"></td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-2 border font-medium">ID Member</td>
-                                <td id="idLama" class="px-4 py-2 border"></td>
-                                <td id="idBaru" class="px-4 py-2 border"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Point Calculation -->
-            <div id="pointCalculation" class="hidden mb-6">
-                <h3 class="font-bold mb-3 text-purple-800">Perhitungan Point</h3>
-                <div class="bg-yellow-50 p-4 rounded-xl">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                
+                <div class="bg-gray-50 p-4 rounded-custom mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <p class="text-sm text-gray-600">Point Lama</p>
-                            <p id="pointLama" class="text-xl font-bold">0</p>
+                            <p class="font-semibold text-gray-700">Outlet:</p>
+                            <p id="migrasi-outlet" class="text-lg font-bold text-purple-700">-</p>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">Konversi Point</p>
-                            <p id="konversiPoint" class="text-xl font-bold">0</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Point Baru</p>
-                            <p id="pointBaru" class="text-xl font-bold text-green-600">0</p>
+                            <p class="font-semibold text-gray-700">Kasir:</p>
+                            <p id="migrasi-kasir" class="text-lg font-bold text-purple-700">-</p>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-600">Rumus: ⌈Point Lama ÷ Konversi Point⌉ = <span id="calculationFormula" class="font-medium">0</span></p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Customer Lama -->
+                        <div>
+                            <h3 class="font-bold text-yellow-700 mb-3 text-lg"><i class="fas fa-user-clock mr-2"></i>Customer Lama (Olsera)</h3>
+                            <div class="mb-4">
+                                <div class="relative">
+                                    <input type="text" id="search-customer-lama" placeholder="Cari customer lama..." class="w-full p-3 pl-10 border border-yellow-300 rounded-custom focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+                                    <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                                </div>
+                                <button id="search-btn-customer-lama" class="btn-yellow w-full mt-2 px-6 py-3 rounded-custom font-bold">
+                                    <i class="fas fa-search mr-2"></i>Cari Customer Lama
+                                </button>
+                            </div>
+                            
+                            <div id="customer-lama-result" class="hidden bg-yellow-50 p-4 rounded-custom border border-yellow-200">
+                                <h4 class="font-bold text-yellow-800 mb-2">Customer Terpilih:</h4>
+                                <p><span class="font-semibold">Nama:</span> <span id="selected-customer-lama-nama">-</span></p>
+                                <p><span class="font-semibold">No HP:</span> <span id="selected-customer-lama-phone">-</span></p>
+                                <p><span class="font-semibold">Loyalty Points:</span> <span id="selected-customer-lama-points">-</span></p>
+                                <p><span class="font-semibold">ID Member:</span> <span id="selected-customer-lama-id">-</span></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Customer Baru -->
+                        <div>
+                            <h3 class="font-bold text-blue-700 mb-3 text-lg"><i class="fas fa-user-check mr-2"></i>Customer Baru (Digital)</h3>
+                            <div class="mb-4">
+                                <div id="customer-baru-auto" class="hidden bg-blue-50 p-4 rounded-custom border border-blue-200 mb-3">
+                                    <p class="font-semibold text-blue-800"><i class="fas fa-check-circle mr-2"></i>Customer baru ditemukan otomatis berdasarkan nomor HP lama</p>
+                                </div>
+                                
+                                <div class="relative">
+                                    <input type="text" id="search-customer-baru" placeholder="Cari customer baru..." class="w-full p-3 pl-10 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                                </div>
+                                <button id="search-btn-customer-baru" class="btn-blue w-full mt-2 px-6 py-3 rounded-custom font-bold">
+                                    <i class="fas fa-search mr-2"></i>Cari Customer Baru
+                                </button>
+                            </div>
+                            
+                            <div id="customer-baru-result" class="hidden bg-blue-50 p-4 rounded-custom border border-blue-200">
+                                <h4 class="font-bold text-blue-800 mb-2">Customer Terpilih:</h4>
+                                <p><span class="font-semibold">Nama:</span> <span id="selected-customer-baru-nama">-</span></p>
+                                <p><span class="font-semibold">No WA:</span> <span id="selected-customer-baru-wa">-</span></p>
+                                <p><span class="font-semibold">ID Member:</span> <span id="selected-customer-baru-id">-</span></p>
+                                <p><span class="font-semibold">Point Saat Ini:</span> <span id="selected-customer-baru-point">-</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Comparison Table -->
+                <div id="comparison-section" class="hidden">
+                    <h3 class="font-bold text-gray-800 mb-4 text-lg"><i class="fas fa-table mr-2"></i>Perbandingan Data Migrasi</h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-300 rounded-custom overflow-hidden">
+                            <thead class="bg-green-100">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-green-800 border-b">Data Membercard</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-yellow-800 border-b">Data Lama (Olsera)</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-blue-800 border-b">Data Baru (Digital)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="px-4 py-3 font-semibold text-gray-700">Nama Customer</td>
+                                    <td class="px-4 py-3" id="compare-nama-lama">-</td>
+                                    <td class="px-4 py-3" id="compare-nama-baru">-</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="px-4 py-3 font-semibold text-gray-700">Nomor WA/HP</td>
+                                    <td class="px-4 py-3" id="compare-phone-lama">-</td>
+                                    <td class="px-4 py-3" id="compare-phone-baru">-</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="px-4 py-3 font-semibold text-gray-700">Alamat</td>
+                                    <td class="px-4 py-3" id="compare-alamat-lama">-</td>
+                                    <td class="px-4 py-3" id="compare-alamat-baru">-</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="px-4 py-3 font-semibold text-gray-700">ID Member</td>
+                                    <td class="px-4 py-3" id="compare-id-lama">-</td>
+                                    <td class="px-4 py-3" id="compare-id-baru">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-semibold text-gray-700">Point Lama</td>
+                                    <td class="px-4 py-3" id="compare-point-lama">-</td>
+                                    <td class="px-4 py-3" colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-semibold text-gray-700">Konversi Point</td>
+                                    <td class="px-4 py-3" id="compare-konversi">-</td>
+                                    <td class="px-4 py-3" colspan="2"></td>
+                                </tr>
+                                <tr class="bg-green-50">
+                                    <td class="px-4 py-3 font-bold text-green-800">POINT BARU</td>
+                                    <td class="px-4 py-3 font-bold text-green-800" colspan="2" id="compare-point-baru">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-6 bg-yellow-50 p-4 rounded-custom border border-yellow-200">
+                        <p class="font-semibold text-yellow-800"><i class="fas fa-exclamation-triangle mr-2"></i>Pastikan validasi data member lama dan data member baru sudah benar sebelum submit migrasi</p>
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <button id="submit-migrasi" class="btn-green px-8 py-3 rounded-custom font-bold text-lg">
+                            <i class="fas fa-paper-plane mr-2"></i>SUBMIT MIGRASI
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <button id="close-migrasi-bottom" class="bg-gray-500 text-white px-6 py-3 rounded-custom font-bold hover:bg-gray-600">
+                        <i class="fas fa-times mr-2"></i>Tutup
+                    </button>
                 </div>
             </div>
-            
-            <!-- Submit Button -->
-            <div class="flex justify-end">
-                <button id="submitMigrasi" onclick="submitMigrasi()" 
-                        class="bg-green-600 text-white py-3 px-6 rounded-xl font-bold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled>
-                    <span class="material-icons mr-2">check_circle</span>
-                    SUBMIT MIGRASI
-                </button>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-custom shadow-lg z-50 hidden transform transition-transform duration-300 translate-y-10">
+        <div class="flex items-center">
+            <i id="toast-icon" class="fas fa-info-circle mr-3 text-xl"></i>
+            <div>
+                <p id="toast-title" class="font-bold"></p>
+                <p id="toast-message" class="text-sm"></p>
             </div>
-            
-            <!-- Warning -->
-            <div id="warningInfo" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl hidden">
-                <p id="warningText" class="text-red-700 text-sm"></p>
-            </div>
+            <button id="close-toast" class="ml-4 text-gray-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loading" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white p-8 rounded-2xl flex flex-col items-center">
-            <div class="loading-spinner mb-4"></div>
-            <p class="text-gray-700">Memproses...</p>
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-6 rounded-custom shadow-xl flex flex-col items-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-700 mb-4"></div>
+            <p class="text-gray-700 font-semibold" id="loading-text">Memuat data...</p>
         </div>
     </div>
 
-    <!-- Success Modal -->
-    <div id="successModal" class="modal">
-        <div class="modal-content">
-            <div class="text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                    <span class="material-icons text-green-600 text-3xl">check_circle</span>
+    <!-- Search Results Modal for Customer Selection -->
+    <div id="modal-search-results" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 id="search-results-title" class="text-2xl font-bold text-purple-800"></h2>
+                    <button id="close-search-results" class="text-gray-500 hover:text-gray-700 text-2xl">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Migrasi Berhasil!</h3>
-                <p id="successMessage" class="text-gray-600 mb-4">Data telah berhasil dimigrasi.</p>
-                <button onclick="closeModal('successModal')" class="bg-green-600 text-white py-2 px-6 rounded-xl hover:bg-green-700">
-                    Tutup
-                </button>
+                
+                <div class="table-container">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead id="search-results-thead" class="bg-purple-100">
+                            <!-- Table headers will be populated here -->
+                        </thead>
+                        <tbody id="search-results-tbody" class="bg-white divide-y divide-gray-200">
+                            <!-- Search results will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div id="search-results-pagination" class="mt-4 flex justify-center items-center space-x-2">
+                    <!-- Pagination will be generated here -->
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <button id="close-search-results-bottom" class="bg-gray-500 text-white px-6 py-3 rounded-custom font-bold hover:bg-gray-600">
+                        <i class="fas fa-times mr-2"></i>Tutup
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js"></script>
+    <script>
+        // Supabase Configuration
+        const supabaseUrl = 'https://intzwjmlypmopzauxeqt.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludHp3am1seXBtb3B6YXV4ZXF0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDcxNzkxMiwiZXhwIjoyMDcwMjkzOTEyfQ.Sx_VwOEHbLjVhc3rL96hlIGNkiZ44a4oD9T8DcBzwGI';
+        
+        // WAHA Configuration
+        const WAHA_URL = 'https://waha-yetv8qi4e3zk.anakit.sumopod.my.id/api/sendText';
+        const WAHA_API_KEY = 'sfcoGbpdLDkGZhKw2rx8sbb14vf4d8V6';
+        
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // Global variables
+        let selectedOutlet = '';
+        let selectedKasir = '';
+        let konversiPointValue = 1;
+        
+        let currentOlseraPage = 1;
+        let currentDigitalPage = 1;
+        let currentSearchPage = 1;
+        let searchType = ''; // 'olsera', 'digital', 'customer-lama', 'customer-baru'
+        let searchResults = [];
+        
+        let selectedCustomerLama = null;
+        let selectedCustomerBaru = null;
+        
+        // DOM Elements
+        const outletSelect = document.getElementById('outlet-select');
+        const kasirSelect = document.getElementById('kasir-select');
+        const currentOutletSpan = document.getElementById('current-outlet');
+        const currentKasirSpan = document.getElementById('current-kasir');
+        const infoOutletSpan = document.getElementById('info-outlet');
+        const infoKasirSpan = document.getElementById('info-kasir');
+        
+        const btnOlsera = document.getElementById('btn-olsera');
+        const btnDigital = document.getElementById('btn-digital');
+        const btnMigrasi = document.getElementById('btn-migrasi');
+        
+        // Modals
+        const modalOlsera = document.getElementById('modal-olsera');
+        const modalDigital = document.getElementById('modal-digital');
+        const modalMigrasi = document.getElementById('modal-migrasi');
+        const modalSearchResults = document.getElementById('modal-search-results');
+        
+        // Toast
+        const toast = document.getElementById('toast');
+        const toastTitle = document.getElementById('toast-title');
+        const toastMessage = document.getElementById('toast-message');
+        const toastIcon = document.getElementById('toast-icon');
+        
+        // Loading overlay
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const loadingText = document.getElementById('loading-text');
+        
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOutlets();
+            setupEventListeners();
+            
+            // PWA installation
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js').catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+                });
+            }
+            
+            // Update logo src (fallback if not found)
+            const logo = document.getElementById('logo');
+            logo.onerror = function() {
+                this.src = 'https://via.placeholder.com/64/7b3aed/FFFFFF?text=BB';
+            };
+        });
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Outlet selection
+            outletSelect.addEventListener('change', function() {
+                selectedOutlet = this.value;
+                currentOutletSpan.textContent = this.options[this.selectedIndex].text;
+                infoOutletSpan.textContent = this.options[this.selectedIndex].text;
+                
+                if (selectedOutlet) {
+                    loadKasir(selectedOutlet);
+                    btnOlsera.disabled = false;
+                    btnDigital.disabled = false;
+                    btnMigrasi.disabled = false;
+                    
+                    // Get konversi point from outlet
+                    getKonversiPoint(selectedOutlet);
+                } else {
+                    kasirSelect.disabled = true;
+                    kasirSelect.innerHTML = '<option value="">-- Pilih Kasir --</option>';
+                    btnOlsera.disabled = true;
+                    btnDigital.disabled = true;
+                    btnMigrasi.disabled = true;
+                }
+            });
+            
+            // Kasir selection
+            kasirSelect.addEventListener('change', function() {
+                selectedKasir = this.value;
+                currentKasirSpan.textContent = this.options[this.selectedIndex].text;
+                infoKasirSpan.textContent = this.options[this.selectedIndex].text;
+                
+                // Update migrasi modal
+                document.getElementById('migrasi-outlet').textContent = outletSelect.options[outletSelect.selectedIndex].text;
+                document.getElementById('migrasi-kasir').textContent = this.options[this.selectedIndex].text;
+            });
+            
+            // Modal open buttons
+            btnOlsera.addEventListener('click', openModalOlsera);
+            btnDigital.addEventListener('click', openModalDigital);
+            btnMigrasi.addEventListener('click', openModalMigrasi);
+            
+            // Modal close buttons
+            document.getElementById('close-olsera').addEventListener('click', closeModalOlsera);
+            document.getElementById('close-olsera-bottom').addEventListener('click', closeModalOlsera);
+            document.getElementById('close-digital').addEventListener('click', closeModalDigital);
+            document.getElementById('close-digital-bottom').addEventListener('click', closeModalDigital);
+            document.getElementById('close-migrasi').addEventListener('click', closeModalMigrasi);
+            document.getElementById('close-migrasi-bottom').addEventListener('click', closeModalMigrasi);
+            document.getElementById('close-search-results').addEventListener('click', closeModalSearchResults);
+            document.getElementById('close-search-results-bottom').addEventListener('click', closeModalSearchResults);
+            
+            // Search functionality
+            document.getElementById('search-btn-olsera').addEventListener('click', searchOlsera);
+            document.getElementById('search-btn-digital').addEventListener('click', searchDigital);
+            document.getElementById('search-btn-customer-lama').addEventListener('click', searchCustomerLama);
+            document.getElementById('search-btn-customer-baru').addEventListener('click', searchCustomerBaru);
+            
+            // Submit migrasi
+            document.getElementById('submit-migrasi').addEventListener('click', submitMigrasi);
+            
+            // Toast close
+            document.getElementById('close-toast').addEventListener('click', function() {
+                toast.classList.add('hidden');
+            });
+            
+            // Search input enter key
+            document.getElementById('search-olsera').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') searchOlsera();
+            });
+            
+            document.getElementById('search-digital').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') searchDigital();
+            });
+            
+            document.getElementById('search-customer-lama').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') searchCustomerLama();
+            });
+            
+            document.getElementById('search-customer-baru').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') searchCustomerBaru();
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === modalOlsera) closeModalOlsera();
+                if (e.target === modalDigital) closeModalDigital();
+                if (e.target === modalMigrasi) closeModalMigrasi();
+                if (e.target === modalSearchResults) closeModalSearchResults();
+            });
+        }
+        
+        // Load outlets from Supabase
+        async function loadOutlets() {
+            showLoading('Memuat data outlet...');
+            
+            try {
+                const { data, error } = await supabase
+                    .from('outlet')
+                    .select('outlet')
+                    .order('outlet');
+                
+                if (error) throw error;
+                
+                outletSelect.innerHTML = '<option value="">-- Pilih Outlet --</option>';
+                
+                if (data && data.length > 0) {
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.outlet;
+                        option.textContent = item.outlet;
+                        outletSelect.appendChild(option);
+                    });
+                    
+                    showToast('success', 'Data outlet berhasil dimuat', `Total outlet: ${data.length}`);
+                    
+                    // Update info
+                    document.getElementById('info-olsera-count').textContent = '0';
+                    document.getElementById('info-digital-count').textContent = '0';
+                } else {
+                    showToast('warning', 'Data outlet tidak ditemukan', 'Tambahkan data outlet terlebih dahulu');
+                }
+            } catch (error) {
+                console.error('Error loading outlets:', error);
+                showToast('error', 'Gagal memuat data outlet', error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // Load kasir based on selected outlet
+        async function loadKasir(outlet) {
+            showLoading('Memuat data kasir...');
+            
+            try {
+                const { data, error } = await supabase
+                    .from('karyawan')
+                    .select('nama_karyawan')
+                    .eq('outlet', outlet)
+                    .eq('role', 'kasir')
+                    .order('nama_karyawan');
+                
+                if (error) throw error;
+                
+                kasirSelect.innerHTML = '<option value="">-- Pilih Kasir --</option>';
+                kasirSelect.disabled = false;
+                
+                if (data && data.length > 0) {
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.nama_karyawan;
+                        option.textContent = item.nama_karyawan;
+                        kasirSelect.appendChild(option);
+                    });
+                    
+                    showToast('success', 'Data kasir berhasil dimuat', `Total kasir: ${data.length}`);
+                } else {
+                    showToast('warning', 'Data kasir tidak ditemukan', `Tidak ada kasir di outlet ${outlet}`);
+                }
+            } catch (error) {
+                console.error('Error loading kasir:', error);
+                showToast('error', 'Gagal memuat data kasir', error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // Get konversi point from outlet
+        async function getKonversiPoint(outlet) {
+            try {
+                const { data, error } = await supabase
+                    .from('outlet')
+                    .select('konversi_point')
+                    .eq('outlet', outlet)
+                    .single();
+                
+                if (error) throw error;
+                
+                if (data && data.konversi_point) {
+                    konversiPointValue = parseFloat(data.konversi_point) || 1;
+                }
+            } catch (error) {
+                console.error('Error loading konversi point:', error);
+                konversiPointValue = 1;
+            }
+        }
+        
+        // Open modals
+        function openModalOlsera() {
+            modalOlsera.classList.remove('hidden');
+            searchOlsera();
+        }
+        
+        function openModalDigital() {
+            modalDigital.classList.remove('hidden');
+            searchDigital();
+        }
+        
+        function openModalMigrasi() {
+            if (!selectedOutlet || !selectedKasir) {
+                showToast('warning', 'Pilih outlet dan kasir terlebih dahulu', 'Silakan pilih outlet dan kasir sebelum melakukan migrasi');
+                return;
+            }
+            
+            modalMigrasi.classList.remove('hidden');
+            document.getElementById('migrasi-outlet').textContent = outletSelect.options[outletSelect.selectedIndex].text;
+            document.getElementById('migrasi-kasir').textContent = kasirSelect.options[kasirSelect.selectedIndex].text;
+            
+            // Reset form
+            resetMigrasiForm();
+        }
+        
+        // Close modals
+        function closeModalOlsera() {
+            modalOlsera.classList.add('hidden');
+        }
+        
+        function closeModalDigital() {
+            modalDigital.classList.add('hidden');
+        }
+        
+        function closeModalMigrasi() {
+            modalMigrasi.classList.add('hidden');
+        }
+        
+        function closeModalSearchResults() {
+            modalSearchResults.classList.add('hidden');
+        }
+        
+        // Search functions
+        async function searchOlsera() {
+            const searchTerm = document.getElementById('search-olsera').value.trim();
+            currentOlseraPage = 1;
+            
+            showLoading('Mencari data member Olsera...');
+            
+            try {
+                let query = supabase
+                    .from('membercard_olsera')
+                    .select('*', { count: 'exact' });
+                
+                if (searchTerm) {
+                    query = query.or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`);
+                }
+                
+                // Add pagination
+                const from = (currentOlseraPage - 1) * 10;
+                const to = from + 9;
+                query = query.range(from, to).order('name');
+                
+                const { data, error, count } = await query;
+                
+                if (error) throw error;
+                
+                displayOlseraResults(data, count);
+                
+                // Update info
+                document.getElementById('info-olsera-count').textContent = count || 0;
+                
+                const migratedCount = data.filter(item => item.status_migrasi === 'Sudah Migrasi').length;
+                document.getElementById('info-olsera-migrasi').textContent = `${migratedCount} dari ${data.length} sudah migrasi`;
+                
+            } catch (error) {
+                console.error('Error searching Olsera data:', error);
+                showToast('error', 'Gagal mencari data Olsera', error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        async function searchDigital() {
+            const searchTerm = document.getElementById('search-digital').value.trim();
+            currentDigitalPage = 1;
+            
+            showLoading('Mencari data member digital...');
+            
+            try {
+                let query = supabase
+                    .from('membercard')
+                    .select('*', { count: 'exact' });
+                
+                if (searchTerm) {
+                    query = query.or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`);
+                }
+                
+                // Add pagination
+                const from = (currentDigitalPage - 1) * 10;
+                const to = from + 9;
+                query = query.range(from, to).order('nama');
+                
+                const { data, error, count } = await query;
+                
+                if (error) throw error;
+                
+                displayDigitalResults(data, count);
+                
+                // Update info
+                document.getElementById('info-digital-count').textContent = count || 0;
+                
+                const activeCount = data.filter(item => item.status === 'active').length;
+                document.getElementById('info-digital-active').textContent = `${activeCount} dari ${data.length} aktif`;
+                
+            } catch (error) {
+                console.error('Error searching digital data:', error);
+                showToast('error', 'Gagal mencari data digital', error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        async function searchCustomerLama() {
+            const searchTerm = document.getElementById('search-customer-lama').value.trim();
+            searchType = 'customer-lama';
+            currentSearchPage = 1;
+            
+            if (!searchTerm) {
+                showToast('warning', 'Masukkan kata kunci pencarian', 'Silakan masukkan nama atau nomor HP untuk mencari customer lama');
+                return;
+            }
+            
+            showLoading('Mencari customer lama...');
+            
+            try {
+                let query = supabase
+                    .from('membercard_olsera')
+                    .select('*', { count: 'exact' })
+                    .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`)
+                    .is('status_migrasi', null);
+                
+                // Add pagination
+                const from = (currentSearchPage - 1) * 10;
+                const to = from + 9;
+                query = query.range(from, to).order('name');
+                
+                const { data, error, count } = await query;
+                
+                if (error) throw error;
+                
+                if (data.length === 0) {
+                    showToast('info', 'Customer tidak ditemukan', 'Tidak ada customer lama dengan kata kunci tersebut');
+                    return;
+                }
+                
+                searchResults = data;
+                displaySearchResults(data, count, 'customer-lama');
+                
+            } catch (error) {
+                console.error('Error searching customer lama:', error);
+                showToast('error', 'Gagal mencari customer lama', error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        async function searchCustomerBaru() {
+            const searchTerm = document.getElementById('search-customer-baru').value.trim();
+            searchType = 'customer-baru';
+            currentSearchPage = 1;
+            
+            // If we have selected customer lama, try to find automatically first
+            if (selectedCustomerLama && !searchTerm) {
+                await findCustomerBaruByPhone(selectedCustomerLama.phone);
+                return;
+            }
+            
+            if (!searchTerm) {
+                showToast('warning', 'Masukkan kata kunci pencarian', 'Silakan masukkan nama atau nomor WA untuk mencari customer baru');
+                return;
+            }
+            
+            showLoading('Mencari customer baru...');
+            
+            try {
+                let query = supabase
+                    .from('membercard')
+                    .select('*', { count: 'exact' })
+                    .or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`);
+                
+                // Add pagination
+                const from = (currentSearchPage - 1) * 10;
+                const to = from + 9;
+                query = query.range(from, to).order('nama');
+                
+                const { data, error, count } = await query;
+                
+                if (error) throw error;
+                
+                if (data.length === 0) {
+                    showToast('info', 'Customer tidak ditemukan', 'Tidak ada customer baru dengan kata kunci tersebut');
+                    return;
+                }
+                
+                searchResults = data;
+                displaySearchResults(data, count, 'customer-baru');
+                
+            } catch (error) {
+                console.error('Error searching customer baru:', error);
+                showToast('error', 'Gagal mencari customer baru', error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        async function findCustomerBaruByPhone(phone) {
+            showLoading('Mencari customer baru berdasarkan nomor HP...');
+            
+            // Convert phone format for search
+            let searchPhone = phone;
+            if (phone.startsWith('+62')) {
+                searchPhone = phone.replace('+62', '62');
+            } else if (phone.startsWith('08')) {
+                searchPhone = '62' + phone.substring(1);
+            } else if (phone.startsWith('628')) {
+                searchPhone = phone;
+            }
+            
+            try {
+                const { data, error } = await supabase
+                    .from('membercard')
+                    .select('*')
+                    .ilike('nomorWA', `%${searchPhone}%`)
+                    .limit(1);
+                
+                if (error) throw error;
+                
+                if (data && data.length > 0) {
+                    // Auto-select customer baru
+                    document.getElementById('customer-baru-auto').classList.remove('hidden');
+                    selectCustomerBaru(data[0]);
+                } else {
+                    // Show modal for manual selection
+                    showToast('info', 'Customer baru tidak ditemukan', 'Silakan cari customer baru secara manual');
+                    document.getElementById('customer-baru-auto').classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error finding customer baru by phone:', error);
+                showToast('error', 'Gagal mencari customer baru', error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // Display results functions
+        function displayOlseraResults(data, totalCount) {
+            const tbody = document.getElementById('olsera-table-body');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+                        <i class="fas fa-database text-3xl mb-2 block"></i>
+                        <p>Tidak ada data ditemukan</p>
+                    </td>
+                `;
+                tbody.appendChild(row);
+                return;
+            }
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                const statusClass = item.status_migrasi === 'Sudah Migrasi' ? 'status-migrated' : 'status-active';
+                const statusText = item.status_migrasi === 'Sudah Migrasi' ? 'Sudah Migrasi' : 'Belum Migrasi';
+                
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm">${item.code || '-'}</td>
+                    <td class="px-4 py-3">
+                        <div class="font-medium text-gray-900">${item.name || '-'}</div>
+                        <div class="text-xs text-gray-500">${item.customer_type || '-'}</div>
+                    </td>
+                    <td class="px-4 py-3 text-sm">${item.phone || '-'}</td>
+                    <td class="px-4 py-3 text-sm font-bold">${item.loyalty_points || 0}</td>
+                    <td class="px-4 py-3">
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        <button class="text-purple-600 hover:text-purple-900 mr-3" onclick="viewOlseraDetail(${item.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Generate pagination
+            generatePagination('olsera-pagination', currentOlseraPage, totalCount, 10, 'olsera');
+        }
+        
+        function displayDigitalResults(data, totalCount) {
+            const tbody = document.getElementById('digital-table-body');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+                        <i class="fas fa-database text-3xl mb-2 block"></i>
+                        <p>Tidak ada data ditemukan</p>
+                    </td>
+                `;
+                tbody.appendChild(row);
+                return;
+            }
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                const statusClass = item.status === 'active' ? 'status-active' : 'status-inactive';
+                
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm font-bold">${item.id_member || '-'}</td>
+                    <td class="px-4 py-3">
+                        <div class="font-medium text-gray-900">${item.nama || '-'}</div>
+                        <div class="text-xs text-gray-500">${item.tanggal_create || '-'}</div>
+                    </td>
+                    <td class="px-4 py-3 text-sm">${item.nomorWA || '-'}</td>
+                    <td class="px-4 py-3 text-sm font-bold">${item.point || 0}</td>
+                    <td class="px-4 py-3">
+                        <span class="status-badge ${statusClass}">${item.status || 'unknown'}</span>
+                    </td>
+                    <td class="px-4 py-3 text-sm">${item.outlet || '-'}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // Generate pagination
+            generatePagination('digital-pagination', currentDigitalPage, totalCount, 10, 'digital');
+        }
+        
+        function displaySearchResults(data, totalCount, type) {
+            const modal = modalSearchResults;
+            const title = document.getElementById('search-results-title');
+            const thead = document.getElementById('search-results-thead');
+            const tbody = document.getElementById('search-results-tbody');
+            
+            // Set title based on type
+            if (type === 'customer-lama') {
+                title.textContent = 'Pilih Customer Lama (Olsera)';
+            } else {
+                title.textContent = 'Pilih Customer Baru (Digital)';
+            }
+            
+            // Set table headers
+            if (type === 'customer-lama') {
+                thead.innerHTML = `
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-yellow-800 uppercase">Nama</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-yellow-800 uppercase">Nomor HP</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-yellow-800 uppercase">Loyalty Points</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-yellow-800 uppercase">Aksi</th>
+                    </tr>
+                `;
+            } else {
+                thead.innerHTML = `
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">Nama</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">Nomor WA</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">ID Member</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">Point</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-blue-800 uppercase">Aksi</th>
+                    </tr>
+                `;
+            }
+            
+            // Clear table body
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="${type === 'customer-lama' ? 4 : 5}" class="px-4 py-8 text-center text-gray-500">
+                        <i class="fas fa-database text-3xl mb-2 block"></i>
+                        <p>Tidak ada data ditemukan</p>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            } else {
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50';
+                    
+                    if (type === 'customer-lama') {
+                        row.innerHTML = `
+                            <td class="px-4 py-3">
+                                <div class="font-medium text-gray-900">${item.name || '-'}</div>
+                                <div class="text-xs text-gray-500">${item.code || '-'}</div>
+                            </td>
+                            <td class="px-4 py-3 text-sm">${item.phone || '-'}</td>
+                            <td class="px-4 py-3 text-sm font-bold">${item.loyalty_points || 0}</td>
+                            <td class="px-4 py-3 text-sm">
+                                <button class="btn-yellow px-3 py-1 rounded-custom text-xs font-bold" onclick="selectCustomerLama(${item.id})">
+                                    <i class="fas fa-check mr-1"></i>PILIH
+                                </button>
+                            </td>
+                        `;
+                    } else {
+                        row.innerHTML = `
+                            <td class="px-4 py-3">
+                                <div class="font-medium text-gray-900">${item.nama || '-'}</div>
+                                <div class="text-xs text-gray-500">${item.outlet || '-'}</div>
+                            </td>
+                            <td class="px-4 py-3 text-sm">${item.nomorWA || '-'}</td>
+                            <td class="px-4 py-3 text-sm font-bold">${item.id_member || '-'}</td>
+                            <td class="px-4 py-3 text-sm font-bold">${item.point || 0}</td>
+                            <td class="px-4 py-3 text-sm">
+                                <button class="btn-blue px-3 py-1 rounded-custom text-xs font-bold" onclick="selectCustomerBaru(${item.id})">
+                                    <i class="fas fa-check mr-1"></i>PILIH
+                                </button>
+                            </td>
+                        `;
+                    }
+                    
+                    tbody.appendChild(row);
+                });
+            }
+            
+            // Generate pagination
+            generatePagination('search-results-pagination', currentSearchPage, totalCount, 10, 'search');
+            
+            // Show modal
+            modal.classList.remove('hidden');
+        }
+        
+        // Pagination functions
+        function generatePagination(containerId, currentPage, totalCount, itemsPerPage, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            if (!totalCount || totalCount <= itemsPerPage) return;
+            
+            const totalPages = Math.ceil(totalCount / itemsPerPage);
+            const maxVisiblePages = 5;
+            
+            // Previous button
+            const prevButton = document.createElement('button');
+            prevButton.textContent = '«';
+            prevButton.className = 'pagination-btn';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = function() {
+                if (currentPage > 1) {
+                    if (type === 'olsera') {
+                        currentOlseraPage--;
+                        searchOlsera();
+                    } else if (type === 'digital') {
+                        currentDigitalPage--;
+                        searchDigital();
+                    } else if (type === 'search') {
+                        currentSearchPage--;
+                        loadSearchResultsPage();
+                    }
+                }
+            };
+            container.appendChild(prevButton);
+            
+            // Page numbers
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+                pageButton.onclick = function() {
+                    if (type === 'olsera') {
+                        currentOlseraPage = i;
+                        searchOlsera();
+                    } else if (type === 'digital') {
+                        currentDigitalPage = i;
+                        searchDigital();
+                    } else if (type === 'search') {
+                        currentSearchPage = i;
+                        loadSearchResultsPage();
+                    }
+                };
+                container.appendChild(pageButton);
+            }
+            
+            // Next button
+            const nextButton = document.createElement('button');
+            nextButton.textContent = '»';
+            nextButton.className = 'pagination-btn';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = function() {
+                if (currentPage < totalPages) {
+                    if (type === 'olsera') {
+                        currentOlseraPage++;
+                        searchOlsera();
+                    } else if (type === 'digital') {
+                        currentDigitalPage++;
+                        searchDigital();
+                    } else if (type === 'search') {
+                        currentSearchPage++;
+                        loadSearchResultsPage();
+                    }
+                }
+            };
+            container.appendChild(nextButton);
+            
+            // Page info
+            const pageInfo = document.createElement('span');
+            pageInfo.textContent = ` Hal ${currentPage} dari ${totalPages} (Total: ${totalCount})`;
+            pageInfo.className = 'ml-3 text-sm text-gray-600';
+            container.appendChild(pageInfo);
+        }
+        
+        async function loadSearchResultsPage() {
+            showLoading('Memuat halaman...');
+            
+            try {
+                let query;
+                const from = (currentSearchPage - 1) * 10;
+                const to = from + 9;
+                
+                if (searchType === 'customer-lama') {
+                    const searchTerm = document.getElementById('search-customer-lama').value.trim();
+                    query = supabase
+                        .from('membercard_olsera')
+                        .select('*', { count: 'exact' })
+                        .or(`name.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%`)
+                        .is('status_migrasi', null)
+                        .range(from, to)
+                        .order('name');
+                } else {
+                    const searchTerm = document.getElementById('search-customer-baru').value.trim();
+                    query = supabase
+                        .from('membercard')
+                        .select('*', { count: 'exact' })
+                        .or(`nama.ilike.%${searchTerm}%,nomorWA.ilike.%${searchTerm}%`)
+                        .range(from, to)
+                        .order('nama');
+                }
+                
+                const { data, error, count } = await query;
+                
+                if (error) throw error;
+                
+                searchResults = data;
+                displaySearchResults(data, count, searchType);
+                
+            } catch (error) {
+                console.error('Error loading search results page:', error);
+                showToast('error', 'Gagal memuat halaman', error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // Customer selection functions
+        function selectCustomerLama(customerId) {
+            const customer = searchResults.find(item => item.id === customerId);
+            
+            if (!customer) return;
+            
+            selectedCustomerLama = customer;
+            
+            // Update UI
+            document.getElementById('selected-customer-lama-nama').textContent = customer.name || '-';
+            document.getElementById('selected-customer-lama-phone').textContent = customer.phone || '-';
+            document.getElementById('selected-customer-lama-points').textContent = customer.loyalty_points || 0;
+            document.getElementById('selected-customer-lama-id').textContent = customer.code || '-';
+            document.getElementById('customer-lama-result').classList.remove('hidden');
+            
+            // Close search modal
+            closeModalSearchResults();
+            
+            // Try to find customer baru automatically
+            if (customer.phone) {
+                findCustomerBaruByPhone(customer.phone);
+            }
+        }
+        
+        function selectCustomerBaru(customerId) {
+            const customer = searchResults.find(item => item.id === customerId);
+            
+            if (!customer) return;
+            
+            selectedCustomerBaru = customer;
+            
+            // Update UI
+            document.getElementById('selected-customer-baru-nama').textContent = customer.nama || '-';
+            document.getElementById('selected-customer-baru-wa').textContent = customer.nomorWA || '-';
+            document.getElementById('selected-customer-baru-id').textContent = customer.id_member || '-';
+            document.getElementById('selected-customer-baru-point').textContent = customer.point || 0;
+            document.getElementById('customer-baru-result').classList.remove('hidden');
+            
+            // Close search modal
+            closeModalSearchResults();
+            
+            // Show comparison if both customers are selected
+            if (selectedCustomerLama && selectedCustomerBaru) {
+                showComparison();
+            }
+        }
+        
+        function showComparison() {
+            if (!selectedCustomerLama || !selectedCustomerBaru) return;
+            
+            // Calculate new points
+            const loyaltyPoints = parseFloat(selectedCustomerLama.loyalty_points) || 0;
+            const newPoints = Math.ceil(loyaltyPoints / konversiPointValue);
+            
+            // Update comparison table
+            document.getElementById('compare-nama-lama').textContent = selectedCustomerLama.name || '-';
+            document.getElementById('compare-nama-baru').textContent = selectedCustomerBaru.nama || '-';
+            document.getElementById('compare-phone-lama').textContent = selectedCustomerLama.phone || '-';
+            document.getElementById('compare-phone-baru').textContent = selectedCustomerBaru.nomorWA || '-';
+            document.getElementById('compare-alamat-lama').textContent = selectedCustomerLama.address || '-';
+            document.getElementById('compare-alamat-baru').textContent = selectedCustomerBaru.alamat || '-';
+            document.getElementById('compare-id-lama').textContent = selectedCustomerLama.code || '-';
+            document.getElementById('compare-id-baru').textContent = selectedCustomerBaru.id_member || '-';
+            document.getElementById('compare-point-lama').textContent = loyaltyPoints;
+            document.getElementById('compare-konversi').textContent = konversiPointValue;
+            document.getElementById('compare-point-baru').textContent = newPoints;
+            
+            // Show comparison section
+            document.getElementById('comparison-section').classList.remove('hidden');
+        }
+        
+        function resetMigrasiForm() {
+            selectedCustomerLama = null;
+            selectedCustomerBaru = null;
+            
+            document.getElementById('customer-lama-result').classList.add('hidden');
+            document.getElementById('customer-baru-result').classList.add('hidden');
+            document.getElementById('customer-baru-auto').classList.add('hidden');
+            document.getElementById('comparison-section').classList.add('hidden');
+            
+            document.getElementById('search-customer-lama').value = '';
+            document.getElementById('search-customer-baru').value = '';
+        }
+        
+        // Submit migrasi
+        async function submitMigrasi() {
+            if (!selectedCustomerLama || !selectedCustomerBaru) {
+                showToast('warning', 'Data belum lengkap', 'Pilih customer lama dan customer baru terlebih dahulu');
+                return;
+            }
+            
+            // Validation
+            if (selectedCustomerLama.status_migrasi === 'Sudah Migrasi') {
+                showToast('error', 'Tidak dapat migrasi', 'Customer lama sudah melakukan migrasi sebelumnya');
+                return;
+            }
+            
+            // Calculate new points
+            const loyaltyPoints = parseFloat(selectedCustomerLama.loyalty_points) || 0;
+            const newPoints = Math.ceil(loyaltyPoints / konversiPointValue);
+            
+            // Confirmation
+            if (!confirm(`Apakah Anda yakin akan melakukan migrasi?\n\nPoint Lama: ${loyaltyPoints}\nKonversi: ${konversiPointValue}\nPoint Baru: ${newPoints}`)) {
+                return;
+            }
+            
+            showLoading('Memproses migrasi...');
+            
+            try {
+                // Update membercard.point (add new points to existing points)
+                const currentPoints = parseInt(selectedCustomerBaru.point) || 0;
+                const updatedPoints = currentPoints + newPoints;
+                
+                const { error: error1 } = await supabase
+                    .from('membercard')
+                    .update({ 
+                        point: updatedPoints,
+                        point_sebelum: currentPoints,
+                        point_saat_ini: updatedPoints
+                    })
+                    .eq('id', selectedCustomerBaru.id);
+                
+                if (error1) throw error1;
+                
+                // Update membercard_olsera with migration data
+                const migrationData = {
+                    outlet: selectedOutlet,
+                    id_member: selectedCustomerBaru.id_member,
+                    nama: selectedCustomerBaru.nama,
+                    nomor_wa: selectedCustomerBaru.nomorWA,
+                    kasir: selectedKasir,
+                    konversi_point: konversiPointValue,
+                    status_migrasi: 'Sudah Migrasi',
+                    tanggal_migrasi: new Date().toISOString(),
+                    point_migrasi: newPoints
+                };
+                
+                const { error: error2 } = await supabase
+                    .from('membercard_olsera')
+                    .update(migrationData)
+                    .eq('id', selectedCustomerLama.id);
+                
+                if (error2) throw error2;
+                
+                // Send WhatsApp notification
+                await sendWhatsAppNotification(selectedCustomerBaru.nomorWA, selectedCustomerBaru.nama, newPoints, updatedPoints);
+                
+                showToast('success', 'Migrasi berhasil', `Point baru: ${newPoints} (Total: ${updatedPoints}) telah ditambahkan ke membercard ${selectedCustomerBaru.nama}`);
+                
+                // Reset form
+                resetMigrasiForm();
+                
+                // Close modal after 3 seconds
+                setTimeout(() => {
+                    closeModalMigrasi();
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Error submitting migrasi:', error);
+                showToast('error', 'Gagal melakukan migrasi', error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        // Send WhatsApp notification
+        async function sendWhatsAppNotification(nomorWA, nama, pointBaru, totalPoint) {
+            try {
+                // Format phone number
+                let chatId = nomorWA.toString().trim();
+                
+                // Convert to proper format: 62xxxxxxxxxx@c.us
+                if (chatId.startsWith('+62')) {
+                    chatId = chatId.substring(1); // Remove +
+                } else if (chatId.startsWith('08')) {
+                    chatId = '62' + chatId.substring(1);
+                } else if (chatId.startsWith('628')) {
+                    // Already in correct format
+                } else {
+                    chatId = '62' + chatId;
+                }
+                
+                // Ensure it ends with @c.us
+                if (!chatId.endsWith('@c.us')) {
+                    chatId += '@c.us';
+                }
+                
+                // Prepare message
+                const message = `Selamat membercard Babeh Barbershop anda telah berhasil dimigrasi!\n\n` +
+                               `Nama: ${nama}\n` +
+                               `Point migrasi: ${pointBaru} point\n` +
+                               `Total point sekarang: ${totalPoint} point\n\n` +
+                               `Terima kasih telah menjadi member setia Babeh Barbershop!\n\n` +
+                               `Informasi lebih lanjut:\n` +
+                               `Head Office: Jl. Abdul Ghani, Rempoa, Ciputat\n` +
+                               `Contact: WA 0822-1001-7083`;
+                
+                // Send request to WAHA API
+                const response = await fetch(WAHA_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Api-Key': WAHA_API_KEY
+                    },
+                    body: JSON.stringify({
+                        session: 'session3',
+                        chatId: chatId,
+                        text: message
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    console.log('WhatsApp notification sent successfully');
+                } else {
+                    console.warn('Failed to send WhatsApp notification:', result);
+                }
+                
+            } catch (error) {
+                console.error('Error sending WhatsApp notification:', error);
+                // Don't show error to user, just log it
+            }
+        }
+        
+        // View detail functions
+        function viewOlseraDetail(id) {
+            const customer = searchResults.find(item => item.id === id);
+            if (!customer) return;
+            
+            let detailHtml = `
+                <div class="bg-white rounded-custom p-6">
+                    <h3 class="text-xl font-bold text-purple-800 mb-4">Detail Membercard Olsera</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div><span class="font-semibold">ID:</span> ${customer.code || '-'}</div>
+                        <div><span class="font-semibold">Nama:</span> ${customer.name || '-'}</div>
+                        <div><span class="font-semibold">Jenis Kelamin:</span> ${customer.gender || '-'}</div>
+                        <div><span class="font-semibold">Tipe Customer:</span> ${customer.customer_type || '-'}</div>
+                        <div><span class="font-semibold">Email:</span> ${customer.email || '-'}</div>
+                        <div><span class="font-semibold">Telepon:</span> ${customer.phone || '-'}</div>
+                        <div><span class="font-semibold">Tanggal Lahir:</span> ${customer.birth_date || '-'}</div>
+                        <div><span class="font-semibold">Join Date:</span> ${customer.join_date ? new Date(customer.join_date).toLocaleDateString('id-ID') : '-'}</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <span class="font-semibold">Alamat:</span>
+                        <p class="mt-1">${customer.address || '-'}</p>
+                        <p>${customer.subdistrict || ''} ${customer.city || ''} ${customer.state_province || ''} ${customer.postal_code || ''}</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div><span class="font-semibold">Loyalty Points:</span> ${customer.loyalty_points || 0}</div>
+                        <div><span class="font-semibold">Deposit:</span> ${customer.deposit || 0}</div>
+                        <div><span class="font-semibold">Credit Limit:</span> ${customer.credit_limit || 0}</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <span class="font-semibold">Status:</span>
+                        ${customer.non_active === 'true' ? '<span class="status-badge status-inactive ml-2">Non Active</span>' : '<span class="status-badge status-active ml-2">Active</span>'}
+                        ${customer.status_migrasi === 'Sudah Migrasi' ? '<span class="status-badge status-migrated ml-2">Sudah Migrasi</span>' : ''}
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <button onclick="closeDetailModal()" class="bg-gray-500 text-white px-6 py-2 rounded-custom font-bold">
+                            <i class="fas fa-times mr-2"></i>Tutup
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Show in modal
+            const modal = modalSearchResults;
+            modal.querySelector('.modal-content').innerHTML = detailHtml;
+            modal.classList.remove('hidden');
+        }
+        
+        function closeDetailModal() {
+            modalSearchResults.classList.add('hidden');
+        }
+        
+        // Utility functions
+        function showLoading(text) {
+            loadingText.textContent = text;
+            loadingOverlay.classList.remove('hidden');
+        }
+        
+        function hideLoading() {
+            loadingOverlay.classList.add('hidden');
+        }
+        
+        function showToast(type, title, message) {
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            
+            // Set icon and color based on type
+            if (type === 'success') {
+                toastIcon.className = 'fas fa-check-circle mr-3 text-xl text-green-500';
+                toast.style.backgroundColor = '#10b981';
+            } else if (type === 'error') {
+                toastIcon.className = 'fas fa-exclamation-circle mr-3 text-xl text-red-500';
+                toast.style.backgroundColor = '#ef4444';
+            } else if (type === 'warning') {
+                toastIcon.className = 'fas fa-exclamation-triangle mr-3 text-xl text-yellow-500';
+                toast.style.backgroundColor = '#f59e0b';
+            } else {
+                toastIcon.className = 'fas fa-info-circle mr-3 text-xl text-blue-500';
+                toast.style.backgroundColor = '#3b82f6';
+            }
+            
+            toast.classList.remove('hidden');
+            toast.classList.remove('translate-y-10');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-y-10');
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 300);
+            }, 5000);
+        }
+        
+        // Make functions available globally for onclick attributes
+        window.selectCustomerLama = selectCustomerLama;
+        window.selectCustomerBaru = selectCustomerBaru;
+        window.viewOlseraDetail = viewOlseraDetail;
+        window.closeDetailModal = closeDetailModal;
+    </script>
 </body>
 </html>
