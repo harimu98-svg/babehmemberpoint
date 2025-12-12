@@ -3,7 +3,8 @@ const SUPABASE_URL = 'https://intzwjmlypmopzauxeqt.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludHp3am1seXBtb3B6YXV4ZXF0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3MTc5MTIsImV4cCI6MjA3MDI5MzkxMn0.VwwVEDdHtYP5gui4epTcNfLXhPkmfFbRVb5y8mrXJiM';
 const WAHA_URL = 'https://waha-yetv8qi4e3zk.anakit.sumopod.my.id/api/sendText';
 const WAHA_KEY = 'sfcoGbpdLDkGZhKw2rx8sbb14vf4d8V6';
-
+// Inisialisasi Supabase
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 // ================= GLOBAL STATE =================
 let supabase = null;
 let currentOutlet = '';
