@@ -213,13 +213,14 @@
     }
     
     /* Header super compact */
-    header {
-        padding: 8px 12px !important;
-        border-radius: 0 0 12px 12px !important;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-    }
+   header {
+    padding: 16px 20px !important;  /* ↑ lebih besar lagi */
+    border-radius: 0 0 15px 15px !important;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    min-height: 70px;  /* ← gunakan min-height */
+}
     
     header .container {
         flex-direction: row !important;
