@@ -23,602 +23,564 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root {
-            --primary-color: #7b3aed;
-            --primary-light: #9d6af5;
-            --primary-dark: #5a2db2;
-        }
-        
-        body {
-            background-color: #f5f0ff;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-        
-        .bg-purple-doff {
-            background-color: #f5f0ff;
-        }
-        
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        
+    :root {
+        --primary-color: #7b3aed;
+        --primary-light: #9d6af5;
+        --primary-dark: #5a2db2;
+    }
+    
+    body {
+        background-color: #f5f0ff;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    
+    .bg-purple-doff {
+        background-color: #f5f0ff;
+    }
+    
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+    
+    .modal-content {
+        background: white;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 1200px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    @media (min-width: 768px) {
         .modal-content {
-            background: white;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 1200px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 95%;
         }
-        
-        @media (min-width: 768px) {
-            .modal-content {
-                width: 95%;
-            }
+    }
+    
+    .rounded-custom {
+        border-radius: 10px;
+    }
+    
+    .btn-yellow {
+        background-color: #fbbf24;
+        color: #78350f;
+    }
+    
+    .btn-yellow:hover {
+        background-color: #f59e0b;
+    }
+    
+    .btn-blue {
+        background-color: #3b82f6;
+        color: white;
+    }
+    
+    .btn-blue:hover {
+        background-color: #2563eb;
+    }
+    
+    .btn-green {
+        background-color: #10b981;
+        color: white;
+    }
+    
+    .btn-green:hover {
+        background-color: #059669;
+    }
+    
+    .table-container {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .pagination-btn {
+        padding: 6px 12px;
+        margin: 0 3px;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        font-size: 0.85rem;
+    }
+    
+    .pagination-btn.active {
+        background-color: #7b3aed;
+        color: white;
+        border-color: #7b3aed;
+    }
+    
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    
+    .status-active {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+    
+    .status-inactive {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+    
+    .status-migrated {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .status-pending {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 8px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #c4b5fd;
+        border-radius: 8px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #8b5cf6;
+    }
+    
+    /* Toast Notification - Front Layer */
+    #toast {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 9999 !important;
+        background: white;
+        border-radius: 10px;
+        padding: 12px 16px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        border-left: 4px solid #7b3aed;
+        max-width: 350px;
+        animation: slideIn 0.3s ease-out;
+        display: none;
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
         }
-        
-        .rounded-custom {
-            border-radius: 10px;
+        to {
+            transform: translateX(0);
+            opacity: 1;
         }
-        
-        .btn-yellow {
-            background-color: #fbbf24;
-            color: #78350f;
-        }
-        
-        .btn-yellow:hover {
-            background-color: #f59e0b;
-        }
-        
-        .btn-blue {
-            background-color: #3b82f6;
-            color: white;
-        }
-        
-        .btn-blue:hover {
-            background-color: #2563eb;
-        }
-        
-        .btn-green {
-            background-color: #10b981;
-            color: white;
-        }
-        
-        .btn-green:hover {
-            background-color: #059669;
-        }
-        
-        .table-container {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .pagination-btn {
-            padding: 6px 12px;
-            margin: 0 3px;
-            border-radius: 6px;
-            border: 1px solid #d1d5db;
-            font-size: 0.85rem;
-        }
-        
-        .pagination-btn.active {
-            background-color: #7b3aed;
-            color: white;
-            border-color: #7b3aed;
-        }
-        
-        .status-badge {
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-        
-        .status-active {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-        
-        .status-inactive {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
-        
-        .status-migrated {
-            background-color: #dbeafe;
-            color: #1e40af;
-        }
-        
-        .status-pending {
-            background-color: #fef3c7;
-            color: #92400e;
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 8px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #c4b5fd;
-            border-radius: 8px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #8b5cf6;
-        }
-        
-        /* Toast Notification - Front Layer */
-        #toast {
-            position: fixed;
-            top: 16px;
-            right: 16px;
-            z-index: 9999 !important;
-            background: white;
-            border-radius: 10px;
-            padding: 12px 16px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            border-left: 4px solid #7b3aed;
-            max-width: 350px;
-            animation: slideIn 0.3s ease-out;
-            display: none;
-        }
-        
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        .toast-success {
-            border-left-color: #10b981;
-            background: #f0fdf4;
-        }
-        
-        .toast-error {
-            border-left-color: #ef4444;
-            background: #fef2f2;
-        }
-        
-        .toast-warning {
-            border-left-color: #f59e0b;
-            background: #fffbeb;
-        }
-        
-        .toast-info {
-            border-left-color: #3b82f6;
-            background: #eff6ff;
-        }
-        
-        /* Perbaikan CSS Header Lebih Besar */
-header {
-    padding: 1rem 1.25rem !important; /* py-4 px-5 */
-    border-radius: 0 0 1rem 1rem !important; /* rounded-b-2xl */
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important; /* shadow-xl */
-}
-
-header img {
-    width: 4rem !important; /* w-16 = 64px */
-    height: 4rem !important;
-    border-width: 4px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
-
-header h1 {
-    font-size: 1.5rem !important; /* text-2xl */
-    font-weight: 700 !important;
-    letter-spacing: -0.025em !important;
-    margin-bottom: 0.25rem !important;
-}
-
-header .text-purple-200 {
-    font-size: 1rem !important; /* text-base */
-    font-weight: 500 !important;
-    opacity: 0.9;
-}
-
-header .text-right {
-    font-size: 1rem !important;
-}
-
-header .text-right i {
-    font-size: 0.875rem !important; /* text-sm */
-}
-
-header .text-right span {
-    font-weight: 600 !important;
-}
-
-/* Responsive Header */
-@media (max-width: 768px) {
+    }
+    
+    .toast-success {
+        border-left-color: #10b981;
+        background: #f0fdf4;
+    }
+    
+    .toast-error {
+        border-left-color: #ef4444;
+        background: #fef2f2;
+    }
+    
+    .toast-warning {
+        border-left-color: #f59e0b;
+        background: #fffbeb;
+    }
+    
+    .toast-info {
+        border-left-color: #3b82f6;
+        background: #eff6ff;
+    }
+    
+    /* ============================================= */
+    /* PERBAIKAN HEADER - LEBIH BESAR */
+    /* ============================================= */
     header {
-        padding: 0.875rem 1rem !important; /* py-3.5 px-4 */
-        border-radius: 0 0 0.75rem 0.75rem !important;
+        padding: 1rem 1.25rem !important;
+        border-radius: 0 0 1rem 1rem !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
     }
     
     header img {
-        width: 3.5rem !important; /* 56px */
-        height: 3.5rem !important;
+        width: 4rem !important;
+        height: 4rem !important;
+        border-width: 4px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
     }
     
     header h1 {
-        font-size: 1.25rem !important; /* text-xl */
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.025em !important;
+        margin-bottom: 0.25rem !important;
     }
     
     header .text-purple-200 {
-        font-size: 0.875rem !important; /* text-sm */
+        font-size: 1rem !important;
+        font-weight: 500 !important;
+        opacity: 0.9;
     }
     
     header .text-right {
+        font-size: 1rem !important;
+    }
+    
+    header .text-right i {
         font-size: 0.875rem !important;
     }
-}
-            
-            /* Main container */
-            main.container {
-                padding: 10px !important;
-            }
-            
-            /* Section compact */
-            .bg-white.rounded-custom.shadow-lg {
-                margin-bottom: 10px !important;
-                padding: 14px !important;
-                border-radius: 8px !important;
-            }
-            
-            .bg-white h2 {
-                margin-bottom: 10px !important;
-                font-size: 1rem !important;
-            }
-            
-            /* Form fields compact */
-            .grid.grid-cols-1.md\:grid-cols-2.gap-6 {
-                gap: 10px !important;
-            }
-            
-            label {
-                margin-bottom: 5px !important;
-                font-size: 0.85rem !important;
-            }
-            
-            select, input {
-                padding: 8px 10px !important;
-                font-size: 0.9rem !important;
-                height: 40px !important;
-            }
-            
-            .mt-4.text-sm {
-                margin-top: 8px !important;
-                font-size: 0.75rem !important;
-            }
-            
-            /* Action button compact */
-            #btn-migrasi {
-                padding: 12px !important;
-                font-size: 0.95rem !important;
-                border-radius: 8px !important;
-            }
-            
-            #btn-migrasi i {
-                font-size: 22px !important;
-                margin-bottom: 5px !important;
-            }
-            
-            #btn-migrasi span:last-child {
-                font-size: 0.75rem !important;
-                margin-top: 3px !important;
-            }
-            
-            /* INFO SYSTEM - SUPER COMPACT GRID */
-            .grid.grid-cols-2.gap-3 {
-                gap: 8px !important;
-            }
-            
-            .bg-purple-50, .bg-yellow-50, .bg-blue-50, .bg-green-50 {
-                padding: 10px !important;
-                border-radius: 6px !important;
-            }
-            
-            .bg-purple-50 h3, .bg-yellow-50 h3, .bg-blue-50 h3, .bg-green-50 h3 {
-                font-size: 0.8rem !important;
-                margin-bottom: 5px !important;
-                line-height: 1.1;
-            }
-            
-            .bg-purple-50 p, .bg-yellow-50 p, .bg-blue-50 p, .bg-green-50 p {
-                font-size: 0.75rem !important;
-                line-height: 1.25 !important;
-                margin-bottom: 3px !important;
-            }
-            
-/* ============================================= */
-/* MOBILE ULTRA COMPACT */
-/* ============================================= */
-
-@media (max-width: 768px) {
-    body > footer.bg-gradient-to-r {
-        padding: 0.5rem 0.75rem !important;
-        margin-top: 0.25rem !important;
+    
+    header .text-right span {
+        font-weight: 600 !important;
     }
     
-    body > footer h3 {
-        font-size: 0.75rem !important;
-        margin-bottom: 0.125rem !important;
-    }
-    
-    body > footer .text-purple-200 {
-        font-size: 0.65rem !important;
-    }
-    
-    body > footer .border-t {
-        margin-top: 0.375rem !important;
-        padding-top: 0.375rem !important;
-    }
-}
-            
-            /* Modal compact */
-            .modal-content {
-                width: 96% !important;
-                max-height: 88vh !important;
-                margin: 8px !important;
-                border-radius: 12px !important;
-            }
-            
-            .modal-content .p-6 {
-                padding: 14px !important;
-            }
-            /* Tambahkan di CSS bagian modal compact */
-.modal-migrasi-header {
-    padding: 12px 16px !important;
-    margin-bottom: 10px !important;
-}
-
-.modal-migrasi-header h2 {
-    font-size: 1.2rem !important;
-    margin-bottom: 8px !important;
-}
-
-.modal-outlet-kasir-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px !important;
-    margin-bottom: 12px !important;
-    padding: 10px !important;
-    background: #f8f9fa;
-    border-radius: 6px;
-}
-
-.modal-outlet-kasir-info p {
-    margin-bottom: 3px !important;
-    line-height: 1.2 !important;
-}
-
-.modal-outlet-kasir-info .font-semibold {
-    font-size: 0.8rem !important;
-}
-
-.modal-outlet-kasir-info .text-lg {
-    font-size: 0.95rem !important;
-}
-            /* Toast compact */
-            #toast {
-                top: 12px;
-                right: 12px;
-                max-width: 300px;
-                padding: 10px 14px;
-            }
-        }
-        
-        /* Disable Tailwind CDN warning */
-        .tailwind-warning-hide {
-            display: none !important;
-        }
- /* ============================================= */
-/* PERBAIKAN MODAL MIGRASI - PURE CSS SOLUTION */
-/* ============================================= */
-
-/* 1. HILANGKAN ICON SEARCH PADA INPUT */
-.modal-content .relative .fa-search {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-}
-
-/* 2. HAPUS PADDING KIRI UNTUK ICON */
-#search-customer-lama,
-#search-customer-baru {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    background-image: none !important;
-}
-
-/* 3. ATUR UKURAN INPUT YANG SAMA DENGAN TOMBOL */
-#search-customer-lama,
-#search-customer-baru {
-    width: 100% !important;
-    height: 42px !important;
-    min-height: 42px !important;
-    box-sizing: border-box !important;
-    margin-bottom: 8px !important;
-    font-size: 0.9rem !important;
-    border-radius: 8px !important;
-}
-
-/* 4. ATUR UKURAN TOMBOL YANG SAMA DENGAN INPUT */
-#search-btn-customer-lama,
-#search-btn-customer-baru {
-    width: 100% !important;
-    height: 42px !important;
-    min-height: 42px !important;
-    box-sizing: border-box !important;
-    font-size: 0.9rem !important;
-    border-radius: 8px !important;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-/* 5. ATUR SPACING ANTARA INPUT DAN TOMBOL */
-.modal-content .mb-4 .relative {
-    margin-bottom: 8px !important;
-}
-
-/* 6. PERBAIKI POSITIONING */
-.modal-content .relative {
-    position: relative !important;
-}
-
-/* 7. RESPONSIVE MOBILE */
-@media (max-width: 768px) {
-    #search-customer-lama,
-    #search-customer-baru {
-        height: 38px !important;
-        min-height: 38px !important;
-        font-size: 0.85rem !important;
-        padding: 8px 10px !important;
-    }
-    
-    #search-btn-customer-lama,
-    #search-btn-customer-baru {
-        height: 38px !important;
-        min-height: 38px !important;
-        font-size: 0.85rem !important;
-    }
-    
-    /* Kurangi spacing di mobile */
-    .modal-content .grid.grid-cols-1.md\:grid-cols-2.gap-6 {
-        gap: 10px !important;
-    }
-}
-
-/* 8. DESKOPT OPTIMIZATION */
-@media (min-width: 769px) {
-    #search-customer-lama,
-    #search-customer-baru {
-        height: 44px !important;
-        min-height: 44px !important;
-    }
-    
-    #search-btn-customer-lama,
-    #search-btn-customer-baru {
-        height: 44px !important;
-        min-height: 44px !important;
-    }
-}
-
-/* 9. HAPUS GAP YANG BERLEBIHAN */
-.modal-content .mb-4 {
-    margin-bottom: 12px !important;
-}
-
-/* 10. ATUR PLACEHOLDER TEXT */
-#search-customer-lama::placeholder,
-#search-customer-baru::placeholder {
-    font-size: 0.85rem;
-    color: #6b7280;
-}
- }
-
-  /* Disable Tailwind CDN warning */
-.tailwind-warning-hide {
-    display: none !important;
-}
-       /* Perbaikan CSS Footer Lebih Pendek */
-footer {
-    padding: 0.75rem 1rem !important; /* py-3 px-4 */
-    margin-top: 1rem !important; /* mt-4 */
-    border-radius: 0.75rem 0.75rem 0 0 !important; /* rounded-t-xl */
-    min-height: fit-content !important;
-    max-height: 120px !important; /* Batasi tinggi maksimal */
-}
-
-footer .container {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-footer .grid {
-    gap: 0.75rem !important; /* gap-3 */
-    margin-bottom: 0.5rem !important;
-}
-
-footer h3 {
-    font-size: 1rem !important; /* text-base */
-    margin-bottom: 0.25rem !important; /* mb-1 */
-    line-height: 1.2 !important;
-}
-
-footer .text-purple-200 {
-    font-size: 0.875rem !important; /* text-sm */
-    line-height: 1.3 !important;
-    opacity: 0.9;
-}
-
-footer .text-purple-300 {
-    font-size: 0.875rem !important; /* text-sm */
-}
-
-footer .border-t {
-    margin-top: 0.5rem !important; /* mt-2 */
-    padding-top: 0.5rem !important; /* pt-2 */
-    border-top-width: 1px !important;
-}
-
-footer .border-t p {
-    font-size: 0.75rem !important; /* text-xs */
-    line-height: 1.2 !important;
-}
-
-/* Icon footer */
-footer i {
-    font-size: 0.875rem !important;
-    margin-right: 0.25rem !important;
-}
-
-/* Responsive Footer */
-@media (max-width: 768px) {
+    /* ============================================= */
+    /* PERBAIKAN FOOTER - LEBIH PENDEK & SESUAI */
+    /* ============================================= */
     footer {
-        padding: 0.625rem 0.875rem !important; /* py-2.5 px-3.5 */
-        margin-top: 0.75rem !important;
-        border-radius: 0.5rem 0.5rem 0 0 !important;
+        padding: 0.75rem 1rem !important;
+        margin-top: 1rem !important;
+        border-radius: 0.75rem 0.75rem 0 0 !important;
+        min-height: fit-content !important;
+        max-height: 120px !important;
+    }
+    
+    footer .container {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    footer .grid {
+        gap: 0.75rem !important;
+        margin-bottom: 0.5rem !important;
     }
     
     footer h3 {
-        font-size: 0.875rem !important; /* text-sm */
+        font-size: 1rem !important;
+        margin-bottom: 0.25rem !important;
+        line-height: 1.2 !important;
     }
     
     footer .text-purple-200 {
-        font-size: 0.75rem !important; /* text-xs */
+        font-size: 0.875rem !important;
+        line-height: 1.3 !important;
+        opacity: 0.9;
+    }
+    
+    footer .text-purple-300 {
+        font-size: 0.875rem !important;
     }
     
     footer .border-t {
-        margin-top: 0.375rem !important;
-        padding-top: 0.375rem !important;
+        margin-top: 0.5rem !important;
+        padding-top: 0.5rem !important;
+        border-top-width: 1px !important;
     }
-}
-    </style>
+    
+    footer .border-t p {
+        font-size: 0.75rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    footer i {
+        font-size: 0.875rem !important;
+        margin-right: 0.25rem !important;
+    }
+    
+    /* ============================================= */
+    /* PERBAIKAN MODAL MIGRASI - PURE CSS SOLUTION */
+    /* ============================================= */
+    .modal-content .relative .fa-search {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    #search-customer-lama,
+    #search-customer-baru {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        background-image: none !important;
+        width: 100% !important;
+        height: 42px !important;
+        min-height: 42px !important;
+        box-sizing: border-box !important;
+        margin-bottom: 8px !important;
+        font-size: 0.9rem !important;
+        border-radius: 8px !important;
+    }
+    
+    #search-btn-customer-lama,
+    #search-btn-customer-baru {
+        width: 100% !important;
+        height: 42px !important;
+        min-height: 42px !important;
+        box-sizing: border-box !important;
+        font-size: 0.9rem !important;
+        border-radius: 8px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .modal-content .mb-4 .relative {
+        margin-bottom: 8px !important;
+    }
+    
+    .modal-content .relative {
+        position: relative !important;
+    }
+    
+    .modal-content .mb-4 {
+        margin-bottom: 12px !important;
+    }
+    
+    #search-customer-lama::placeholder,
+    #search-customer-baru::placeholder {
+        font-size: 0.85rem;
+        color: #6b7280;
+    }
+    
+    /* Modal Migrasi Compact */
+    .modal-migrasi-header {
+        padding: 12px 16px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .modal-migrasi-header h2 {
+        font-size: 1.2rem !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .modal-outlet-kasir-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px !important;
+        margin-bottom: 12px !important;
+        padding: 10px !important;
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+    
+    .modal-outlet-kasir-info p {
+        margin-bottom: 3px !important;
+        line-height: 1.2 !important;
+    }
+    
+    .modal-outlet-kasir-info .font-semibold {
+        font-size: 0.8rem !important;
+    }
+    
+    .modal-outlet-kasir-info .text-lg {
+        font-size: 0.95rem !important;
+    }
+    
+    /* Disable Tailwind CDN warning */
+    .tailwind-warning-hide {
+        display: none !important;
+    }
+    
+    /* ============================================= */
+    /* RESPONSIVE STYLES - MOBILE */
+    /* ============================================= */
+    @media (max-width: 768px) {
+        /* Header super compact mobile */
+        header {
+            padding: 0.875rem 1rem !important;
+            border-radius: 0 0 0.75rem 0.75rem !important;
+        }
+        
+        header img {
+            width: 3.5rem !important;
+            height: 3.5rem !important;
+        }
+        
+        header h1 {
+            font-size: 1.25rem !important;
+        }
+        
+        header .text-purple-200 {
+            font-size: 0.875rem !important;
+        }
+        
+        header .text-right {
+            font-size: 0.875rem !important;
+        }
+        
+        /* Main container mobile */
+        main.container {
+            padding: 10px !important;
+        }
+        
+        /* Section compact mobile */
+        .bg-white.rounded-custom.shadow-lg {
+            margin-bottom: 10px !important;
+            padding: 14px !important;
+            border-radius: 8px !important;
+        }
+        
+        .bg-white h2 {
+            margin-bottom: 10px !important;
+            font-size: 1rem !important;
+        }
+        
+        /* Form fields compact mobile */
+        .grid.grid-cols-1.md\:grid-cols-2.gap-6 {
+            gap: 10px !important;
+        }
+        
+        label {
+            margin-bottom: 5px !important;
+            font-size: 0.85rem !important;
+        }
+        
+        select, input {
+            padding: 8px 10px !important;
+            font-size: 0.9rem !important;
+            height: 40px !important;
+        }
+        
+        .mt-4.text-sm {
+            margin-top: 8px !important;
+            font-size: 0.75rem !important;
+        }
+        
+        /* Action button compact mobile */
+        #btn-migrasi {
+            padding: 12px !important;
+            font-size: 0.95rem !important;
+            border-radius: 8px !important;
+        }
+        
+        #btn-migrasi i {
+            font-size: 22px !important;
+            margin-bottom: 5px !important;
+        }
+        
+        #btn-migrasi span:last-child {
+            font-size: 0.75rem !important;
+            margin-top: 3px !important;
+        }
+        
+        /* INFO SYSTEM - SUPER COMPACT GRID mobile */
+        .grid.grid-cols-2.gap-3 {
+            gap: 8px !important;
+        }
+        
+        .bg-purple-50, .bg-yellow-50, .bg-blue-50, .bg-green-50 {
+            padding: 10px !important;
+            border-radius: 6px !important;
+        }
+        
+        .bg-purple-50 h3, .bg-yellow-50 h3, .bg-blue-50 h3, .bg-green-50 h3 {
+            font-size: 0.8rem !important;
+            margin-bottom: 5px !important;
+            line-height: 1.1;
+        }
+        
+        .bg-purple-50 p, .bg-yellow-50 p, .bg-blue-50 p, .bg-green-50 p {
+            font-size: 0.75rem !important;
+            line-height: 1.25 !important;
+            margin-bottom: 3px !important;
+        }
+        
+        /* Footer mobile */
+        footer {
+            padding: 0.625rem 0.875rem !important;
+            margin-top: 0.75rem !important;
+            border-radius: 0.5rem 0.5rem 0 0 !important;
+        }
+        
+        footer h3 {
+            font-size: 0.875rem !important;
+        }
+        
+        footer .text-purple-200 {
+            font-size: 0.75rem !important;
+        }
+        
+        footer .border-t {
+            margin-top: 0.375rem !important;
+            padding-top: 0.375rem !important;
+        }
+        
+        /* Modal compact mobile */
+        .modal-content {
+            width: 96% !important;
+            max-height: 88vh !important;
+            margin: 8px !important;
+            border-radius: 12px !important;
+        }
+        
+        .modal-content .p-6 {
+            padding: 14px !important;
+        }
+        
+        /* Input field mobile */
+        #search-customer-lama,
+        #search-customer-baru {
+            height: 38px !important;
+            min-height: 38px !important;
+            font-size: 0.85rem !important;
+            padding: 8px 10px !important;
+        }
+        
+        #search-btn-customer-lama,
+        #search-btn-customer-baru {
+            height: 38px !important;
+            min-height: 38px !important;
+            font-size: 0.85rem !important;
+        }
+        
+        .modal-content .grid.grid-cols-1.md\:grid-cols-2.gap-6 {
+            gap: 10px !important;
+        }
+        
+        /* Toast compact mobile */
+        #toast {
+            top: 12px;
+            right: 12px;
+            max-width: 300px;
+            padding: 10px 14px;
+        }
+    }
+    
+    /* ============================================= */
+    /* DESKTOP OPTIMIZATION */
+    /* ============================================= */
+    @media (min-width: 769px) {
+        #search-customer-lama,
+        #search-customer-baru {
+            height: 44px !important;
+            min-height: 44px !important;
+        }
+        
+        #search-btn-customer-lama,
+        #search-btn-customer-baru {
+            height: 44px !important;
+            min-height: 44px !important;
+        }
+    }
+</style>
     
     <script>
         // Disable Tailwind Play CDN warning
@@ -1862,20 +1824,14 @@ function updateCustomerBaruUI(customer) {
                 }
                 
                 // **PESAN DENGAN FORMAT TABEL MENGGUNAKAN EMOJI**
-        const message = `╔══════════════════════════════╗\n` +
-                       `║     🎉 MIGRASI BERHASIL 🎉     ║\n` +
-                       `╚══════════════════════════════╝\n\n` +
-                       `📋 *DATA MEMBERCARD*\n` +
-                       `├─────────────────────────────\n` +
-                       `│ 👤 Nama      : ${nama}\n` +
-                       `│ ⭐ Point +    : ${pointBaru}\n` +
-                       `│ 💎 Total      : ${totalPoint}\n` +
-                       `│ 📅 Tanggal    : ${new Date().toLocaleDateString('id-ID')}\n` +
-                       `└─────────────────────────────\n\n` +
-                       `🎊 *Selamat!* Point membercard Anda telah diperbarui.\n\n` +
-                       `📍 *Lokasi:* Jl. Abdul Ghani, Rempoa, Ciputat\n` +
-                       `📞 *Hubungi:* 0822-1001-7083\n\n` +
-                       `💇‍♂️ *Babeh Barbershop* - Look Good, Feel Good!`;
+        const message = `✅ *MIGRASI BERHASIL*\n\n` +
+               `💇‍♂️ ${nama}\n` +
+               `⭐ +${pointBaru} point\n` +
+               `💎 Total: ${totalPoint} point\n` +
+               `📅 ${new Date().toLocaleDateString('id-ID')}\n\n` +
+            
+               `📞*WA ONLY* 0822-1001-7083\n\n` +
+               `💈 Babeh Barbershop`;
                 
                 const response = await fetch(WAHA_URL, {
                     method: 'POST',
