@@ -1,6 +1,6 @@
 {
   "name": "Babeh Barbershop Membercard Point",
-  "short_name": "Babeh Membercard",
+  "short_name": "Babeh Point",
   "description": "Aplikasi manajemen membercard dan migrasi point untuk Babeh Barbershop",
   "start_url": "/",
   "display": "standalone",
