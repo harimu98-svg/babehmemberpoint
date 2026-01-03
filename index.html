@@ -766,300 +766,310 @@
         </div>
     </div>
 </footer>
+    
+<!-- ============================================= -->
+<!-- MODAL MIGRASI MEMBERCARD -->
+<!-- ============================================= -->
+<div id="modal-migrasi" class="modal-overlay hidden">
+<div class="modal-content">
+    <div class="p-4">
+        <!-- Header Compact -->
+        <div class="modal-migrasi-header modal-header-migrasi">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-xl font-bold text-white">
+                    <i class="fas fa-exchange-alt mr-2"></i>Migrasi Membercard
+                </h2>
+                <button id="close-migrasi" class="text-white hover:text-gray-200 text-xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Outlet & Kasir Info - Compact -->
+            <div class="modal-outlet-kasir-info">
+                <div>
+                    <p class="font-semibold text-gray-700 text-xs">Outlet:</p>
+                    <p id="migrasi-outlet" class="text-base font-bold text-purple-700">-</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-700 text-xs">Kasir:</p>
+                    <p id="migrasi-kasir" class="text-base font-bold text-purple-700">-</p>
+                </div>
+            </div>
+        </div>
+                
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Customer Lama -->
+            <div>
+                <h3 class="font-bold text-yellow-700 mb-2 text-md"><i class="fas fa-user-clock mr-2"></i>Customer Lama (Olsera)</h3>
+                <div class="mb-3">
+                    <div class="relative">
+                        <input type="text" id="search-customer-lama" placeholder="Cari Nama, No HP, atau ID..." class="w-full p-2 pl-9 border border-yellow-300 rounded-custom focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-sm">
+                        <i class="fas fa-search absolute left-2.5 top-2.5 text-gray-400 text-sm"></i>
+                    </div>
+                    <button id="search-btn-customer-lama" class="btn-yellow w-full mt-1 px-4 py-2 rounded-custom font-bold text-sm">
+                        <i class="fas fa-search mr-2 text-sm"></i>Cari Customer Lama
+                    </button>
+                </div>
+                
+                <div id="customer-lama-result" class="hidden bg-yellow-50 p-3 rounded-custom border border-yellow-200 mt-2">
+                    <h4 class="font-bold text-yellow-800 mb-2 text-sm">Customer Lama Terpilih:</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <p class="text-xs"><span class="font-semibold">Nama:</span><br><span id="selected-customer-lama-nama" class="font-bold">-</span></p>
+                            <p class="text-xs mt-1"><span class="font-semibold">No HP:</span><br><span id="selected-customer-lama-phone" class="font-bold">-</span></p>
+                        </div>
+                        <div>
+                            <p class="text-xs"><span class="font-semibold">ID Member:</span><br><span id="selected-customer-lama-id" class="font-bold">-</span></p>
+                            <p class="text-xs mt-1"><span class="font-semibold">Point:</span><br><span id="selected-customer-lama-points" class="font-bold">-</span></p>
+                        </div>
+                    </div>
+                    <p class="text-xs mt-2"><span class="font-semibold">Status Migrasi:</span> <span id="selected-customer-lama-status" class="status-badge status-pending">-</span></p>
+                </div>
+            </div>
+            
+            <!-- Customer Baru -->
+            <div>
+                <h3 class="font-bold text-blue-700 mb-2 text-md"><i class="fas fa-user-check mr-2"></i>Customer Baru (Digital)</h3>
+                <div class="mb-3">
+                    <div class="relative">
+                        <input type="text" id="search-customer-baru" placeholder="Cari Nama, No WA, atau ID..." class="w-full p-2 pl-9 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        <i class="fas fa-search absolute left-2.5 top-2.5 text-gray-400 text-sm"></i>
+                    </div>
+                    <button id="search-btn-customer-baru" class="btn-blue w-full mt-1 px-4 py-2 rounded-custom font-bold text-sm">
+                        <i class="fas fa-search mr-2 text-sm"></i>Cari Customer Baru
+                    </button>
+                </div>
+                
+                <div id="customer-baru-result" class="hidden bg-blue-50 p-3 rounded-custom border border-blue-200 mt-2">
+                    <h4 class="font-bold text-blue-800 mb-2 text-sm">Customer Baru Terpilih:</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <p class="text-xs"><span class="font-semibold">Nama:</span><br><span id="selected-customer-baru-nama" class="font-bold">-</span></p>
+                            <p class="text-xs mt-1"><span class="font-semibold">No WA:</span><br><span id="selected-customer-baru-wa" class="font-bold">-</span></p>
+                        </div>
+                        <div>
+                            <p class="text-xs"><span class="font-semibold">ID Member:</span><br><span id="selected-customer-baru-id" class="font-bold">-</span></p>
+                            <p class="text-xs mt-1"><span class="font-semibold">Point:</span><br><span id="selected-customer-baru-point" class="font-bold">-</span></p>
+                        </div>
+                    </div>
+                    <p class="text-xs mt-2"><span class="font-semibold">Status:</span> <span id="selected-customer-baru-status" class="status-badge">-</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Comparison Table -->
+        <div id="comparison-section" class="hidden mt-4">
+            <h3 class="font-bold text-gray-800 mb-3 text-md"><i class="fas fa-table mr-2"></i>Perbandingan Data Migrasi</h3>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-300 rounded-custom overflow-hidden text-sm">
+                    <thead class="bg-green-100">
+                        <tr>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-green-800 border-b">Data Membercard</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-yellow-800 border-b">Data Lama (Olsera)</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-blue-800 border-b">Data Baru (Digital)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="px-3 py-2 font-semibold text-gray-700 text-xs">Outlet</td>
+                            <td class="px-3 py-2 text-xs" id="compare-outlet-lama">-</td>
+                            <td class="px-3 py-2 text-xs" id="compare-outlet-baru">-</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="px-3 py-2 font-semibold text-gray-700 text-xs">Nama Customer</td>
+                            <td class="px-3 py-2 text-xs" id="compare-nama-lama">-</td>
+                            <td class="px-3 py-2 text-xs" id="compare-nama-baru">-</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="px-3 py-2 font-semibold text-gray-700 text-xs">Nomor WA/HP</td>
+                            <td class="px-3 py-2 text-xs" id="compare-phone-lama">-</td>
+                            <td class="px-3 py-2 text-xs" id="compare-phone-baru">-</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="px-3 py-2 font-semibold text-gray-700 text-xs">Alamat</td>
+                            <td class="px-3 py-2 text-xs" id="compare-alamat-lama">-</td>
+                            <td class="px-3 py-2 text-xs" id="compare-alamat-baru">-</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="px-3 py-2 font-semibold text-gray-700 text-xs">ID Member</td>
+                            <td class="px-3 py-2 text-xs" id="compare-id-lama">-</td>
+                            <td class="px-3 py-2 text-xs" id="compare-id-baru">-</td>
+                        </tr>
+                        <tr>
+                            <td class="px-3 py-2 font-semibold text-gray-700 text-xs">Point Lama</td>
+                            <td class="px-3 py-2 text-xs" id="compare-point-lama">-</td>
+                            <td class="px-3 py-2 text-xs" colspan="2"></td>
+                        </tr>
+                        <tr>
+                            <td class="px-3 py-2 font-semibold text-gray-700 text-xs">Konversi Point</td>
+                            <td class="px-3 py-2 text-xs" id="compare-konversi">-</td>
+                            <td class="px-3 py-2 text-xs" colspan="2"></td>
+                        </tr>
+                        <tr class="bg-green-50">
+                            <td class="px-3 py-2 font-bold text-green-800 text-xs">POINT BARU</td>
+                            <td class="px-3 py-2 font-bold text-green-800 text-xs" colspan="2" id="compare-point-baru">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Validation Warning -->
+            <div id="migrasi-warning" class="mt-3 hidden">
+                <div id="already-migrated-warning" class="bg-red-50 p-3 rounded-custom border border-red-200 mb-2 hidden">
+                    <p class="font-semibold text-red-800 text-sm"><i class="fas fa-exclamation-circle mr-2"></i>Customer ini sudah melakukan migrasi sebelumnya. Tidak dapat migrasi ulang.</p>
+                </div>
+                
+                <div id="phone-mismatch-warning" class="bg-yellow-50 p-3 rounded-custom border border-yellow-200 hidden">
+                    <p class="font-semibold text-yellow-800 text-sm"><i class="fas fa-exclamation-triangle mr-2"></i>Nomor WA berbeda antara customer lama dan baru:</p>
+                    <p class="text-xs mt-1">Lama: <span id="warning-phone-lama" class="font-bold">-</span></p>
+                    <p class="text-xs">Baru: <span id="warning-phone-baru" class="font-bold">-</span></p>
+                    <p class="text-xs mt-2">Apakah Anda yakin akan melanjutkan migrasi?</p>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <button id="submit-migrasi" class="btn-green px-6 py-2 rounded-custom font-bold text-sm">
+                    <i class="fas fa-paper-plane mr-2"></i>SUBMIT MIGRASI
+                </button>
+            </div>
+        </div>
+        
+        <div class="mt-4 text-center">
+            <button id="close-migrasi-bottom" class="bg-gray-500 text-white px-4 py-2 rounded-custom font-bold text-sm hover:bg-gray-600">
+                <i class="fas fa-times mr-2"></i>Tutup
+            </button>
+        </div>
+    </div>
+</div>
+</div>
 
-    <!-- ============================================= -->
-    <!-- MODAL MIGRASI MEMBERCARD -->
-    <!-- ============================================= -->
-    <div id="modal-migrasi" class="modal-overlay hidden">
-    <div class="modal-content">
-        <div class="p-4">
-            <!-- Header Compact -->
-            <div class="modal-migrasi-header modal-header-migrasi">
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-xl font-bold text-white">
-                        <i class="fas fa-exchange-alt mr-2"></i>Migrasi Membercard
-                    </h2>
-                    <button id="close-migrasi" class="text-white hover:text-gray-200 text-xl">
-                        <i class="fas fa-times"></i>
+   <!-- ============================================= -->
+<!-- MODAL POINT STEMPEL -->
+<!-- ============================================= -->
+<div id="modal-stempel" class="modal-overlay hidden">
+<div class="modal-content">
+    <div class="p-4">
+        <!-- Header Compact -->
+        <div class="modal-migrasi-header modal-header-stempel">
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-xl font-bold text-white">
+                    <i class="fas fa-stamp mr-2"></i>Point Stempel Member
+                </h2>
+                <button id="close-stempel" class="text-white hover:text-gray-200 text-xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Outlet & Kasir Info - Compact -->
+            <div class="modal-outlet-kasir-info">
+                <div>
+                    <p class="font-semibold text-gray-700 text-xs">Outlet:</p>
+                    <p id="stempel-outlet" class="text-base font-bold text-purple-700">-</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-700 text-xs">Kasir:</p>
+                    <p id="stempel-kasir" class="text-base font-bold text-purple-700">-</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-700 text-xs">Tanggal:</p>
+                    <p class="text-base font-bold text-gray-700" id="stempel-tanggal">-</p>
+                </div>
+            </div>
+        </div>
+                
+        <div class="grid grid-cols-1 gap-4">
+            <!-- Search Member -->
+            <div>
+                <h3 class="font-bold text-blue-700 mb-2 text-md"><i class="fas fa-user-check mr-2"></i>Cari Member</h3>
+                <div class="mb-3">
+                    <div class="relative">
+                        <input type="text" id="search-member-stempel" placeholder="Cari Nama, No WA, atau ID..." class="w-full p-2 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    </div>
+                    <button id="search-btn-member-stempel" class="btn-blue w-full mt-1 px-4 py-2 rounded-custom font-bold text-sm">
+                        <i class="fas fa-search mr-2 text-sm"></i>Cari Member
                     </button>
                 </div>
                 
-                <!-- Outlet & Kasir Info - Compact -->
-                <div class="modal-outlet-kasir-info">
-                    <div>
-                        <p class="font-semibold text-gray-700 text-xs">Outlet:</p>
-                        <p id="migrasi-outlet" class="text-base font-bold text-purple-700">-</p>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-gray-700 text-xs">Kasir:</p>
-                        <p id="migrasi-kasir" class="text-base font-bold text-purple-700">-</p>
-                    </div>
-                </div>
-            </div>
-                    
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Customer Lama -->
-                <div>
-                    <h3 class="font-bold text-yellow-700 mb-3 text-lg"><i class="fas fa-user-clock mr-2"></i>Customer Lama (Olsera)</h3>
-                    <div class="mb-4">
-                        <div class="relative">
-                            <input type="text" id="search-customer-lama" placeholder="Cari berdasarkan Nama, No HP, atau ID Member..." class="w-full p-3 pl-10 border border-yellow-300 rounded-custom focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
-                            <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                <div id="member-stempel-result" class="hidden bg-blue-50 p-3 rounded-custom border border-blue-200 mt-2">
+                    <h4 class="font-bold text-blue-800 mb-2 text-sm">Member Terpilih:</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <p class="text-xs"><span class="font-semibold">Nama:</span><br><span id="selected-member-stempel-nama" class="font-bold">-</span></p>
+                            <p class="text-xs mt-1"><span class="font-semibold">No WA:</span><br><span id="selected-member-stempel-wa" class="font-bold">-</span></p>
                         </div>
-                        <button id="search-btn-customer-lama" class="btn-yellow w-full mt-2 px-6 py-3 rounded-custom font-bold">
-                        
-                        </button>
-                    </div>
-                    
-                    <div id="customer-lama-result" class="hidden bg-yellow-50 p-4 rounded-custom border border-yellow-200">
-                        <h4 class="font-bold text-yellow-800 mb-2">Customer Lama Terpilih:</h4>
-                        <p><span class="font-semibold">Nama:</span> <span id="selected-customer-lama-nama">-</span></p>
-                        <p><span class="font-semibold">No HP:</span> <span id="selected-customer-lama-phone">-</span></p>
-                        <p><span class="font-semibold">ID Member:</span> <span id="selected-customer-lama-id">-</span></p>
-                        <p><span class="font-semibold">Outlet:</span> <span id="selected-customer-lama-outlet">-</span></p>
-                        <p><span class="font-semibold">Loyalty Points:</span> <span id="selected-customer-lama-points">-</span></p>
-                        <p><span class="font-semibold">Status Migrasi:</span> <span id="selected-customer-lama-status" class="status-badge status-pending">-</span></p>
-                    </div>
-                </div>
-                
-                <!-- Customer Baru -->
-                <div>
-                    <h3 class="font-bold text-blue-700 mb-3 text-lg"><i class="fas fa-user-check mr-2"></i>Customer Baru (Digital)</h3>
-                    <div class="mb-4">
-                        <div class="relative">
-                            <input type="text" id="search-customer-baru" placeholder="Cari berdasarkan Nama, No WA, atau ID Member..." class="w-full p-3 pl-10 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                        <div>
+                            <p class="text-xs"><span class="font-semibold">ID Member:</span><br><span id="selected-member-stempel-id" class="font-bold">-</span></p>
+                            <p class="text-xs mt-1"><span class="font-semibold">Point Saat Ini:</span><br><span id="selected-member-stempel-point" class="font-bold">-</span></p>
                         </div>
-                        <button id="search-btn-customer-baru" class="btn-blue w-full mt-2 px-6 py-3 rounded-custom font-bold">
-                            <i class="fas fa-search mr-2"></i>Cari Customer Baru
-                        </button>
                     </div>
-                    
-                    <div id="customer-baru-result" class="hidden bg-blue-50 p-4 rounded-custom border border-blue-200">
-                        <h4 class="font-bold text-blue-800 mb-2">Customer Baru Terpilih:</h4>
-                        <p><span class="font-semibold">Nama:</span> <span id="selected-customer-baru-nama">-</span></p>
-                        <p><span class="font-semibold">No WA:</span> <span id="selected-customer-baru-wa">-</span></p>
-                        <p><span class="font-semibold">ID Member:</span> <span id="selected-customer-baru-id">-</span></p>
-                        <p><span class="font-semibold">Outlet:</span> <span id="selected-customer-baru-outlet">-</span></p>
-                        <p><span class="font-semibold">Point Saat Ini:</span> <span id="selected-customer-baru-point">-</span></p>
-                        <p><span class="font-semibold">Status:</span> <span id="selected-customer-baru-status" class="status-badge">-</span></p>
-                    </div>
+                    <p class="text-xs mt-2"><span class="font-semibold">Status:</span> <span id="selected-member-stempel-status" class="status-badge">-</span></p>
                 </div>
             </div>
             
-            <!-- Comparison Table -->
-            <div id="comparison-section" class="hidden mt-6">
-                <h3 class="font-bold text-gray-800 mb-4 text-lg"><i class="fas fa-table mr-2"></i>Perbandingan Data Migrasi</h3>
-                
-                <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white border border-gray-300 rounded-custom overflow-hidden">
-                        <thead class="bg-green-100">
-                            <tr>
-                                <th class="px-4 py-3 text-left text-sm font-medium text-green-800 border-b">Data Membercard</th>
-                                <th class="px-4 py-3 text-left text-sm font-medium text-yellow-800 border-b">Data Lama (Olsera)</th>
-                                <th class="px-4 py-3 text-left text-sm font-medium text-blue-800 border-b">Data Baru (Digital)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b">
-                                <td class="px-4 py-3 font-semibold text-gray-700">Outlet</td>
-                                <td class="px-4 py-3" id="compare-outlet-lama">-</td>
-                                <td class="px-4 py-3" id="compare-outlet-baru">-</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="px-4 py-3 font-semibold text-gray-700">Nama Customer</td>
-                                <td class="px-4 py-3" id="compare-nama-lama">-</td>
-                                <td class="px-4 py-3" id="compare-nama-baru">-</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="px-4 py-3 font-semibold text-gray-700">Nomor WA/HP</td>
-                                <td class="px-4 py-3" id="compare-phone-lama">-</td>
-                                <td class="px-4 py-3" id="compare-phone-baru">-</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="px-4 py-3 font-semibold text-gray-700">Alamat</td>
-                                <td class="px-4 py-3" id="compare-alamat-lama">-</td>
-                                <td class="px-4 py-3" id="compare-alamat-baru">-</td>
-                            </tr>
-                            <tr class="border-b">
-                                <td class="px-4 py-3 font-semibold text-gray-700">ID Member</td>
-                                <td class="px-4 py-3" id="compare-id-lama">-</td>
-                                <td class="px-4 py-3" id="compare-id-baru">-</td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3 font-semibold text-gray-700">Point Lama</td>
-                                <td class="px-4 py-3" id="compare-point-lama">-</td>
-                                <td class="px-4 py-3" colspan="2"></td>
-                            </tr>
-                            <tr>
-                                <td class="px-4 py-3 font-semibold text-gray-700">Konversi Point</td>
-                                <td class="px-4 py-3" id="compare-konversi">-</td>
-                                <td class="px-4 py-3" colspan="2"></td>
-                            </tr>
-                            <tr class="bg-green-50">
-                                <td class="px-4 py-3 font-bold text-green-800">POINT BARU</td>
-                                <td class="px-4 py-3 font-bold text-green-800" colspan="2" id="compare-point-baru">-</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- Validation Warning -->
-                <div id="migrasi-warning" class="mt-4 hidden">
-                    <div id="already-migrated-warning" class="bg-red-50 p-4 rounded-custom border border-red-200 mb-3 hidden">
-                        <p class="font-semibold text-red-800"><i class="fas fa-exclamation-circle mr-2"></i>Customer ini sudah melakukan migrasi sebelumnya. Tidak dapat migrasi ulang.</p>
+            <!-- Form Stempel -->
+            <div id="stempel-form" class="hidden">
+                <!-- Stempel Counter -->
+                <div class="bg-orange-50 p-3 rounded-custom border border-orange-200 mb-4">
+                    <h3 class="font-bold text-orange-700 mb-2 text-md"><i class="fas fa-stamp mr-2"></i>Jumlah Stempel</h3>
+                    
+                    <div class="stempel-counter">
+                        <button id="stempel-minus" class="stempel-btn">-</button>
+                        <div class="stempel-display" id="stempel-count">0</div>
+                        <button id="stempel-plus" class="stempel-btn">+</button>
                     </div>
                     
-                    <div id="phone-mismatch-warning" class="bg-yellow-50 p-4 rounded-custom border border-yellow-200 hidden">
-                        <p class="font-semibold text-yellow-800"><i class="fas fa-exclamation-triangle mr-2"></i>Nomor WA berbeda antara customer lama dan baru:</p>
-                        <p class="text-sm mt-1">Lama: <span id="warning-phone-lama" class="font-bold">-</span></p>
-                        <p class="text-sm">Baru: <span id="warning-phone-baru" class="font-bold">-</span></p>
-                        <p class="text-sm mt-2">Apakah Anda yakin akan melanjutkan migrasi?</p>
+                    <div class="text-center mt-2">
+                        <p class="text-xs text-gray-600">1 Stempel = 1 Point (Maksimal 6 Stempel)</p>
+                        <p class="text-xs mt-1" id="stempel-point-info">Total Point yang akan ditambahkan: <span class="font-bold">0</span></p>
                     </div>
                 </div>
                 
-                <div class="mt-6 text-center">
-                    <button id="submit-migrasi" class="btn-green px-8 py-3 rounded-custom font-bold text-lg">
-                        <i class="fas fa-paper-plane mr-2"></i>SUBMIT MIGRASI
+                <!-- Confirmation -->
+                <div class="bg-green-50 p-3 rounded-custom border border-green-200 mb-4">
+                    <h3 class="font-bold text-green-700 mb-2 text-md"><i class="fas fa-check-circle mr-2"></i>Konfirmasi Data</h3>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <p class="text-xs"><span class="font-semibold">Member:</span><br>
+                            <span class="font-bold text-green-800" id="confirm-nama">-</span></p>
+                        </div>
+                        <div>
+                            <p class="text-xs"><span class="font-semibold">Point Saat Ini:</span><br>
+                            <span class="font-bold text-green-800" id="confirm-point-sekarang">-</span></p>
+                        </div>
+                        <div>
+                            <p class="text-xs"><span class="font-semibold">Stempel:</span><br>
+                            <span class="font-bold text-orange-600" id="confirm-stempel">0</span></p>
+                        </div>
+                        <div>
+                            <p class="text-xs"><span class="font-semibold">Point Baru:</span><br>
+                            <span class="font-bold text-green-800" id="confirm-point-baru">-</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="mt-4 text-center">
+                    <button id="submit-stempel" class="btn-orange px-6 py-2 rounded-custom font-bold text-sm">
+                        <i class="fas fa-paper-plane mr-2"></i>SUBMIT STEMPEL
                     </button>
+                    <p class="text-xs text-gray-600 mt-2">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Point akan ditambahkan dan notifikasi dikirim via WhatsApp
+                    </p>
                 </div>
             </div>
             
-            <div class="mt-6 text-center">
-                <button id="close-migrasi-bottom" class="bg-gray-500 text-white px-6 py-3 rounded-custom font-bold hover:bg-gray-600">
+            <div class="mt-4 text-center">
+                <button id="close-stempel-bottom" class="bg-gray-500 text-white px-4 py-2 rounded-custom font-bold text-sm hover:bg-gray-600">
                     <i class="fas fa-times mr-2"></i>Tutup
                 </button>
             </div>
         </div>
     </div>
-    </div>
-
-    <!-- ============================================= -->
-    <!-- MODAL POINT STEMPEL -->
-    <!-- ============================================= -->
-    <div id="modal-stempel" class="modal-overlay hidden">
-    <div class="modal-content">
-        <div class="p-4">
-            <!-- Header Compact -->
-            <div class="modal-migrasi-header modal-header-stempel">
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-xl font-bold text-white">
-                        <i class="fas fa-stamp mr-2"></i>Point Stempel Member
-                    </h2>
-                    <button id="close-stempel" class="text-white hover:text-gray-200 text-xl">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <!-- Outlet & Kasir Info - Compact -->
-                <div class="modal-outlet-kasir-info">
-                    <div>
-                        <p class="font-semibold text-gray-700 text-xs">Outlet:</p>
-                        <p id="stempel-outlet" class="text-base font-bold text-purple-700">-</p>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-gray-700 text-xs">Kasir:</p>
-                        <p id="stempel-kasir" class="text-base font-bold text-purple-700">-</p>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-gray-700 text-xs">Tanggal:</p>
-                        <p class="text-base font-bold text-gray-700" id="stempel-tanggal">-</p>
-                    </div>
-                </div>
-            </div>
-                    
-            <div class="grid grid-cols-1 gap-6">
-                <!-- Search Member -->
-                <div>
-                    <h3 class="font-bold text-blue-700 mb-3 text-lg"><i class="fas fa-user-check mr-2"></i>Cari Member</h3>
-                    <div class="mb-4">
-                        <div class="relative">
-                            <input type="text" id="search-member-stempel" placeholder="Cari berdasarkan Nama, No WA, atau ID Member..." class="w-full p-3 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        <button id="search-btn-member-stempel" class="btn-blue w-full mt-2 px-6 py-3 rounded-custom font-bold">
-                            <i class="fas fa-search mr-2"></i>Cari Member
-                        </button>
-                    </div>
-                    
-                    <div id="member-stempel-result" class="hidden bg-blue-50 p-4 rounded-custom border border-blue-200 mb-4">
-                        <h4 class="font-bold text-blue-800 mb-2">Member Terpilih:</h4>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <p class="text-sm"><span class="font-semibold">Nama:</span><br><span id="selected-member-stempel-nama" class="font-bold">-</span></p>
-                                <p class="text-sm mt-1"><span class="font-semibold">No WA:</span><br><span id="selected-member-stempel-wa" class="font-bold">-</span></p>
-                            </div>
-                            <div>
-                                <p class="text-sm"><span class="font-semibold">ID Member:</span><br><span id="selected-member-stempel-id" class="font-bold">-</span></p>
-                                <p class="text-sm mt-1"><span class="font-semibold">Point Saat Ini:</span><br><span id="selected-member-stempel-point" class="font-bold">-</span></p>
-                            </div>
-                        </div>
-                        <p class="text-sm mt-2"><span class="font-semibold">Status:</span> <span id="selected-member-stempel-status" class="status-badge">-</span></p>
-                    </div>
-                </div>
-                
-                <!-- Form Stempel -->
-                <div id="stempel-form" class="hidden">
-                    <!-- Stempel Counter -->
-                    <div class="bg-orange-50 p-4 rounded-custom border border-orange-200 mb-6">
-                        <h3 class="font-bold text-orange-700 mb-3 text-lg"><i class="fas fa-stamp mr-2"></i>Jumlah Stempel</h3>
-                        
-                        <div class="stempel-counter">
-                            <button id="stempel-minus" class="stempel-btn">-</button>
-                            <div class="stempel-display" id="stempel-count">0</div>
-                            <button id="stempel-plus" class="stempel-btn">+</button>
-                        </div>
-                        
-                        <div class="text-center mt-2">
-                            <p class="text-sm text-gray-600">1 Stempel = 1 Point (Maksimal 6 Stempel)</p>
-                            <p class="text-sm mt-1" id="stempel-point-info">Total Point yang akan ditambahkan: <span class="font-bold">0</span></p>
-                        </div>
-                    </div>
-                    
-                    <!-- Confirmation -->
-                    <div class="bg-green-50 p-4 rounded-custom border border-green-200 mb-6">
-                        <h3 class="font-bold text-green-700 mb-3 text-lg"><i class="fas fa-check-circle mr-2"></i>Konfirmasi Data</h3>
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-sm"><span class="font-semibold">Member:</span><br>
-                                <span class="font-bold text-green-800" id="confirm-nama">-</span></p>
-                            </div>
-                            <div>
-                                <p class="text-sm"><span class="font-semibold">Point Saat Ini:</span><br>
-                                <span class="font-bold text-green-800" id="confirm-point-sekarang">-</span></p>
-                            </div>
-                            <div>
-                                <p class="text-sm"><span class="font-semibold">Stempel:</span><br>
-                                <span class="font-bold text-orange-600" id="confirm-stempel">0</span></p>
-                            </div>
-                            <div>
-                                <p class="text-sm"><span class="font-semibold">Point Baru:</span><br>
-                                <span class="font-bold text-green-800" id="confirm-point-baru">-</span></p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Submit Button -->
-                    <div class="mt-6 text-center">
-                        <button id="submit-stempel" class="btn-orange px-8 py-3 rounded-custom font-bold text-lg">
-                            <i class="fas fa-paper-plane mr-2"></i>SUBMIT POINT
-                        </button>
-                        <p class="text-sm text-gray-600 mt-2">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            Point akan ditambahkan ke member dan notifikasi akan dikirim via WhatsApp
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="mt-6 text-center">
-                    <button id="close-stempel-bottom" class="bg-gray-500 text-white px-6 py-3 rounded-custom font-bold hover:bg-gray-600">
-                        <i class="fas fa-times mr-2"></i>Tutup
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
+</div>
+</div>
 
     <!-- Search Results Modal (Shared) -->
     <div id="modal-search-results" class="modal-overlay hidden">
