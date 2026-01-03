@@ -23,594 +23,672 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-    :root {
-        --primary-color: #7b3aed;
-        --primary-light: #9d6af5;
-        --primary-dark: #5a2db2;
-    }
-    
-    body {
-        background-color: #f5f0ff;
-        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-    
-    .bg-purple-doff {
-        background-color: #f5f0ff;
-    }
-    
-    .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.7);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-    
+   :root {
+    --primary-color: #7b3aed;
+    --primary-light: #9d6af5;
+    --primary-dark: #5a2db2;
+}
+
+body {
+    background-color: #f5f0ff;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.bg-purple-doff {
+    background-color: #f5f0ff;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+@media (min-width: 768px) {
     .modal-content {
-        background: white;
-        border-radius: 16px;
-        width: 90%;
-        max-width: 1200px;
-        max-height: 90vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        width: 95%;
     }
-    
-    @media (min-width: 768px) {
-        .modal-content {
-            width: 95%;
-        }
+}
+
+.rounded-custom {
+    border-radius: 10px;
+}
+
+.btn-yellow {
+    background-color: #fbbf24;
+    color: #78350f;
+}
+
+.btn-yellow:hover {
+    background-color: #f59e0b;
+}
+
+.btn-blue {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.btn-blue:hover {
+    background-color: #2563eb;
+}
+
+.btn-green {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-green:hover {
+    background-color: #059669;
+}
+
+.btn-orange {
+    background-color: #f97316;
+    color: white;
+}
+
+.btn-orange:hover {
+    background-color: #ea580c;
+}
+
+.btn-disabled {
+    background-color: #9ca3af;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+.btn-disabled:hover {
+    background-color: #9ca3af;
+}
+
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.pagination-btn {
+    padding: 6px 12px;
+    margin: 0 3px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 0.85rem;
+}
+
+.pagination-btn.active {
+    background-color: #7b3aed;
+    color: white;
+    border-color: #7b3aed;
+}
+
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-active {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-inactive {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-migrated {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c4b5fd;
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #8b5cf6;
+}
+
+/* Toast Notification - Front Layer */
+#toast {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9999 !important;
+    background: white;
+    border-radius: 10px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border-left: 4px solid #7b3aed;
+    max-width: 350px;
+    animation: slideIn 0.3s ease-out;
+    display: none;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
     }
-    
-    .rounded-custom {
-        border-radius: 10px;
+    to {
+        transform: translateX(0);
+        opacity: 1;
     }
-    
-    .btn-yellow {
-        background-color: #fbbf24;
-        color: #78350f;
-    }
-    
-    .btn-yellow:hover {
-        background-color: #f59e0b;
-    }
-    
-    .btn-blue {
-        background-color: #3b82f6;
-        color: white;
-    }
-    
-    .btn-blue:hover {
-        background-color: #2563eb;
-    }
-    
-    .btn-green {
-        background-color: #10b981;
-        color: white;
-    }
-    
-    .btn-green:hover {
-        background-color: #059669;
-    }
-    
-    .btn-orange {
-        background-color: #f97316;
-        color: white;
-    }
-    
-    .btn-orange:hover {
-        background-color: #ea580c;
-    }
-    
-    .btn-disabled {
-        background-color: #9ca3af;
-        color: #6b7280;
-        cursor: not-allowed;
-    }
-    
-    .btn-disabled:hover {
-        background-color: #9ca3af;
-    }
-    
-    .table-container {
-        max-height: 400px;
-        overflow-y: auto;
-    }
-    
-    .pagination-btn {
-        padding: 6px 12px;
-        margin: 0 3px;
-        border-radius: 6px;
-        border: 1px solid #d1d5db;
-        font-size: 0.85rem;
-    }
-    
-    .pagination-btn.active {
-        background-color: #7b3aed;
-        color: white;
-        border-color: #7b3aed;
-    }
-    
-    .status-badge {
-        padding: 3px 8px;
-        border-radius: 12px;
-        font-size: 0.7rem;
-        font-weight: 600;
-        display: inline-block;
-    }
-    
-    .status-active {
-        background-color: #d1fae5;
-        color: #065f46;
-    }
-    
-    .status-inactive {
-        background-color: #fee2e2;
-        color: #991b1b;
-    }
-    
-    .status-migrated {
-        background-color: #dbeafe;
-        color: #1e40af;
-    }
-    
-    .status-pending {
-        background-color: #fef3c7;
-        color: #92400e;
-    }
-    
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-        width: 6px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 8px;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: #c4b5fd;
-        border-radius: 8px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: #8b5cf6;
-    }
-    
-    /* Toast Notification - Front Layer */
-    #toast {
-        position: fixed;
-        top: 16px;
-        right: 16px;
-        z-index: 9999 !important;
-        background: white;
-        border-radius: 10px;
-        padding: 12px 16px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        border-left: 4px solid #7b3aed;
-        max-width: 350px;
-        animation: slideIn 0.3s ease-out;
-        display: none;
-    }
-    
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    .toast-success {
-        border-left-color: #10b981;
-        background: #f0fdf4;
-    }
-    
-    .toast-error {
-        border-left-color: #ef4444;
-        background: #fef2f2;
-    }
-    
-    .toast-warning {
-        border-left-color: #f59e0b;
-        background: #fffbeb;
-    }
-    
-    .toast-info {
-        border-left-color: #3b82f6;
-        background: #eff6ff;
-    }
-    
-    /* Stempel Counter */
-    .stempel-counter {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        margin: 20px 0;
-    }
-    
-    .stempel-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: 2px solid #f97316;
-        background: white;
-        font-size: 1.5rem;
-        font-weight: bold;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .stempel-btn:hover {
-        background: #ffedd5;
-    }
-    
-    .stempel-display {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #f97316;
-        min-width: 50px;
-        text-align: center;
-    }
-    
-    /* Action Buttons Grid */
+}
+
+.toast-success {
+    border-left-color: #10b981;
+    background: #f0fdf4;
+}
+
+.toast-error {
+    border-left-color: #ef4444;
+    background: #fef2f2;
+}
+
+.toast-warning {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.toast-info {
+    border-left-color: #3b82f6;
+    background: #eff6ff;
+}
+
+/* Stempel Counter */
+.stempel-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.stempel-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #f97316;
+    background: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stempel-btn:hover {
+    background: #ffedd5;
+}
+
+.stempel-display {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #f97316;
+    min-width: 50px;
+    text-align: center;
+}
+
+/* Action Buttons Grid */
+.action-buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
     .action-buttons-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-bottom: 15px;
+        grid-template-columns: 1fr;
     }
-    
-    @media (max-width: 768px) {
-        .action-buttons-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-    
-    /* Modal Header Colors */
-    .modal-header-migrasi {
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: white;
-    }
-    
-    .modal-header-stempel {
-        background: linear-gradient(135deg, #f97316, #ea580c);
-        color: white;
-    }
-    
-    /* ============================================= */
-    /* PERBAIKAN HEADER - LEBIH BESAR */
-    /* ============================================= */
+}
+
+/* Modal Header Colors */
+.modal-header-migrasi {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.modal-header-stempel {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: white;
+}
+
+/* ============================================= */
+/* PERBAIKAN HEADER - LEBIH BESAR */
+/* ============================================= */
+header {
+    padding: 1rem 1.25rem !important;
+    border-radius: 0 0 1rem 1rem !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+header img {
+    width: 4rem !important;
+    height: 4rem !important;
+    border-width: 4px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+header h1 {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.025em !important;
+    margin-bottom: 0.25rem !important;
+}
+
+header .text-purple-200 {
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    opacity: 0.9;
+}
+
+header .text-right {
+    font-size: 1rem !important;
+}
+
+header .text-right i {
+    font-size: 0.875rem !important;
+}
+
+header .text-right span {
+    font-weight: 600 !important;
+}
+
+/* ============================================= */
+/* PERBAIKAN FOOTER - LEBIH PENDEK & SESUAI */
+/* ============================================= */
+footer {
+    padding: 0.75rem 1rem !important;
+    margin-top: 1rem !important;
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    min-height: fit-content !important;
+    max-height: 120px !important;
+}
+
+footer .container {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+footer .grid {
+    gap: 0.75rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+footer h3 {
+    font-size: 1rem !important;
+    margin-bottom: 0.25rem !important;
+    line-height: 1.2 !important;
+}
+
+footer .text-purple-200 {
+    font-size: 0.875rem !important;
+    line-height: 1.3 !important;
+    opacity: 0.9;
+}
+
+footer .text-purple-300 {
+    font-size: 0.875rem !important;
+}
+
+footer .border-t {
+    margin-top: 0.5rem !important;
+    padding-top: 0.5rem !important;
+    border-top-width: 1px !important;
+}
+
+footer .border-t p {
+    font-size: 0.75rem !important;
+    line-height: 1.2 !important;
+}
+
+footer i {
+    font-size: 0.875rem !important;
+    margin-right: 0.25rem !important;
+}
+
+/* Modal Point Stempel Compact */
+.modal-migrasi-header {
+    padding: 12px 16px !important;
+    margin-bottom: 10px !important;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.modal-outlet-kasir-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+    padding: 10px !important;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.modal-outlet-kasir-info p {
+    margin-bottom: 3px !important;
+    line-height: 1.2 !important;
+}
+
+.modal-outlet-kasir-info .font-semibold {
+    font-size: 0.8rem !important;
+}
+
+.modal-outlet-kasir-info .text-lg {
+    font-size: 0.95rem !important;
+}
+
+/* Disable Tailwind CDN warning */
+.tailwind-warning-hide {
+    display: none !important;
+}
+
+/* ============================================= */
+/* RESPONSIVE STYLES - MOBILE */
+/* ============================================= */
+@media (max-width: 768px) {
+    /* Header super compact mobile */
     header {
-        padding: 1rem 1.25rem !important;
-        border-radius: 0 0 1rem 1rem !important;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+        padding: 0.875rem 1rem !important;
+        border-radius: 0 0 0.75rem 0.75rem !important;
     }
     
     header img {
-        width: 4rem !important;
-        height: 4rem !important;
-        border-width: 4px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        width: 3.5rem !important;
+        height: 3.5rem !important;
     }
     
     header h1 {
-        font-size: 1.5rem !important;
-        font-weight: 700 !important;
-        letter-spacing: -0.025em !important;
-        margin-bottom: 0.25rem !important;
+        font-size: 1.25rem !important;
     }
     
     header .text-purple-200 {
-        font-size: 1rem !important;
-        font-weight: 500 !important;
-        opacity: 0.9;
+        font-size: 0.875rem !important;
     }
     
     header .text-right {
-        font-size: 1rem !important;
-    }
-    
-    header .text-right i {
         font-size: 0.875rem !important;
     }
     
-    header .text-right span {
-        font-weight: 600 !important;
+    /* Main container mobile */
+    main.container {
+        padding: 10px !important;
     }
     
-    /* ============================================= */
-    /* PERBAIKAN FOOTER - LEBIH PENDEK & SESUAI */
-    /* ============================================= */
+    /* Section compact mobile */
+    .bg-white.rounded-custom.shadow-lg {
+        margin-bottom: 10px !important;
+        padding: 14px !important;
+        border-radius: 8px !important;
+    }
+    
+    .bg-white h2 {
+        margin-bottom: 10px !important;
+        font-size: 1rem !important;
+    }
+    
+    /* Form fields compact mobile */
+    .grid.grid-cols-1.md\:grid-cols-2.gap-6 {
+        gap: 10px !important;
+    }
+    
+    label {
+        margin-bottom: 5px !important;
+        font-size: 0.85rem !important;
+    }
+    
+    select, input {
+        padding: 8px 10px !important;
+        font-size: 0.9rem !important;
+        height: 40px !important;
+    }
+    
+    .mt-4.text-sm {
+        margin-top: 8px !important;
+        font-size: 0.75rem !important;
+    }
+    
+    /* Action button compact mobile */
+    .action-btn {
+        padding: 12px !important;
+        font-size: 0.95rem !important;
+        border-radius: 8px !important;
+    }
+    
+    .action-btn i {
+        font-size: 22px !important;
+        margin-bottom: 5px !important;
+    }
+    
+    .action-btn span:last-child {
+        font-size: 0.75rem !important;
+        margin-top: 3px !important;
+    }
+    
+    /* INFO SYSTEM - SUPER COMPACT GRID mobile */
+    .grid.grid-cols-2.gap-3 {
+        gap: 8px !important;
+    }
+    
+    .bg-purple-50, .bg-yellow-50, .bg-blue-50, .bg-green-50 {
+        padding: 10px !important;
+        border-radius: 6px !important;
+    }
+    
+    .bg-purple-50 h3, .bg-yellow-50 h3, .bg-blue-50 h3, .bg-green-50 h3 {
+        font-size: 0.8rem !important;
+        margin-bottom: 5px !important;
+        line-height: 1.1;
+    }
+    
+    .bg-purple-50 p, .bg-yellow-50 p, .bg-blue-50 p, .bg-green-50 p {
+        font-size: 0.75rem !important;
+        line-height: 1.25 !important;
+        margin-bottom: 3px !important;
+    }
+    
+    /* Footer mobile */
     footer {
-        padding: 0.75rem 1rem !important;
-        margin-top: 1rem !important;
-        border-radius: 0.75rem 0.75rem 0 0 !important;
-        min-height: fit-content !important;
-        max-height: 120px !important;
-    }
-    
-    footer .container {
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    
-    footer .grid {
-        gap: 0.75rem !important;
-        margin-bottom: 0.5rem !important;
+        padding: 0.625rem 0.875rem !important;
+        margin-top: 0.75rem !important;
+        border-radius: 0.5rem 0.5rem 0 0 !important;
     }
     
     footer h3 {
-        font-size: 1rem !important;
-        margin-bottom: 0.25rem !important;
-        line-height: 1.2 !important;
+        font-size: 0.875rem !important;
     }
     
     footer .text-purple-200 {
-        font-size: 0.875rem !important;
-        line-height: 1.3 !important;
-        opacity: 0.9;
-    }
-    
-    footer .text-purple-300 {
-        font-size: 0.875rem !important;
+        font-size: 0.75rem !important;
     }
     
     footer .border-t {
-        margin-top: 0.5rem !important;
-        padding-top: 0.5rem !important;
-        border-top-width: 1px !important;
+        margin-top: 0.375rem !important;
+        padding-top: 0.375rem !important;
     }
     
-    footer .border-t p {
-        font-size: 0.75rem !important;
-        line-height: 1.2 !important;
+    /* Modal compact mobile */
+    .modal-content {
+        width: 96% !important;
+        max-height: 88vh !important;
+        margin: 8px !important;
+        border-radius: 12px !important;
     }
     
-    footer i {
-        font-size: 0.875rem !important;
-        margin-right: 0.25rem !important;
+    .modal-content .p-6 {
+        padding: 14px !important;
     }
     
-    /* Modal Point Stempel Compact */
-    .modal-migrasi-header {
-        padding: 12px 16px !important;
-        margin-bottom: 10px !important;
-        border-radius: 8px 8px 0 0 !important;
+    /* ============================================= */
+    /* FIELD PENCARIAN MOBILE - DIKECILKAN */
+    /* ============================================= */
+    #search-customer-lama,
+    #search-customer-baru,
+    #search-member-stempel {
+        height: 34px !important;
+        min-height: 34px !important;
+        font-size: 0.8rem !important;
+        padding: 6px 8px 6px 32px !important;
     }
     
-    .modal-outlet-kasir-info {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px !important;
-        margin-bottom: 12px !important;
-        padding: 10px !important;
-        background: #f8f9fa;
-        border-radius: 6px;
+    #search-btn-customer-lama,
+    #search-btn-customer-baru,
+    #search-btn-member-stempel {
+        height: 34px !important;
+        min-height: 34px !important;
+        font-size: 0.8rem !important;
+        padding: 6px 12px !important;
     }
     
-    .modal-outlet-kasir-info p {
-        margin-bottom: 3px !important;
-        line-height: 1.2 !important;
-    }
-    
-    .modal-outlet-kasir-info .font-semibold {
+    /* Search icon position mobile */
+    .modal-migrasi .fa-search {
+        left: 10px !important;
+        top: 9px !important;
         font-size: 0.8rem !important;
     }
     
-    .modal-outlet-kasir-info .text-lg {
-        font-size: 0.95rem !important;
+    /* Stempel counter mobile */
+    .stempel-btn {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 1rem !important;
     }
     
-    /* Disable Tailwind CDN warning */
-    .tailwind-warning-hide {
-        display: none !important;
+    .stempel-display {
+        font-size: 1.25rem !important;
     }
     
-    /* ============================================= */
-    /* RESPONSIVE STYLES - MOBILE */
-    /* ============================================= */
-    @media (max-width: 768px) {
-        /* Header super compact mobile */
-        header {
-            padding: 0.875rem 1rem !important;
-            border-radius: 0 0 0.75rem 0.75rem !important;
-        }
-        
-        header img {
-            width: 3.5rem !important;
-            height: 3.5rem !important;
-        }
-        
-        header h1 {
-            font-size: 1.25rem !important;
-        }
-        
-        header .text-purple-200 {
-            font-size: 0.875rem !important;
-        }
-        
-        header .text-right {
-            font-size: 0.875rem !important;
-        }
-        
-        /* Main container mobile */
-        main.container {
-            padding: 10px !important;
-        }
-        
-        /* Section compact mobile */
-        .bg-white.rounded-custom.shadow-lg {
-            margin-bottom: 10px !important;
-            padding: 14px !important;
-            border-radius: 8px !important;
-        }
-        
-        .bg-white h2 {
-            margin-bottom: 10px !important;
-            font-size: 1rem !important;
-        }
-        
-        /* Form fields compact mobile */
-        .grid.grid-cols-1.md\:grid-cols-2.gap-6 {
-            gap: 10px !important;
-        }
-        
-        label {
-            margin-bottom: 5px !important;
-            font-size: 0.85rem !important;
-        }
-        
-        select, input {
-            padding: 8px 10px !important;
-            font-size: 0.9rem !important;
-            height: 40px !important;
-        }
-        
-        .mt-4.text-sm {
-            margin-top: 8px !important;
-            font-size: 0.75rem !important;
-        }
-        
-        /* Action button compact mobile */
-        .action-btn {
-            padding: 12px !important;
-            font-size: 0.95rem !important;
-            border-radius: 8px !important;
-        }
-        
-        .action-btn i {
-            font-size: 22px !important;
-            margin-bottom: 5px !important;
-        }
-        
-        .action-btn span:last-child {
-            font-size: 0.75rem !important;
-            margin-top: 3px !important;
-        }
-        
-        /* INFO SYSTEM - SUPER COMPACT GRID mobile */
-        .grid.grid-cols-2.gap-3 {
-            gap: 8px !important;
-        }
-        
-        .bg-purple-50, .bg-yellow-50, .bg-blue-50, .bg-green-50 {
-            padding: 10px !important;
-            border-radius: 6px !important;
-        }
-        
-        .bg-purple-50 h3, .bg-yellow-50 h3, .bg-blue-50 h3, .bg-green-50 h3 {
-            font-size: 0.8rem !important;
-            margin-bottom: 5px !important;
-            line-height: 1.1;
-        }
-        
-        .bg-purple-50 p, .bg-yellow-50 p, .bg-blue-50 p, .bg-green-50 p {
-            font-size: 0.75rem !important;
-            line-height: 1.25 !important;
-            margin-bottom: 3px !important;
-        }
-        
-        /* Footer mobile */
-        footer {
-            padding: 0.625rem 0.875rem !important;
-            margin-top: 0.75rem !important;
-            border-radius: 0.5rem 0.5rem 0 0 !important;
-        }
-        
-        footer h3 {
-            font-size: 0.875rem !important;
-        }
-        
-        footer .text-purple-200 {
-            font-size: 0.75rem !important;
-        }
-        
-        footer .border-t {
-            margin-top: 0.375rem !important;
-            padding-top: 0.375rem !important;
-        }
-        
-        /* Modal compact mobile */
-        .modal-content {
-            width: 96% !important;
-            max-height: 88vh !important;
-            margin: 8px !important;
-            border-radius: 12px !important;
-        }
-        
-        .modal-content .p-6 {
-            padding: 14px !important;
-        }
-        
-        /* Input field mobile */
-        #search-customer-lama,
-        #search-customer-baru,
-        #search-member-stempel {
-            height: 38px !important;
-            min-height: 38px !important;
-            font-size: 0.85rem !important;
-            padding: 8px 10px !important;
-        }
-        
-        #search-btn-customer-lama,
-        #search-btn-customer-baru,
-        #search-btn-member-stempel {
-            height: 38px !important;
-            min-height: 38px !important;
-            font-size: 0.85rem !important;
-        }
-        
-        /* Stempel counter mobile */
-        .stempel-btn {
-            width: 35px !important;
-            height: 35px !important;
-            font-size: 1.2rem !important;
-        }
-        
-        .stempel-display {
-            font-size: 1.5rem !important;
-        }
-        
-        /* Toast compact mobile */
-        #toast {
-            top: 12px;
-            right: 12px;
-            max-width: 300px;
-            padding: 10px 14px;
-        }
+    /* Toast compact mobile */
+    #toast {
+        top: 12px;
+        right: 12px;
+        max-width: 300px;
+        padding: 10px 14px;
+    }
+}
+
+/* ============================================= */
+/* DESKTOP OPTIMIZATION - DIKECILKAN */
+/* ============================================= */
+@media (min-width: 769px) {
+    #search-customer-lama,
+    #search-customer-baru,
+    #search-member-stempel {
+        height: 36px !important;
+        min-height: 36px !important;
+        padding: 7px 10px 7px 36px !important;
+        font-size: 0.85rem !important;
     }
     
-    /* ============================================= */
-    /* DESKTOP OPTIMIZATION */
-    /* ============================================= */
-    @media (min-width: 769px) {
-        #search-customer-lama,
-        #search-customer-baru,
-        #search-member-stempel {
-            height: 44px !important;
-            min-height: 44px !important;
-        }
-        
-        #search-btn-customer-lama,
-        #search-btn-customer-baru,
-        #search-btn-member-stempel {
-            height: 44px !important;
-            min-height: 44px !important;
-        }
+    #search-btn-customer-lama,
+    #search-btn-customer-baru,
+    #search-btn-member-stempel {
+        height: 36px !important;
+        min-height: 36px !important;
+        padding: 8px 16px !important;
+        font-size: 0.85rem !important;
     }
+    
+    /* Search icon position desktop */
+    .modal-migrasi .fa-search {
+        left: 12px !important;
+        top: 10px !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+/* ============================================= */
+/* TAMBAHAN UNTUK FIELD PENCARIAN LEBIH KECIL */
+/* ============================================= */
+
+/* Input field dengan icon search */
+.modal-migrasi .relative input[type="text"] {
+    padding-left: 36px !important;
+}
+
+/* Field tanpa icon (modal stempel) */
+#search-member-stempel {
+    padding-left: 12px !important;
+}
+
+/* Placeholder lebih kecil */
+#search-customer-lama::placeholder,
+#search-customer-baru::placeholder,
+#search-member-stempel::placeholder {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Tombol lebih kompak */
+.modal-migrasi button[id*="search-btn"] {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+
+/* Container lebih rapat */
+.modal-migrasi .mb-3 {
+    margin-bottom: 12px !important;
+}
+
+.modal-migrasi .mt-1 {
+    margin-top: 4px !important;
+}
+
+/* Heading lebih kecil */
+.modal-migrasi h3.text-md {
+    font-size: 1rem !important;
+    margin-bottom: 8px !important;
+}
+
+/* Hasil pencarian lebih kompak */
+#customer-lama-result,
+#customer-baru-result,
+#member-stempel-result {
+    padding: 12px !important;
+}
+
+#customer-lama-result h4,
+#customer-baru-result h4,
+#member-stempel-result h4 {
+    font-size: 0.9rem !important;
+    margin-bottom: 8px !important;
+}
 </style>
     
     <script>
