@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-   :root {
+:root {
     --primary-color: #7b3aed;
     --primary-light: #9d6af5;
     --primary-dark: #5a2db2;
@@ -420,6 +420,109 @@ footer i {
 }
 
 /* ============================================= */
+/* PERBAIKAN FIELD PENCARIAN - LEBAR SAMA DENGAN TOMBOL */
+/* ============================================= */
+
+/* Container untuk field pencarian + tombol */
+.search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+    .search-container {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    
+    /* Field pencarian - ambil sisa lebar */
+    .search-container input[type="text"] {
+        flex: 1;
+        min-width: 0; /* Penting untuk flexbox */
+        width: 100%;
+        height: 36px !important;
+        padding: 6px 10px 6px 36px !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 0 !important;
+    }
+    
+    /* Tombol pencarian - ukuran tetap */
+    .search-container button {
+        width: auto !important;
+        min-width: 140px;
+        white-space: nowrap;
+        height: 36px !important;
+        padding: 8px 16px !important;
+        margin-top: 0 !important;
+        margin-left: 0 !important;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    /* Field pencarian - lebar penuh */
+    .search-container input[type="text"] {
+        width: 100% !important;
+        height: 34px !important;
+        padding: 6px 8px 6px 32px !important;
+        font-size: 0.8rem !important;
+        margin-bottom: 0 !important;
+    }
+    
+    /* Tombol pencarian - lebar penuh */
+    .search-container button {
+        width: 100% !important;
+        height: 34px !important;
+        padding: 6px 12px !important;
+        margin-top: 0 !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+/* Atur posisi icon search */
+.search-container .relative .fa-search {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem !important;
+    color: #6b7280;
+    pointer-events: none;
+}
+
+/* Mobile khusus untuk icon */
+@media (max-width: 768px) {
+    .search-container .relative .fa-search {
+        left: 10px !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+/* Field tanpa icon (modal stempel) */
+#search-member-stempel {
+    padding-left: 12px !important;
+}
+
+/* Hilangkan margin tambahan */
+.search-container .mt-1 {
+    margin-top: 0 !important;
+}
+
+/* Perbaikan khusus untuk modal */
+.modal-migrasi .mb-3,
+#modal-stempel .mb-3 {
+    margin-bottom: 12px !important;
+}
+
+/* ============================================= */
 /* RESPONSIVE STYLES - MOBILE */
 /* ============================================= */
 @media (max-width: 768px) {
@@ -555,34 +658,6 @@ footer i {
         padding: 14px !important;
     }
     
-    /* ============================================= */
-    /* FIELD PENCARIAN MOBILE - DIKECILKAN */
-    /* ============================================= */
-    #search-customer-lama,
-    #search-customer-baru,
-    #search-member-stempel {
-        height: 34px !important;
-        min-height: 34px !important;
-        font-size: 0.8rem !important;
-        padding: 6px 8px 6px 32px !important;
-    }
-    
-    #search-btn-customer-lama,
-    #search-btn-customer-baru,
-    #search-btn-member-stempel {
-        height: 34px !important;
-        min-height: 34px !important;
-        font-size: 0.8rem !important;
-        padding: 6px 12px !important;
-    }
-    
-    /* Search icon position mobile */
-    .modal-migrasi .fa-search {
-        left: 10px !important;
-        top: 9px !important;
-        font-size: 0.8rem !important;
-    }
-    
     /* Stempel counter mobile */
     .stempel-btn {
         width: 32px !important;
@@ -607,44 +682,25 @@ footer i {
 /* DESKTOP OPTIMIZATION - DIKECILKAN */
 /* ============================================= */
 @media (min-width: 769px) {
-    #search-customer-lama,
-    #search-customer-baru,
-    #search-member-stempel {
-        height: 36px !important;
-        min-height: 36px !important;
-        padding: 7px 10px 7px 36px !important;
-        font-size: 0.85rem !important;
+    /* Heading lebih kecil */
+    .modal-migrasi h3.text-md {
+        font-size: 1rem !important;
+        margin-bottom: 8px !important;
     }
     
-    #search-btn-customer-lama,
-    #search-btn-customer-baru,
-    #search-btn-member-stempel {
-        height: 36px !important;
-        min-height: 36px !important;
-        padding: 8px 16px !important;
-        font-size: 0.85rem !important;
+    /* Hasil pencarian lebih kompak */
+    #customer-lama-result,
+    #customer-baru-result,
+    #member-stempel-result {
+        padding: 12px !important;
     }
     
-    /* Search icon position desktop */
-    .modal-migrasi .fa-search {
-        left: 12px !important;
-        top: 10px !important;
-        font-size: 0.85rem !important;
+    #customer-lama-result h4,
+    #customer-baru-result h4,
+    #member-stempel-result h4 {
+        font-size: 0.9rem !important;
+        margin-bottom: 8px !important;
     }
-}
-
-/* ============================================= */
-/* TAMBAHAN UNTUK FIELD PENCARIAN LEBIH KECIL */
-/* ============================================= */
-
-/* Input field dengan icon search */
-.modal-migrasi .relative input[type="text"] {
-    padding-left: 36px !important;
-}
-
-/* Field tanpa icon (modal stempel) */
-#search-member-stempel {
-    padding-left: 12px !important;
 }
 
 /* Placeholder lebih kecil */
@@ -655,12 +711,6 @@ footer i {
     color: #6b7280;
 }
 
-/* Tombol lebih kompak */
-.modal-migrasi button[id*="search-btn"] {
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
-}
-
 /* Container lebih rapat */
 .modal-migrasi .mb-3 {
     margin-bottom: 12px !important;
@@ -668,26 +718,6 @@ footer i {
 
 .modal-migrasi .mt-1 {
     margin-top: 4px !important;
-}
-
-/* Heading lebih kecil */
-.modal-migrasi h3.text-md {
-    font-size: 1rem !important;
-    margin-bottom: 8px !important;
-}
-
-/* Hasil pencarian lebih kompak */
-#customer-lama-result,
-#customer-baru-result,
-#member-stempel-result {
-    padding: 12px !important;
-}
-
-#customer-lama-result h4,
-#customer-baru-result h4,
-#member-stempel-result h4 {
-    font-size: 0.9rem !important;
-    margin-bottom: 8px !important;
 }
 </style>
     
@@ -879,12 +909,12 @@ footer i {
             <!-- Customer Lama -->
             <div>
                 <h3 class="font-bold text-yellow-700 mb-2 text-md"><i class="fas fa-user-clock mr-2"></i>Customer Lama (Olsera)</h3>
-                <div class="mb-3">
+                <div class="search-container">
                     <div class="relative">
                         <input type="text" id="search-customer-lama" placeholder="Cari Nama, No HP, atau ID..." class="w-full p-2 pl-9 border border-yellow-300 rounded-custom focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-sm">
                         <i class="fas fa-search absolute left-2.5 top-2.5 text-gray-400 text-sm"></i>
                     </div>
-                    <button id="search-btn-customer-lama" class="btn-yellow w-full mt-1 px-4 py-2 rounded-custom font-bold text-sm">
+                    <button id="search-btn-customer-lama" class="btn-yellow px-4 py-2 rounded-custom font-bold text-sm">
                         <i class="fas fa-search mr-2 text-sm"></i>Cari Customer Lama
                     </button>
                 </div>
@@ -908,12 +938,12 @@ footer i {
             <!-- Customer Baru -->
             <div>
                 <h3 class="font-bold text-blue-700 mb-2 text-md"><i class="fas fa-user-check mr-2"></i>Customer Baru (Digital)</h3>
-                <div class="mb-3">
+                <div class="search-container">
                     <div class="relative">
                         <input type="text" id="search-customer-baru" placeholder="Cari Nama, No WA, atau ID..." class="w-full p-2 pl-9 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                         <i class="fas fa-search absolute left-2.5 top-2.5 text-gray-400 text-sm"></i>
                     </div>
-                    <button id="search-btn-customer-baru" class="btn-blue w-full mt-1 px-4 py-2 rounded-custom font-bold text-sm">
+                    <button id="search-btn-customer-baru" class="btn-blue px-4 py-2 rounded-custom font-bold text-sm">
                         <i class="fas fa-search mr-2 text-sm"></i>Cari Customer Baru
                     </button>
                 </div>
@@ -1060,11 +1090,11 @@ footer i {
             <!-- Search Member -->
             <div>
                 <h3 class="font-bold text-blue-700 mb-2 text-md"><i class="fas fa-user-check mr-2"></i>Cari Member</h3>
-                <div class="mb-3">
+                <div class="search-container">
                     <div class="relative">
                         <input type="text" id="search-member-stempel" placeholder="Cari Nama, No WA, atau ID..." class="w-full p-2 border border-blue-300 rounded-custom focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
                     </div>
-                    <button id="search-btn-member-stempel" class="btn-blue w-full mt-1 px-4 py-2 rounded-custom font-bold text-sm">
+                    <button id="search-btn-member-stempel" class="btn-blue px-4 py-2 rounded-custom font-bold text-sm">
                         <i class="fas fa-search mr-2 text-sm"></i>Cari Member
                     </button>
                 </div>
