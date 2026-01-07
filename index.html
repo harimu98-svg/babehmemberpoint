@@ -1962,36 +1962,87 @@ footer i {
         };
         
         // Update UI functions
-        function updateCustomerLamaUI(customer) {
-            document.getElementById('selected-customer-lama-nama').textContent = customer.name || '-';
-            document.getElementById('selected-customer-lama-phone').textContent = customer.phone || '-';
-            document.getElementById('selected-customer-lama-id').textContent = customer.code || '-';
-            document.getElementById('selected-customer-lama-outlet').textContent = customer.outlet || '-';
-            document.getElementById('selected-customer-lama-points').textContent = customer.loyalty_points || 0;
-            
-            const statusElement = document.getElementById('selected-customer-lama-status');
-            statusElement.textContent = customer.status_migrasi || 'Belum Migrasi';
+    
+function updateCustomerLamaUI(customer) {
+    console.log('🔄 updateCustomerLamaUI called for:', customer?.name || 'unknown');
+    
+    try {
+        // Safe update untuk setiap element
+        const updates = [
+            { id: 'selected-customer-lama-nama', value: customer?.name || '-' },
+            { id: 'selected-customer-lama-phone', value: customer?.phone || '-' },
+            { id: 'selected-customer-lama-id', value: customer?.code || '-' },
+            { id: 'selected-customer-lama-points', value: customer?.loyalty_points || 0 }
+        ];
+        
+        updates.forEach(item => {
+            const element = document.getElementById(item.id);
+            if (element) {
+                element.textContent = item.value;
+            } else {
+                console.error(`Element ${item.id} not found in updateCustomerLamaUI`);
+            }
+        });
+        
+        // Update status
+        const statusElement = document.getElementById('selected-customer-lama-status');
+        if (statusElement) {
+            statusElement.textContent = customer?.status_migrasi || 'Belum Migrasi';
             statusElement.className = 'status-badge ' + 
-                (customer.status_migrasi === 'Sudah Migrasi' ? 'status-migrated' : 'status-pending');
-            
-            document.getElementById('customer-lama-result').classList.remove('hidden');
+                (customer?.status_migrasi === 'Sudah Migrasi' ? 'status-migrated' : 'status-pending');
         }
         
-        function updateCustomerBaruUI(customer) {
-            document.getElementById('selected-customer-baru-nama').textContent = customer.nama || '-';
-            document.getElementById('selected-customer-baru-wa').textContent = customer.nomorWA || '-';
-            document.getElementById('selected-customer-baru-id').textContent = customer.id_member || '-';
-            document.getElementById('selected-customer-baru-outlet').textContent = customer.outlet || '-';
-            document.getElementById('selected-customer-baru-point').textContent = customer.point || 0;
-            
-            const statusElement = document.getElementById('selected-customer-baru-status');
-            statusElement.textContent = customer.status || 'unknown';
-            statusElement.className = 'status-badge ' + 
-                (customer.status === 'active' ? 'status-active' : 'status-inactive');
-            
-            document.getElementById('customer-baru-result').classList.remove('hidden');
+        // Show result div
+        const resultDiv = document.getElementById('customer-lama-result');
+        if (resultDiv) {
+            resultDiv.classList.remove('hidden');
         }
         
+    } catch (error) {
+        console.error('Error in updateCustomerLamaUI:', error);
+        showToast('error', 'Update UI Error', 'Gagal menampilkan data customer lama');
+    }
+}
+    
+function updateCustomerBaruUI(customer) {
+    console.log('🔄 updateCustomerBaruUI called for:', customer?.nama || 'unknown');
+    
+    try {
+        const updates = [
+            { id: 'selected-customer-baru-nama', value: customer?.nama || '-' },
+            { id: 'selected-customer-baru-wa', value: customer?.nomorWA || '-' },
+            { id: 'selected-customer-baru-id', value: customer?.id_member || '-' },
+            { id: 'selected-customer-baru-point', value: customer?.point || 0 }
+        ];
+        
+        updates.forEach(item => {
+            const element = document.getElementById(item.id);
+            if (element) {
+                element.textContent = item.value;
+            } else {
+                console.error(`Element ${item.id} not found in updateCustomerBaruUI`);
+            }
+        });
+        
+        // Update status
+        const statusElement = document.getElementById('selected-customer-baru-status');
+        if (statusElement) {
+            statusElement.textContent = customer?.status || 'unknown';
+            statusElement.className = 'status-badge ' + 
+                (customer?.status === 'active' ? 'status-active' : 'status-inactive');
+        }
+        
+        // Show result div
+        const resultDiv = document.getElementById('customer-baru-result');
+        if (resultDiv) {
+            resultDiv.classList.remove('hidden');
+        }
+        
+    } catch (error) {
+        console.error('Error in updateCustomerBaruUI:', error);
+        showToast('error', 'Update UI Error', 'Gagal menampilkan data customer baru');
+    }
+}   
         function updateMemberStempelUI(customer) {
             const currentPoints = parseInt(customer.point) || 0;
             const newPoints = currentPoints + window.stempelCount;
