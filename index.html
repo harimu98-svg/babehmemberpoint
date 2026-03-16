@@ -2257,7 +2257,7 @@ function updateCustomerBaruUI(customer) {
                 if (error2) throw error2;
                 
                 // 3. Send WhatsApp notification
-                await sendWhatsAppNotification(window.selectedCustomerBaru.nomorWA, window.selectedCustomerBaru.nama, newPoints, updatedPoints, 'migrasi');
+               // await sendWhatsAppNotification(window.selectedCustomerBaru.nomorWA, window.selectedCustomerBaru.nama, newPoints, updatedPoints, 'migrasi');
                 
                 // 4. Show success message
                 showToast('success', 'Migrasi berhasil', 
@@ -2348,14 +2348,14 @@ function updateCustomerBaruUI(customer) {
                 
                 if (error1) throw error1;
                 
-                // 2. Send WhatsApp notification
-                await sendWhatsAppNotification(
-                    window.selectedMemberStempel.nomorWA, 
-                    window.selectedMemberStempel.nama, 
-                    addedPoints, 
-                    updatedPoints,
-                    'stempel'
-                );
+              // 2. Send WhatsApp notification (DISABLED)
+            // await sendWhatsAppNotification(
+            //     window.selectedMemberStempel.nomorWA, 
+            //     window.selectedMemberStempel.nama, 
+            //     addedPoints, 
+            //     updatedPoints,
+            //     'stempel'
+            // );
                 
                 // 3. Show success message
                 showToast('success', 'Stempel berhasil', 
