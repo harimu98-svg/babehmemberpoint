@@ -2008,11 +2008,14 @@ function updateCustomerBaruUI(customer) {
     console.log('🔄 updateCustomerBaruUI called for:', customer?.nama || 'unknown');
     
     try {
+        // ✅ PASTIKAN POINT ADALAH ANGKA
+        const pointValue = parseFloat(customer?.point) || 0;
+        
         const updates = [
             { id: 'selected-customer-baru-nama', value: customer?.nama || '-' },
             { id: 'selected-customer-baru-wa', value: customer?.nomorWA || '-' },
             { id: 'selected-customer-baru-id', value: customer?.id_member || '-' },
-            { id: 'selected-customer-baru-point', value: customer?.point || 0 }
+            { id: 'selected-customer-baru-point', value: pointValue }  // ✅ PAKAI parseFloat
         ];
         
         updates.forEach(item => {
@@ -2020,7 +2023,7 @@ function updateCustomerBaruUI(customer) {
             if (element) {
                 element.textContent = item.value;
             } else {
-                console.error(`Element ${item.id} not found in updateCustomerBaruUI`);
+                console.error(`Element ${item.id} not found`);
             }
         });
         
@@ -2032,39 +2035,54 @@ function updateCustomerBaruUI(customer) {
                 (customer?.status === 'active' ? 'status-active' : 'status-inactive');
         }
         
-        // Show result div
         const resultDiv = document.getElementById('customer-baru-result');
         if (resultDiv) {
             resultDiv.classList.remove('hidden');
         }
         
+        // ✅ TAMPILKAN DI CONSOLE UNTUK DEBUG
+        console.log('✅ Customer Baru UI Updated:', {
+            nama: customer?.nama,
+            point: pointValue,
+            status: customer?.status
+        });
+        
     } catch (error) {
         console.error('Error in updateCustomerBaruUI:', error);
         showToast('error', 'Update UI Error', 'Gagal menampilkan data customer baru');
     }
-}   
+}
         function updateMemberStempelUI(customer) {
-            const currentPoints = parseInt(customer.point) || 0;
-            const newPoints = currentPoints + window.stempelCount;
-            
-            document.getElementById('selected-member-stempel-nama').textContent = customer.nama || '-';
-            document.getElementById('selected-member-stempel-wa').textContent = customer.nomorWA || '-';
-            document.getElementById('selected-member-stempel-id').textContent = customer.id_member || '-';
-            document.getElementById('selected-member-stempel-point').textContent = currentPoints;
-            
-            // Update confirmation section
-            document.getElementById('confirm-nama').textContent = customer.nama || '-';
-            document.getElementById('confirm-point-sekarang').textContent = currentPoints;
-            document.getElementById('confirm-stempel').textContent = window.stempelCount;
-            document.getElementById('confirm-point-baru').textContent = newPoints;
-            
-            const statusElement = document.getElementById('selected-member-stempel-status');
-            statusElement.textContent = customer.status || 'unknown';
-            statusElement.className = 'status-badge ' + 
-                (customer.status === 'active' ? 'status-active' : 'status-inactive');
-            
-            document.getElementById('member-stempel-result').classList.remove('hidden');
-        }
+    // ✅ PASTIKAN POINT ADALAH ANGKA
+    const currentPoints = parseFloat(customer?.point) || 0;
+    const newPoints = currentPoints + window.stempelCount;
+    
+    document.getElementById('selected-member-stempel-nama').textContent = customer.nama || '-';
+    document.getElementById('selected-member-stempel-wa').textContent = customer.nomorWA || '-';
+    document.getElementById('selected-member-stempel-id').textContent = customer.id_member || '-';
+    document.getElementById('selected-member-stempel-point').textContent = currentPoints;
+    
+    // Update confirmation section
+    document.getElementById('confirm-nama').textContent = customer.nama || '-';
+    document.getElementById('confirm-point-sekarang').textContent = currentPoints;
+    document.getElementById('confirm-stempel').textContent = window.stempelCount;
+    document.getElementById('confirm-point-baru').textContent = newPoints;
+    
+    const statusElement = document.getElementById('selected-member-stempel-status');
+    statusElement.textContent = customer.status || 'unknown';
+    statusElement.className = 'status-badge ' + 
+        (customer.status === 'active' ? 'status-active' : 'status-inactive');
+    
+    document.getElementById('member-stempel-result').classList.remove('hidden');
+    
+    // ✅ DEBUG
+    console.log('✅ Member Stempel UI Updated:', {
+        nama: customer.nama,
+        currentPoints: currentPoints,
+        stempelCount: window.stempelCount,
+        newPoints: newPoints
+    });
+}
         
         // 8. AUTO-FIND CUSTOMER BARU BY PHONE
         async function findCustomerBaruByPhone(phone) {
